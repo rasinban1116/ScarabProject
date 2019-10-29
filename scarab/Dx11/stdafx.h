@@ -66,6 +66,10 @@
 #include <type_traits>
 #include <typeindex>
 
+//自作のヘッダーファイル
+
+
+
 using namespace std;
 
 #include <d3d11_2.h>
