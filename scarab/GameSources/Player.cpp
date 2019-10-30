@@ -162,6 +162,7 @@ namespace basecross{
 		//コントローラチェックして入力があればコマンド呼び出し
 		m_InputHandler.PushHandle(GetThis<Player>());
 		MovePlayer();
+
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {
@@ -234,45 +235,6 @@ namespace basecross{
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 	}
-
-	void Player::newPlayerMove() {
-		Vec3 velocity;
-		auto Time = App::GetApp()->GetElapsedTime();
-		float movespeed = 5.0f;
-		float applyspeed = 0.2f;
-		auto refCamera = GetComponent<MyCamera>();
-		
-
-		velocity = Vec3(0, 0, 0);
-		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
-		if (KeyState.m_bPushKeyTbl['W']) {
-			//前
-			velocity.z += 1;
-		}
-		if (KeyState.m_bPushKeyTbl['A']) {
-			//左
-			velocity.x -= 1;
-		}
-		if (KeyState.m_bPushKeyTbl['S']) {
-			//後
-			velocity.z -= 1;
-		}
-		if (KeyState.m_bPushKeyTbl['D']) {
-			//右
-			velocity.x += 1;
-		}
-		velocity = velocity.normalize *movespeed*Time;
-		if (velocity.length > 0) {
-			auto playtrans = GetComponent<Transform>();
-			auto playrot = playtrans->GetRotation();
-			//ここの解決からやれ
-			playrot = Quat(playrot, Quat::rotation(), applyspeed);
-			playtrans->SetPosition += 
-		}
-	}
-
-
-
 }
 
 

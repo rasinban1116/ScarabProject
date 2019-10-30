@@ -379,5 +379,54 @@ namespace basecross{
 		ptrDraw->SetOwnShadowActive(true);
 	}
 
+	//---------------------------------------------
+	//-----------PlayerChildBaseについて-----------
+	//---------------------------------------------
+	//初期化
+	void PlayerChildBase::OnCreate() {
+		auto ptrTrans = GetComponent <Transform>();
+		ptrTrans->SetPosition(m_StartPos);
+		ptrTrans->SetScale(0.25f, 0.25f, 0.25f);
+		ptrTrans->SetRotation(0.f,0.f,0.f);
+
+		//オブジェクトのグループを得る
+		auto group = GetStage()->GetSharedObjectGroup(L"PlayerChild");
+		//グループに自分自身を追加
+		group->IntoGroup(GetThis<GameObject>());
+		//分離行動をつける
+		auto ptrSep = GetBehavior<SeparationSteering>();
+		ptrSep->SetGameObjectGroup(group);
+	
+		//重力
+		auto ptrGrabity = AddComponent <Gravity>();
+	
+	}	
+	  
+	void PlayerChild::OnCreate(){
+		PlayerChildBase::OnCreate();
+		auto ptrTrans = GetComponent<Transform>();
+		ptrTrans->SetScale(0.125f, 0.125f, 0.125f);
+
+		//Obbの衝突判定をつける
+		AddComponent<CollisionObb>();
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap> ();
+		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+
+		//描画コンポーネントの設定
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		//描画するメッシュを設定
+		ptrDraw->SetMeshResource (L"DEFAULT_CUBE");
+		//描画するテクスチャを設定
+		//ptrDraw->SetTextureResource<"テクスチャの名前">;
+		//透明処理
+		SetAlphaActive(true);
+
+		//ステートマシンの構築
+		m_StateMachine.reset(new StateMachine<PlayerChild>(GetThis<PlayerChild>()));
+		//最初のステートをPlayerChildFarStateに設定
+		m_StateMachine->ChangeState(PlayerChild::Instance());
+	}
 }
 //end basecross
