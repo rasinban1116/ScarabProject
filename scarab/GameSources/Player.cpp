@@ -16,6 +16,7 @@ namespace basecross{
 	Player::Player(const shared_ptr<Stage>& StagePtr) :
 		GameObject(StagePtr),
 		m_Speed(6.0f)
+		
 	{}
 
 	Vec2 Player::GetInputState() const {
@@ -93,7 +94,9 @@ namespace basecross{
 			auto pos = GetComponent<Transform>()->GetPosition();
 			pos += angle * elapsedTime * m_Speed;
 			GetComponent<Transform>()->SetPosition(pos);
+		
 		}
+
 		//‰ñ“]‚ÌŒvŽZ
 		if (angle.length() > 0.0f) {
 			auto utilPtr = GetBehavior<UtilBehavior>();
@@ -232,7 +235,47 @@ namespace basecross{
 		ptrString->SetText(str);
 	}
 
+	void Player::newPlayerMove() {
+		Vec3 velocity;
+		auto Time = App::GetApp()->GetElapsedTime();
+		float movespeed = 5.0f;
+		float applyspeed = 0.2f;
+		auto refCamera = GetComponent<MyCamera>();
+		
+
+		velocity = Vec3(0, 0, 0);
+		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
+		if (KeyState.m_bPushKeyTbl['W']) {
+			//‘O
+			velocity.z += 1;
+		}
+		if (KeyState.m_bPushKeyTbl['A']) {
+			//¶
+			velocity.x -= 1;
+		}
+		if (KeyState.m_bPushKeyTbl['S']) {
+			//Œã
+			velocity.z -= 1;
+		}
+		if (KeyState.m_bPushKeyTbl['D']) {
+			//‰E
+			velocity.x += 1;
+		}
+		velocity = velocity.normalize *movespeed*Time;
+		if (velocity.length > 0) {
+			auto playtrans = GetComponent<Transform>();
+			auto playrot = playtrans->GetRotation();
+			//‚±‚±‚Ì‰ðŒˆ‚©‚ç‚â‚ê
+			playrot = Quat(playrot, Quat::rotation(), applyspeed);
+			playtrans->SetPosition += 
+		}
+	}
+
+
 
 }
+
+
+	
 //end basecross
 

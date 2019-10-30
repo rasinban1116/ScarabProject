@@ -14,6 +14,7 @@ namespace basecross{
 	Vec3 GetMoveVector() const;
 	//プレイヤーの移動
 	void MovePlayer();
+	void newPlayerMove();
 	//文字列の表示
 	void DrawStrings();
 	//入力ハンドラー
