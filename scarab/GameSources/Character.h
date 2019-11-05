@@ -209,7 +209,7 @@ namespace basecross{
 		PlayerChildBase(const shared_ptr<Stage>& Stageptr, const Vec3& StartPos);
 		virtual ~PlayerChildBase(){}
 	public :
-		const Vec3& getForce()const {
+		const Vec3& GetForce()const {
 			return m_Force;
 		}
 		void SetForce(const Vec3 &f) {
@@ -259,6 +259,31 @@ namespace basecross{
 		virtual void OnUpdate()override;
 	};
 
+	//--------------------------------------------------------------------------------------
+	///	PlayerchildのFarステート
+	//--------------------------------------------------------------------------------------
+	class PlayerchildFarState :public ObjState<PlayerChild> {
+	PlayerchildFarState(){}
+	public:
+		//ステートのインスタンス取得
+		DECLARE_SINGLETON_INSTANCE(PlayerchildFarState)
+		virtual void Enter(const shared_ptr<PlayerChild>&Obj)override;
+		virtual void Execute(const shared_ptr<PlayerChild>&Obj)override;
+		virtual void Exit(const shared_ptr<PlayerChild>&Obj)override;
+	};
+	//--------------------------------------------------------------------------------------
+	///	PlayerchildのNearステート
+	//--------------------------------------------------------------------------------------
+	class PlayerchildNearState : public ObjState<PlayerChild>
+	{
+		PlayerchildNearState() {}
+	public:
+		//ステートのインスタンス取得
+		DECLARE_SINGLETON_INSTANCE(PlayerchildNearState)
+		virtual void Enter(const shared_ptr<PlayerChild>& Obj)override;
+		virtual void Execute(const shared_ptr<PlayerChild>& Obj)override;
+		virtual void Exit(const shared_ptr<PlayerChild>& Obj)override;
+	};
 
 }
 //end basecross

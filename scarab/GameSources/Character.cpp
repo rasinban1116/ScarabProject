@@ -428,5 +428,61 @@ namespace basecross{
 		//最初のステートをPlayerChildFarStateに設定
 		m_StateMachine->ChangeState(PlayerChild::Instance());
 	}
+
+
+	void PlayerChild::OnUpdate() {
+		PlayerChildBase::OnUpdate();
+		//ステートマシンのUpdateと切り替え
+		m_StateMachine->Update();
+		auto ptrUtil = GetBehavior<UtilBehavior>();
+		ptrUtil->RotToHead(1.0f);
+	}
+	//--------------------------------------------------------------------------------------
+	///	PlayerChildのFarステート
+	//--------------------------------------------------------------------------------------
+	IMPLEMENT_SINGLETON_INSTANCE(PlayerchildFarState)
+
+		void PlayerchildFarState::Enter(const shared_ptr<PlayerChild>& Obj) {
+	}
+
+	void PlayerchildFarState::Execute(const shared_ptr<PlayerChild>& Obj) {
+		auto force = Obj->GetForce();
+		auto ptrSeek = Obj->GetBehavior<SeekSteering>();
+		force = ptrSeek->Execute(force, Obj->GetVelocity(), Obj->GetTargetPos());
+		Obj->SetForce(force);
+		Obj->ApplyForce();
+		float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
+		if (f < Obj->GetStateChangeSize()) {
+			Obj->GetStateMachine()->ChangeState(PlayerchildNearState::Instance());
+		}
+	}
+
+	void PlayerChildFarState::Exit(const shared_ptr<PlayerChild>& Obj) {
+	}
+
+	//--------------------------------------------------------------------------------------
+	///	PlayerChildのNearステート
+	//--------------------------------------------------------------------------------------
+	IMPLEMENT_SINGLETON_INSTANCE(PlayerchildNearState)
+
+		void PlayerchildNearState::Enter(const shared_ptr<PlayerChild>& Obj) {
+	}
+
+	void PlayerchildNearState::Execute(const shared_ptr<PlayerChild>& Obj) {
+		auto ptrArrive = Obj->GetBehavior<ArriveSteering>();
+		auto force = Obj->GetForce();
+		force = ptrArrive->Execute(force, Obj->GetVelocity(), Obj->GetTargetPos());
+		Obj->SetForce(force);
+		Obj->ApplyForce();
+		float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
+		if (f >= Obj->GetStateChangeSize()) {
+			Obj->GetStateMachine()->ChangeState(PlayerchildFarState::Instance());
+		}
+	}
+
+	void PlayerChildNearState::Exit(const shared_ptr<PlayerChild>& Obj) {
+	}
+
+
 }
 //end basecross
