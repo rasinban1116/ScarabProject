@@ -10,6 +10,25 @@ namespace basecross{
 
 
 	//--------------------------------------------------------------------------------------
+	///	物理計算する固定のボックス
+	//--------------------------------------------------------------------------------------
+	class FixedPsBox : public GameObject {
+		Vec3 m_Scale;
+		Quat m_Qt;
+		Vec3 m_Position;
+	public:
+		//構築と破棄
+		FixedPsBox(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Quat& Qt,
+			const Vec3& Position
+		);
+		virtual ~FixedPsBox();
+		//初期化
+		virtual void OnCreate() override;
+	};
+
+	//--------------------------------------------------------------------------------------
 	//	class FixedBox : public GameObject;
 	//--------------------------------------------------------------------------------------
 	class FixedBox : public GameObject {
@@ -24,48 +43,6 @@ namespace basecross{
 			const Vec3& Position
 		);
 		virtual ~FixedBox();
-		//初期化
-		virtual void OnCreate() override;
-		//操作
-	};
-
-	//--------------------------------------------------------------------------------------
-	//	class FixedSphere : public GameObject;
-	//--------------------------------------------------------------------------------------
-	class FixedSphere : public GameObject {
-		Vec3 m_Scale;
-		Vec3 m_Rotation;
-		Vec3 m_Position;
-	public:
-		//構築と破棄
-		FixedSphere(const shared_ptr<Stage>& StagePtr,
-			const float Scale,
-			const Vec3& Rotation,
-			const Vec3& Position
-		);
-		virtual ~FixedSphere();
-		//初期化
-		virtual void OnCreate() override;
-		//操作
-	};
-
-
-
-	//--------------------------------------------------------------------------------------
-	//	class FixedCapsule : public GameObject;
-	//--------------------------------------------------------------------------------------
-	class FixedCapsule : public GameObject {
-		Vec3 m_Scale;
-		Vec3 m_Rotation;
-		Vec3 m_Position;
-	public:
-		//構築と破棄
-		FixedCapsule(const shared_ptr<Stage>& StagePtr,
-			const Vec3& Scale,
-			const Vec3& Rotation,
-			const Vec3& Position
-		);
-		virtual ~FixedCapsule();
 		//初期化
 		virtual void OnCreate() override;
 		//操作
@@ -196,94 +173,25 @@ namespace basecross{
 		//操作
 	};
 
-	//--------------------------------------
-	///プレイヤーの子オブジェクトの親クラス
-	//--------------------------------------
-
-	class PlayerChildBase : public GameObject {
-		Vec3 m_StartPos;
-		Vec3 m_Force;
-		Vec3 m_velocity;
-	protected:
-		//構築と破棄
-		PlayerChildBase(const shared_ptr<Stage>& Stageptr, const Vec3& StartPos);
-		virtual ~PlayerChildBase(){}
-	public :
-		const Vec3& GetForce()const {
-			return m_Force;
-		}
-		void SetForce(const Vec3 &f) {
-			m_Force = f;
-		}
-		void AddForce(const Vec3 &f) {
-			m_Force += f;
-		}
-		const Vec3& GetVelocity()const {
-			return m_velocity;
-		}
-		void Setvelocity(const Vec3 &v) {
-			m_velocity = v;
-		}
-		void ApplyForce();
-		Vec3 GetTargetPos()const;
-		//初期化
-		virtual void OnCreate()override;
-		//更新
-		virtual void OnUpdate()override;
-	};
-
-	//---------------------------------------
-	///プレイヤーの子オブジェクトの派生クラス
-	//---------------------------------------
-	class PlayerChild :public PlayerChildBase {
-		//ステートマシン
-		unique_ptr<StateMachine<PlayerChild>> m_StateMachine;
-		//NearとFarを切り替える値
-		float m_statechangeSize;
+	//--------------------------------------------------------------------------------------
+	///	物理計算するアクティブな球体
+	//--------------------------------------------------------------------------------------
+	class ActivePsSphere : public GameObject {
+		float m_Scale;
+		Quat m_Qt;
+		Vec3 m_Position;
 	public:
 		//構築と破棄
-		//---------------------
-		PlayerChild(const shared_ptr<Stage>&StagePtr, const Vec3& StartPos);
-		virtual ~PlayerChild(){}
-
-		//ステートマシンを得る
-		unique_ptr<StateMachine<PlayerChild>>&GetStateMacchine(){
-			return m_StateMachine;
-		}
-		float GetStateChangeSize()const {
-			return m_statechangeSize;
-		}
+		ActivePsSphere(const shared_ptr<Stage>& StagePtr,
+			float Scale,
+			const Quat& Qt,
+			const Vec3& Position
+		);
+		virtual ~ActivePsSphere();
 		//初期化
-		virtual void OnCreate()override;
-		//更新
-		virtual void OnUpdate()override;
+		virtual void OnCreate() override;
 	};
 
-	//--------------------------------------------------------------------------------------
-	///	PlayerchildのFarステート
-	//--------------------------------------------------------------------------------------
-	class PlayerchildFarState :public ObjState<PlayerChild> {
-	PlayerchildFarState(){}
-	public:
-		//ステートのインスタンス取得
-		DECLARE_SINGLETON_INSTANCE(PlayerchildFarState)
-		virtual void Enter(const shared_ptr<PlayerChild>&Obj)override;
-		virtual void Execute(const shared_ptr<PlayerChild>&Obj)override;
-		virtual void Exit(const shared_ptr<PlayerChild>&Obj)override;
-	};
-	//--------------------------------------------------------------------------------------
-	///	PlayerchildのNearステート
-	//--------------------------------------------------------------------------------------
-	class PlayerchildNearState : public ObjState<PlayerChild>
-	{
-		PlayerchildNearState() {}
-	public:
-		//ステートのインスタンス取得
-		DECLARE_SINGLETON_INSTANCE(PlayerchildNearState)
-		virtual void Enter(const shared_ptr<PlayerChild>& Obj)override;
-		virtual void Execute(const shared_ptr<PlayerChild>& Obj)override;
-		virtual void Exit(const shared_ptr<PlayerChild>& Obj)override;
-	};
 
 }
 //end basecross

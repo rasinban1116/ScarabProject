@@ -26,39 +26,20 @@ namespace basecross {
 
 	//固定のボックスの作成
 	void GameStage::CreateFixedBox() {
-		//配列の初期化
-		vector< vector<Vec3> > vec = {
-			{
-				Vec3(50.0f, 1.0f, 50.0f),
-				Vec3(0.0f, 0.0f, 0.0f),
-				Vec3(0.0f, -0.5f, 0.0f)
-			},
-			{
-				Vec3(5.0f, 0.5f, 5.0f),
-				Vec3(0.0f, 0.0f, 0.0f),
-				Vec3(10.0f, 0.25f, 10.0f)
-			},
-			{
-				Vec3(5.0f, 0.5f, 5.0f),
-				Vec3(0.0f, 0.0f, 0.0f),
-				Vec3(15.0f, 0.25f, 10.0f)
-			},
+		//下の台
+		AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
 
-			{
-				Vec3(2.0f, 1.0f, 2.0f),
-				Vec3(0, 0, 0),
-				Vec3(10.0f, 0.5f, 10.0f)
-			},
-			{
-				Vec3(4.0f, 1.0f, 4.0f),
-				Vec3(0, 0, 0),
-				Vec3(-10.0f, 0.5f, 10.0f)
-			},
-			{
+		//動かない台
+		AddGameObject<FixedPsBox>(Vec3(3.0f, 1.0f, 3.0f), Quat(), Vec3(0.0f, 0.5f, 3.0f));
+		AddGameObject<FixedPsBox>(Vec3(3.0f, 1.0f, 3.0f), Quat(0.5f), Vec3(4.0f, 0.5f, 5.0f));
+	}
+	void GameStage::CreateCollisionBox2() {
+		vector <vector<Vec3>> vec = { {
+
 				Vec3(10.0f, 0.5f, 10.0f),
 				Vec3(-0.5f, 0.0f, -0.5f),
 				Vec3(-10.0f, 0.25f, 10.0f)
-			},
+		},
 		};
 		//オブジェクトの作成
 		for (auto v : vec) {
@@ -74,14 +55,21 @@ namespace basecross {
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
 	}
+	void GameStage::activeboll() {
+		AddGameObject<ActivePsSphere>(1.0f, Quat(), Vec3(0.0f, 6.0f, 5.0f));
+	}
 
 
 	void GameStage::OnCreate() {
 		try {
+			//物理演算のオンオフ
+			SetPhysicsActive(true);
 			//ビューとライトの作成
 			CreateViewLight();
 			CreateFixedBox();
 			CreatePlayer();
+			CreateCollisionBox2();
+			activeboll();
 		}
 		catch (...) {
 			throw;

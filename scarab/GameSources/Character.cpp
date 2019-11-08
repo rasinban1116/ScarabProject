@@ -9,6 +9,46 @@
 namespace basecross{
 
 	//--------------------------------------------------------------------------------------
+///	物理計算する固定のボックス
+//--------------------------------------------------------------------------------------
+//構築と破棄
+	FixedPsBox::FixedPsBox(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Scale,
+		const Quat& Qt,
+		const Vec3& Position
+	) :
+		GameObject(StagePtr),
+		m_Scale(Scale),
+		m_Qt(Qt),
+		m_Position(Position)
+	{}
+
+	FixedPsBox::~FixedPsBox() {}
+	//初期化
+	void FixedPsBox::OnCreate() {
+
+		auto ptrTrans = GetComponent<Transform>();
+
+		ptrTrans->SetScale(m_Scale);
+		ptrTrans->SetQuaternion(m_Qt);
+		ptrTrans->SetPosition(m_Position);
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap>();
+		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		//ptrDraw->SetTextureResource(L"SKY_TX");
+		//物理計算ボックス
+		PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		auto PsPtr = AddComponent<RigidbodyBox>(param);
+	}
+
+
+	//--------------------------------------------------------------------------------------
 	//	class FixedBox : public GameObject;
 	//--------------------------------------------------------------------------------------
 	//構築と破棄
@@ -46,87 +86,9 @@ namespace basecross{
 		ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
 
-	}
-
-	//--------------------------------------------------------------------------------------
-	//	class FixedSphere : public GameObject;
-	//--------------------------------------------------------------------------------------
-	//構築と破棄
-	FixedSphere::FixedSphere(const shared_ptr<Stage>& StagePtr,
-		const float Scale,
-		const Vec3& Rotation,
-		const Vec3& Position
-	) :
-		GameObject(StagePtr),
-		m_Scale(Scale),
-		m_Rotation(Rotation),
-		m_Position(Position)
-	{
-	}
-	FixedSphere::~FixedSphere() {}
-
-	//初期化
-	void FixedSphere::OnCreate() {
-		auto ptrTransform = GetComponent<Transform>();
-		ptrTransform->SetScale(m_Scale);
-		ptrTransform->SetRotation(m_Rotation);
-		ptrTransform->SetPosition(m_Position);
-		//CollisionSphere衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionSphere>();
-		ptrColl->SetFixed(true);
-		//タグをつける
-		AddTag(L"FixedSphere");
-		//影をつける（シャドウマップを描画する）
-		auto shadowPtr = AddComponent<Shadowmap>();
-		//影の形（メッシュ）を設定
-		shadowPtr->SetMeshResource(L"DEFAULT_SPHERE");
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-		ptrDraw->SetTextureResource(L"SKY_TX");
-		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetOwnShadowActive(true);
-
-	}
-
-
-	//--------------------------------------------------------------------------------------
-	//	class FixedCapsule : public GameObject;
-	//--------------------------------------------------------------------------------------
-	//構築と破棄
-	FixedCapsule::FixedCapsule(const shared_ptr<Stage>& StagePtr,
-		const Vec3& Scale,
-		const Vec3& Rotation,
-		const Vec3& Position
-	) :
-		GameObject(StagePtr),
-		m_Scale(Scale),
-		m_Rotation(Rotation),
-		m_Position(Position)
-	{
-	}
-	FixedCapsule::~FixedCapsule() {}
-
-	//初期化
-	void FixedCapsule::OnCreate() {
-		auto ptrTransform = GetComponent<Transform>();
-		ptrTransform->SetScale(m_Scale);
-		ptrTransform->SetRotation(m_Rotation);
-		ptrTransform->SetPosition(m_Position);
-		//CAPSULE衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionCapsule>();
-		ptrColl->SetFixed(true);
-		//タグをつける
-		AddTag(L"FixedCapsule");
-		//影をつける（シャドウマップを描画する）
-		auto shadowPtr = AddComponent<Shadowmap>();
-		//影の形（メッシュ）を設定
-		shadowPtr->SetMeshResource(L"DEFAULT_CAPSULE");
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_CAPSULE");
-		ptrDraw->SetTextureResource(L"SKY_TX");
-		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetOwnShadowActive(true);
-
+		//物理計算ボックス
+		PsBoxParam param(ptrTransform->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		auto PsPtr = AddComponent<RigidbodyBox>(param);
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -379,110 +341,50 @@ namespace basecross{
 		ptrDraw->SetOwnShadowActive(true);
 	}
 
-	//---------------------------------------------
-	//-----------PlayerChildBaseについて-----------
-	//---------------------------------------------
+	//--------------------------------------------------------------------------------------
+	///	物理計算するアクティブな球体
+	//--------------------------------------------------------------------------------------
+	//構築と破棄
+	ActivePsSphere::ActivePsSphere(const shared_ptr<Stage>& StagePtr,
+		float Scale,
+		const Quat& Qt,
+		const Vec3& Position
+	) :
+		GameObject(StagePtr),
+		m_Scale(Scale),
+		m_Qt(Qt),
+		m_Position(Position)
+	{}
+
+	ActivePsSphere::~ActivePsSphere() {}
 	//初期化
-	void PlayerChildBase::OnCreate() {
-		auto ptrTrans = GetComponent <Transform>();
-		ptrTrans->SetPosition(m_StartPos);
-		ptrTrans->SetScale(0.25f, 0.25f, 0.25f);
-		ptrTrans->SetRotation(0.f,0.f,0.f);
+	void ActivePsSphere::OnCreate() {
 
-		//オブジェクトのグループを得る
-		auto group = GetStage()->GetSharedObjectGroup(L"PlayerChild");
-		//グループに自分自身を追加
-		group->IntoGroup(GetThis<GameObject>());
-		//分離行動をつける
-		auto ptrSep = GetBehavior<SeparationSteering>();
-		ptrSep->SetGameObjectGroup(group);
-	
-		//重力
-		auto ptrGrabity = AddComponent <Gravity>();
-	
-	}	
-	  
-	void PlayerChild::OnCreate(){
-		PlayerChildBase::OnCreate();
-		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetScale(0.125f, 0.125f, 0.125f);
+		auto ptrTransform = GetComponent<Transform>();
 
-		//Obbの衝突判定をつける
-		AddComponent<CollisionObb>();
+		ptrTransform->SetScale(Vec3(m_Scale));
+		ptrTransform->SetQuaternion(m_Qt);
+		ptrTransform->SetPosition(m_Position);
+
+		//当たり判定
+		auto ptrColl = AddComponent<CollisionSphere>();
+		ptrColl->SetFixed(true);
 
 		//影をつける
-		auto ptrShadow = AddComponent<Shadowmap> ();
-		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+		auto ptrShadow = AddComponent<Shadowmap>();
+		ptrShadow->SetMeshResource(L"DEFAULT_SPHERE");
 
-		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		//描画するメッシュを設定
-		ptrDraw->SetMeshResource (L"DEFAULT_CUBE");
-		//描画するテクスチャを設定
-		//ptrDraw->SetTextureResource<"テクスチャの名前">;
-		//透明処理
-		SetAlphaActive(true);
+		ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");
+		ptrDraw->SetOwnShadowActive(true);
+		//ptrDraw->SetTextureResource(L"SKY_TX");
 
-		//ステートマシンの構築
-		m_StateMachine.reset(new StateMachine<PlayerChild>(GetThis<PlayerChild>()));
-		//最初のステートをPlayerChildFarStateに設定
-		m_StateMachine->ChangeState(PlayerChild::Instance());
+		//物理計算球体
+		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
+		PsSphereParam param(ptrTransform->GetWorldMatrix(), 1.0f, true, PsMotionType::MotionTypeActive);
+		auto PsPtr = AddComponent<RigidbodySphere>(param);
 	}
-
-
-	void PlayerChild::OnUpdate() {
-		PlayerChildBase::OnUpdate();
-		//ステートマシンのUpdateと切り替え
-		m_StateMachine->Update();
-		auto ptrUtil = GetBehavior<UtilBehavior>();
-		ptrUtil->RotToHead(1.0f);
-	}
-	//--------------------------------------------------------------------------------------
-	///	PlayerChildのFarステート
-	//--------------------------------------------------------------------------------------
-	IMPLEMENT_SINGLETON_INSTANCE(PlayerchildFarState)
-
-		void PlayerchildFarState::Enter(const shared_ptr<PlayerChild>& Obj) {
-	}
-
-	void PlayerchildFarState::Execute(const shared_ptr<PlayerChild>& Obj) {
-		auto force = Obj->GetForce();
-		auto ptrSeek = Obj->GetBehavior<SeekSteering>();
-		force = ptrSeek->Execute(force, Obj->GetVelocity(), Obj->GetTargetPos());
-		Obj->SetForce(force);
-		Obj->ApplyForce();
-		float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
-		if (f < Obj->GetStateChangeSize()) {
-			Obj->GetStateMachine()->ChangeState(PlayerchildNearState::Instance());
-		}
-	}
-
-	void PlayerChildFarState::Exit(const shared_ptr<PlayerChild>& Obj) {
-	}
-
-	//--------------------------------------------------------------------------------------
-	///	PlayerChildのNearステート
-	//--------------------------------------------------------------------------------------
-	IMPLEMENT_SINGLETON_INSTANCE(PlayerchildNearState)
-
-		void PlayerchildNearState::Enter(const shared_ptr<PlayerChild>& Obj) {
-	}
-
-	void PlayerchildNearState::Execute(const shared_ptr<PlayerChild>& Obj) {
-		auto ptrArrive = Obj->GetBehavior<ArriveSteering>();
-		auto force = Obj->GetForce();
-		force = ptrArrive->Execute(force, Obj->GetVelocity(), Obj->GetTargetPos());
-		Obj->SetForce(force);
-		Obj->ApplyForce();
-		float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
-		if (f >= Obj->GetStateChangeSize()) {
-			Obj->GetStateMachine()->ChangeState(PlayerchildFarState::Instance());
-		}
-	}
-
-	void PlayerChildNearState::Exit(const shared_ptr<PlayerChild>& Obj) {
-	}
-
 
 }
 //end basecross

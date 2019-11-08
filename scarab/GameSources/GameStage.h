@@ -16,18 +16,12 @@ namespace basecross {
 		void CreateViewLight();
 		//固定のボックスの作成
 		void CreateFixedBox();
-		//固定の球体の作成
-		void CreateFixedSphere();
-		//固定のカプセルの作成
-		void CreateFixedCapsule();
-		//行ったり来たりするボックスの作成
-		void CreateMoveFixedBox();
-		//移動するボックスの作成
-		void CreateMoveBox();
-		//追いかけるオブジェクトの作成
-		void CreateSeekObject();
 		//プレイヤーの作成
 		void CreatePlayer();
+		//動く球体
+		void activeboll();
+		//コリジョンを用いた固定ボックス
+		void CreateCollisionBox2();
 	public:
 		//構築と破棄
 		GameStage() :Stage() {}
