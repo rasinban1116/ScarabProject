@@ -52,6 +52,7 @@ namespace basecross {
 		for (auto v : vec) {
 		auto SlopeObj = AddGameObject<FixedBox>(v[0], v[1], v[2]);
 		//シェア配列に坂道オブジェクトを追加
+		//auto SlopeGroup = CreateSharedObjectGroup(L"SlopeGroup");
 		}
 
 	}
@@ -63,6 +64,25 @@ namespace basecross {
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
+	}
+
+	//プレイヤーを継承した子オブジェクト（ふんころがしになる予定）を生成
+	void GameStage::CreatePlayerChild() {
+		//オブジェクトのグループを作成する
+		auto group = CreateSharedObjectGroup(L"SeekGroup");
+		//配列の初期化
+		vector<Vec3> vec = {
+			{ 0, 0.125f, 10.0f },
+			{ 10.0f, 0.125f, 0.0f },
+			{ -10.0f, 0.125f, 0.0f },
+			{ 0, 0.125f, -10.0f },
+		};
+
+		//配置オブジェクトの作成
+		for (size_t count = 0; count < vec.size(); count++) {
+			AddGameObject<PlayerChild>(vec[count]);
+		}
+
 	}
 
 	void GameStage::activeboll() {
@@ -80,6 +100,8 @@ namespace basecross {
 			CreateFixedBox();
 			//物理演算するコリジョンを持ったプレイヤーの作成
 			CreatePlayer();
+			//プレイヤーを継承した子オブジェクトの作成
+			CreatePlayerChild();
 			//コリジョンを持ったボックスの作成
 			CreateCollisionBox2();
 			//物理演算する球体の作成

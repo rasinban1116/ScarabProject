@@ -18,6 +18,8 @@ namespace basecross {
 		void CreateFixedBox();
 		//プレイヤーの作成
 		void CreatePlayer();
+		//プレイヤーを継承した子オブジェクトの継承
+		void CreatePlayerChild();
 		//動く球体
 		void activeboll();
 		//コリジョンを用いた固定ボックス

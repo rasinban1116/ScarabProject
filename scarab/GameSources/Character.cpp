@@ -34,6 +34,10 @@ namespace basecross{
 		ptrTrans->SetQuaternion(m_Qt);
 		ptrTrans->SetPosition(m_Position);
 
+		//OBBÕ“Ëj”»’è‚ğ•t‚¯‚é
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(true);
+
 		//‰e‚ğ‚Â‚¯‚é
 		auto ptrShadow = AddComponent<Shadowmap>();
 		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");

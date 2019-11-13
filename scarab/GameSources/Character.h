@@ -54,7 +54,7 @@ namespace basecross{
 	//	追いかける配置オブジェクト
 	//--------------------------------------------------------------------------------------
 
-	class SeekObject : public GameObject {
+	class SeekObject : public GameObject{
 		//ステートマシーン
 		unique_ptr< StateMachine<SeekObject> >  m_StateMachine;
 		Vec3 m_StartPos;

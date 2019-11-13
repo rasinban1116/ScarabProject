@@ -16,6 +16,7 @@ namespace basecross{
 		float m_Scale;    //プレイヤーの大きさ（直径）
 		Vec3 m_PlayVelo;  //プレイヤーの速度ベクトル
 		bool active;      //プレイヤーが隠れているかどうか
+		bool isGrand;
 		
 		
 	//プレイヤーの動きに必要な関数
@@ -25,7 +26,8 @@ namespace basecross{
 		Vec2 GetInputState() const;				//プレイヤーが使用するコントロールとキーボード
 		void RotToHead(const Vec3& Velocity, float LerpFact);		//回転の向きを進行方向にする
 		void Move();							//プレイヤーの動き
-	
+		void ChangeTrans();                     //トランスフォームへの設定
+		//void OnCamera();
 	
 	public:
 		//構築と破棄
@@ -57,9 +59,80 @@ namespace basecross{
 		void OnPushA();
 		//Bボタンハンドラ
 		void OnPushB();
+	};
+	//--------------------------------------------------------------------------------------
+	//	プレイヤーの追従オブジェクト
+	//--------------------------------------------------------------------------------------
 
+	class PlayerChild : public GameObject{
+		//ステートマシーン
+		unique_ptr< StateMachine<PlayerChild> >  m_StateMachine;
+		Vec3 m_StartPos;
+		float m_StateChangeSize;
+		//フォース
+		Vec3 m_Force;
+		//速度
+		Vec3 m_Velocity;
+	public:
+		//構築と破棄
+		PlayerChild(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos);
+		virtual ~PlayerChild();
+		//初期化
+		virtual void OnCreate() override;
+		//アクセサ
+		const unique_ptr<StateMachine<PlayerChild>>& GetStateMachine() {
+			return m_StateMachine;
+		}
+		float GetStateChangeSize() const {
+			return m_StateChangeSize;
+		}
+		const Vec3& GetForce()const {
+			return m_Force;
+		}
+		void SetForce(const Vec3& f) {
+			m_Force = f;
+		}
+		void AddForce(const Vec3& f) {
+			m_Force += f;
+		}
+		const Vec3& GetVelocity()const {
+			return m_Velocity;
+		}
+		void SetVelocity(const Vec3& v) {
+			m_Velocity = v;
+		}
+		void ApplyForce();
+		Vec3 GetTargetPos()const;
+		//操作
+		virtual void OnUpdate() override;
+	};
 
+	//--------------------------------------------------------------------------------------
+	//	class SeekFarState : public ObjState<PlayerChild>;
+	//	用途: プレイヤーから遠いときの移動
+	//--------------------------------------------------------------------------------------
+	class PlayerChildFarState : public ObjState<PlayerChild>
+	{
+		PlayerChildFarState() {}
+	public:
+		static shared_ptr<PlayerChildFarState> Instancee();
+		virtual void Enter(const shared_ptr<PlayerChild>& Obj)override;
+		virtual void Execute(const shared_ptr<PlayerChild>& Obj)override;
+		virtual void Exit(const shared_ptr<PlayerChild>& Obj)override;
+	};
 
+	//--------------------------------------------------------------------------------------
+	//	class SeekNearState : public ObjState<PlayerChild>;
+	//	用途: プレイヤーから近いときの移動
+	//--------------------------------------------------------------------------------------
+	class PlayerChildNearState : public ObjState<PlayerChild>
+	{
+		PlayerChildNearState() {}
+	public:
+		static shared_ptr<PlayerChildNearState> Instance();
+		virtual void Enter(const shared_ptr<PlayerChild>& Obj)override;
+		virtual void Execute(const shared_ptr<PlayerChild>& Obj)override;
+		virtual void Exit(const shared_ptr<PlayerChild>& Obj)override;
 	};
 	
 };
