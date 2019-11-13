@@ -262,7 +262,8 @@ namespace basecross {
 		auto stageptr = Other->GetStage();
 		auto Slopeptr = stageptr->GetSharedGameObject<FixedBox>(L"Slope",false);
 		if (!Slopeptr) {
-			active = false;
+	
+	
 		}
 
 	}
