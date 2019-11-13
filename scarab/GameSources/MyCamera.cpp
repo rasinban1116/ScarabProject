@@ -100,6 +100,11 @@ namespace basecross {
 		}
 	}
 
+	float MyCamera::GetRotXZ() {
+		return m_RadXZ;
+	}
+
+
 	float MyCamera::GetMaxArm() const {
 		return m_MaxArm;
 

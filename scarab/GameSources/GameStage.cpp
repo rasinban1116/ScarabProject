@@ -31,7 +31,8 @@ namespace basecross {
 
 		//動かない台
 		AddGameObject<FixedPsBox>(Vec3(3.0f, 1.0f, 3.0f), Quat(), Vec3(0.0f, 0.5f, 3.0f));
-		AddGameObject<FixedPsBox>(Vec3(3.0f, 1.0f, 3.0f), Quat(0.5f), Vec3(4.0f, 0.5f, 5.0f));
+		//AddGameObject<FixedPsBox>(Vec3(3.0f, 1.0f, 3.0f), Quat(0.5f), Vec3(4.0f, 0.5f, 5.0f));
+
 	}
 	void GameStage::CreateCollisionBox2() {
 		vector <vector<Vec3>> vec = { {
@@ -40,11 +41,20 @@ namespace basecross {
 				Vec3(-0.5f, 0.0f, -0.5f),
 				Vec3(-10.0f, 0.25f, 10.0f)
 		},
+		{
+				Vec3(10.0f, 0.5f, 10.0f),
+				Vec3(-0.0f, 0.0f, -0.0f),
+				Vec3(-10.0f,4.0f, 18.0f)
+		},
+
 		};
 		//オブジェクトの作成
 		for (auto v : vec) {
-			AddGameObject<FixedBox>(v[0], v[1], v[2]);
+		auto SlopeObj = AddGameObject<FixedBox>(v[0], v[1], v[2]);
+		//シェア配列に坂道オブジェクトを追加
+		//SetSharedGameObject(L"Slope", SlopeObj);
 		}
+
 	}
 
 	//プレイヤ―の生成
@@ -55,6 +65,7 @@ namespace basecross {
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
 	}
+
 	void GameStage::activeboll() {
 		AddGameObject<ActivePsSphere>(1.0f, Quat(), Vec3(0.0f, 6.0f, 5.0f));
 	}
@@ -66,9 +77,13 @@ namespace basecross {
 			SetPhysicsActive(true);
 			//ビューとライトの作成
 			CreateViewLight();
+			//物理演算するボックスの作成
 			CreateFixedBox();
+			//物理演算するコリジョンを持ったプレイヤーの作成
 			CreatePlayer();
+			//コリジョンを持ったボックスの作成
 			CreateCollisionBox2();
+			//物理演算する球体の作成
 			activeboll();
 		}
 		catch (...) {

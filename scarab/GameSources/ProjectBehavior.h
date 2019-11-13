@@ -16,6 +16,10 @@ namespace basecross {
 		void PushHandle(const shared_ptr<T>& Obj) {
 			//キーボードの取得（優先）
 			auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
+			if (KeyState.m_bPressedKeyTbl['B']) {
+				Obj->OnPushB();
+				return;
+			}
 			if (KeyState.m_bPressedKeyTbl[VK_SPACE]) {
 				Obj->OnPushA();
 				return;
@@ -26,6 +30,10 @@ namespace basecross {
 				//Aボタン
 				if (cntlVec[0].wPressedButtons & XINPUT_GAMEPAD_A) {
 					Obj->OnPushA();
+				}
+				//Bボタン
+				else if (cntlVec[0].wPressedButtons & XINPUT_GAMEPAD_B) {
+					Obj->OnPushB();
 				}
 			}
 		}

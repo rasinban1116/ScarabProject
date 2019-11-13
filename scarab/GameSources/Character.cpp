@@ -85,6 +85,7 @@ namespace basecross{
 		//ptrDraw->SetTextureResource(L"SKY_TX");
 		ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
+		AddTag(L"sloap");
 
 		//物理計算ボックス
 		PsBoxParam param(ptrTransform->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);

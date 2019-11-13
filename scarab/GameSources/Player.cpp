@@ -14,8 +14,42 @@ namespace basecross {
 	//構築
 	Player::Player(const shared_ptr<Stage>& StagePtr) :
 		GameObject(StagePtr),
-		m_Scale(0.5f)
+		m_Scale(0.5f),
+		active(true)
 	{}
+
+
+	Vec2 Player::GetInputState() const {
+		Vec2 ret;
+		//コントローラの取得
+		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		ret.x = 0.0f;
+		ret.y = 0.0f;
+		WORD wButtons = 0;
+		if (cntlVec[0].bConnected) {
+			ret.x = cntlVec[0].fThumbLX;
+			ret.y = cntlVec[0].fThumbLY;
+		}
+		//キーボードの取得(キーボード優先)
+		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
+		if (KeyState.m_bPushKeyTbl['W']) {
+			//前
+			ret.y = 1.0f;
+		}
+		else if (KeyState.m_bPushKeyTbl['A']) {
+			//左
+			ret.x = -1.0f;
+		}
+		else if (KeyState.m_bPushKeyTbl['S']) {
+			//後ろ
+			ret.y = -1.0f;
+		}
+		else if (KeyState.m_bPushKeyTbl['D']) {
+			//右
+			ret.x = 1.0f;
+		}
+		return ret;
+	}
 
 	void Player::RotToHead(const Vec3& Velocity, float LerpFact) {
 		if (LerpFact <= 0.0f) {
@@ -110,23 +144,34 @@ namespace basecross {
 	void Player::OnCreate() {
 		//初期位置などの設定
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetScale(Vec3(m_Scale));	//直径25センチの球体
-		ptrTrans->SetRotation(0.0f, 0.0f, 0.0f);
-		auto bkCamera = App::GetApp()->GetScene<Scene>()->GetBackupCamera();
-		Vec3 firstPos;
-		if (!bkCamera) {
-			firstPos = Vec3(0, m_Scale * 0.5f, 0);
-		}
-		else {
-			firstPos = App::GetApp()->GetScene<Scene>()->GetBackupPlayerPos();
-		}
-		ptrTrans->SetPosition(firstPos);
+		//初期位置などの設定
+		auto ptr = AddComponent<Transform>();
+		ptr->SetScale(0.25f, 0.25f, 0.25f);	//直径25センチの球体
+		ptr->SetRotation(0.0f, 0.0f, 0.0f);
+		ptr->SetPosition(Vec3(0, 0.125f, 0));
+
+		//CollisionSphere衝突判定を付ける
+		auto ptrColl = AddComponent<CollisionSphere>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//重力をつける
+		auto ptrGra = AddComponent<Gravity>();
+
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
 		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
 		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
 		//RigidbodySphereコンポーネントを追加
 		auto psPtr = AddComponent<RigidbodySphere>(param);
 		//自動的にTransformを設定するフラグは無し
 		psPtr->SetAutoTransform(false);
+
 
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
@@ -154,25 +199,31 @@ namespace basecross {
 			ptrCamera->SetTargetObject(GetThis<GameObject>());
 			ptrCamera->SetTargetToAt(Vec3(0, 0.25f, 0));
 		}
+		
 	}
 	//プレイヤーの動き
 	void Player::Move() {
 		//コントローラチェックして入力があればコマンド呼び出し
-		m_InputHandler.PushHandle(GetThis<Player>());
 		auto vec = GetMoveVector();
 		auto ptrPs = GetComponent<RigidbodySphere>();
 		auto velo = ptrPs->GetLinearVelocity();
-	
+		auto forces = GetComponent<Transform>();
+		auto force = GetComponent<Rigidbody>();
 		//xとzの速度を修正
 		velo.x = vec.x * 5.0f;
 		velo.z = vec.z * 5.0f;
 		//速度を設定
 		ptrPs->SetLinearVelocity(velo);
+		velo = Vec3(0, 0, 0);
+	
 	}
 
 	//更新
 	void Player::OnUpdate() {
-		Move();
+		m_InputHandler.PushHandle(GetThis<Player>());
+		if (active) {
+			Move();
+		}
 	}
 
 	//後更新
@@ -196,15 +247,33 @@ namespace basecross {
 	//Aボタンハンドラ
 	void  Player::OnPushA() {
 		auto ptrTrans = GetComponent<Transform>();
-		if (ptrTrans->GetPosition().y > 0.125f) {
-			//地面についてなければジャンプしない
-			return;
-		}
+		//if (ptrTrans->GetPosition().y > 0.125f) {
+		//	//地面についてなければジャンプしない
+		//	return;
+		//}
 		auto ptrPs = GetComponent<RigidbodySphere>();
 		auto velo = ptrPs->GetLinearVelocity();
 		velo += Vec3(0, 4.0f, 0.0);
 		ptrPs->SetLinearVelocity(velo);
+			active = false;
 	}
+	//Bボタンハンドラ
+	void  Player::OnPushB() {
+		//ゲームステージ再読み込み
+		App::GetApp()->GetScene<Scene>()->SetBackupCamera(dynamic_pointer_cast<MyCamera>(GetStage()->GetView()->GetTargetCamera()));
+		App::GetApp()->GetScene<Scene>()->SetBackupPlayerPos(GetComponent<Transform>()->GetPosition());
+		PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+		active = true;
+	}
+	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
+	}
+
+	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
+		GetComponent<Transform>()->ClearParent();
+	}
+	/*void Player::OnCollisionStay(shared_ptr<GameObject>&Other) {
+		
+	}*/
 
 
 	//文字列の表示

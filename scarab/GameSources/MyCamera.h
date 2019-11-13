@@ -245,6 +245,7 @@ namespace basecross {
 		*/
 		//--------------------------------------------------------------------------------------
 		virtual void OnUpdate()override;
+		float GetRotXZ();
 	};
 
 }
