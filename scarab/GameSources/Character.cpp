@@ -28,6 +28,7 @@ namespace basecross{
 	void FixedPsBox::OnCreate() {
 
 		auto ptrTrans = GetComponent<Transform>();
+		AddTag(L"Slope");
 
 		ptrTrans->SetScale(m_Scale);
 		ptrTrans->SetQuaternion(m_Qt);

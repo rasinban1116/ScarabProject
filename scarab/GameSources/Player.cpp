@@ -146,7 +146,7 @@ namespace basecross {
 		auto ptrTrans = GetComponent<Transform>();
 		//初期位置などの設定
 		auto ptr = AddComponent<Transform>();
-		ptr->SetScale(0.25f, 0.25f, 0.25f);	//直径25センチの球体
+		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(0, 0.125f, 0));
 
@@ -247,10 +247,6 @@ namespace basecross {
 	//Aボタンハンドラ
 	void  Player::OnPushA() {
 		auto ptrTrans = GetComponent<Transform>();
-		//if (ptrTrans->GetPosition().y > 0.125f) {
-		//	//地面についてなければジャンプしない
-		//	return;
-		//}
 		auto ptrPs = GetComponent<RigidbodySphere>();
 		auto velo = ptrPs->GetLinearVelocity();
 		velo += Vec3(0, 4.0f, 0.0);
@@ -259,20 +255,22 @@ namespace basecross {
 	}
 	//Bボタンハンドラ
 	void  Player::OnPushB() {
-		//ゲームステージ再読み込み
-		App::GetApp()->GetScene<Scene>()->SetBackupCamera(dynamic_pointer_cast<MyCamera>(GetStage()->GetView()->GetTargetCamera()));
-		App::GetApp()->GetScene<Scene>()->SetBackupPlayerPos(GetComponent<Transform>()->GetPosition());
-		PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		active = true;
 	}
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
+		auto stageptr = Other->GetStage();
+		auto Slopeptr = stageptr->GetSharedGameObject<FixedBox>(L"Slope",false);
+		if (!Slopeptr) {
+			active = false;
+		}
+
 	}
 
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
 		GetComponent<Transform>()->ClearParent();
 	}
-	/*void Player::OnCollisionStay(shared_ptr<GameObject>&Other) {
-		
+	/*void Player::OnCollisionStay(shared_ptr<GameObject>& Other) {
+
 	}*/
 
 
@@ -314,56 +312,3 @@ namespace basecross {
 
 
 
-//void Player::scarabMove() {
-//	Vec3 ret;
-//	auto playtrans = GetComponent<Transform>();;
-//	auto playpos = playtrans->GetPosition();
-//	auto playrot = playtrans->GetRotation();
-//	auto camera = OnGetDrawCamera();
-//	Vec3 seteye = camera->GetEye();
-//	//コントローラの取得
-//	auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
-//	ret.x = 0.0f;
-//	ret.y = 0.0f;
-//	WORD wButtons = 0;
-//	if (cntlVec[0].bConnected) {
-//		ret.x = cntlVec[0].fThumbLX;
-//		ret.y = cntlVec[0].fThumbLY;
-//	}
-//	//キーボードの取得(キーボード優先)
-//	auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
-//	ret = Vec3(0, 0, 0);
-//	if (KeyState.m_bPushKeyTbl['W']) {
-//		//前
-//		ret.z = 1.0f;
-//	}
-//	else if (KeyState.m_bPushKeyTbl['A']) {
-//		//左
-//		ret.x = -1.0f;
-//	}
-//	else if (KeyState.m_bPushKeyTbl['S']) {
-//		//後ろ
-//		ret.z = -1.0f;
-//	}
-//	else if (KeyState.m_bPushKeyTbl['D']) {
-//		//右
-//		ret.x = 1.0f;
-//	}
-//
-//	ret = ret.normalize() * m_Speed * App::GetApp()->GetElapsedTime();
-//	Quat qu;
-//
-//	qu.setX(seteye.x*-ret.x);
-//	qu.setY(seteye.y*-ret.y);
-//	qu.setZ(seteye.z*-ret.z);
-//
-//	Vec3 newpos = Vec3(seteye.x*ret.x, seteye.y*ret.y, seteye.z*ret.z);
-//
-//	if (ret.length() > 0) {
-//		playrot = XMQuaternionSlerp(playrot, qu.inverse(), 0.2f);
-//		playpos += newpos;
-//		playtrans->SetPosition(playpos);
-//		playtrans->SetRotation(playrot);
-//	}
-//
-//}

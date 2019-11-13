@@ -52,7 +52,6 @@ namespace basecross {
 		for (auto v : vec) {
 		auto SlopeObj = AddGameObject<FixedBox>(v[0], v[1], v[2]);
 		//シェア配列に坂道オブジェクトを追加
-		//SetSharedGameObject(L"Slope", SlopeObj);
 		}
 
 	}
