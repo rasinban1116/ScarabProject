@@ -15,7 +15,8 @@ namespace basecross {
 	Player::Player(const shared_ptr<Stage>& StagePtr) :
 		GameObject(StagePtr),
 		m_Scale(0.5f),
-		active(true)
+		active(true),
+		m_PlayVelo(0, 0, 0)
 	{}
 
 
@@ -206,15 +207,15 @@ namespace basecross {
 		//コントローラチェックして入力があればコマンド呼び出し
 		auto vec = GetMoveVector();
 		auto ptrPs = GetComponent<RigidbodySphere>();
-		auto velo = ptrPs->GetLinearVelocity();
+		m_PlayVelo = ptrPs->GetLinearVelocity();
 		auto forces = GetComponent<Transform>();
 		auto force = GetComponent<Rigidbody>();
 		//xとzの速度を修正
-		velo.x = vec.x * 5.0f;
-		velo.z = vec.z * 5.0f;
+		m_PlayVelo.x = vec.x * 5.0f;
+		m_PlayVelo.z = vec.z * 5.0f;
 		//速度を設定
-		ptrPs->SetLinearVelocity(velo);
-		velo = Vec3(0, 0, 0);
+		ptrPs->SetLinearVelocity(m_PlayVelo);
+		m_PlayVelo = Vec3(0, 0, 0);
 	
 	}
 
@@ -248,9 +249,9 @@ namespace basecross {
 	void  Player::OnPushA() {
 		auto ptrTrans = GetComponent<Transform>();
 		auto ptrPs = GetComponent<RigidbodySphere>();
-		auto velo = ptrPs->GetLinearVelocity();
-		velo += Vec3(0, 4.0f, 0.0);
-		ptrPs->SetLinearVelocity(velo);
+		m_PlayVelo = ptrPs->GetLinearVelocity();
+		m_PlayVelo += Vec3(0, 4.0f, 0.0);
+		ptrPs->SetLinearVelocity(m_PlayVelo);
 			active = false;
 	}
 	//Bボタンハンドラ

@@ -11,24 +11,22 @@ namespace basecross{
 	///	プレイヤー
 	//--------------------------------------------------------------------------------------
 	class Player : public GameObject {
-		//文字列の表示
-		void DrawStrings();
-		//入力ハンドラー
-		InputHandler<Player> m_InputHandler;
-		//進行方向を得る
-		Vec3 GetMoveVector() const;
-		//プレイヤーが使用するコントロールとキーボード
-		Vec2 GetInputState() const;
-		//回転の向きを進行方向にする
-		void RotToHead(const Vec3& Velocity, float LerpFact);
-		//スケーリング（直径の大きさ）
-		float m_Scale;
-		//プレイヤーの動き
-		void Move();
-		//隠れているかどうかの判定
-		bool active;
-		//プレイヤーのスピード
-		float m_Speed;
+	//プレイヤーに必要な各変数
+		float m_Speed;    //プレイヤーのスピード
+		float m_Scale;    //プレイヤーの大きさ（直径）
+		Vec3 m_PlayVelo;  //プレイヤーの速度ベクトル
+		bool active;      //プレイヤーが隠れているかどうか
+		
+		
+	//プレイヤーの動きに必要な関数
+		void DrawStrings(); //文字列の表示
+		InputHandler<Player> m_InputHandler;	//入力ハンドラー
+		Vec3 GetMoveVector() const;				//進行方向を得る
+		Vec2 GetInputState() const;				//プレイヤーが使用するコントロールとキーボード
+		void RotToHead(const Vec3& Velocity, float LerpFact);		//回転の向きを進行方向にする
+		void Move();							//プレイヤーの動き
+	
+	
 	public:
 		//構築と破棄
 		//--------------------------------------------------------------------------------------
