@@ -30,8 +30,8 @@ namespace basecross {
 		AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
 
 		//動かない台
-		AddGameObject<FixedPsBox>(Vec3(3.0f, 1.0f, 3.0f), Quat(), Vec3(0.0f, 0.5f, 3.0f));
-		//AddGameObject<FixedPsBox>(Vec3(3.0f, 1.0f, 3.0f), Quat(0.5f), Vec3(4.0f, 0.5f, 5.0f));
+		AddGameObject<FixedObj>(Vec3(3.0f, 3.0f, 3.0f), Vec3(0.0f, 0.0f, 3.0f));
+		AddGameObject<FixedObj>(Vec3(2.0f, 3.0f, 2.0f), Vec3(4.0f, 0.0f, 5.0f));
 
 	}
 	void GameStage::CreateCollisionBox2() {
@@ -70,12 +70,12 @@ namespace basecross {
 	void GameStage::CreatePlayerChild() {
 		//オブジェクトのグループを作成する
 		auto group = CreateSharedObjectGroup(L"SeekGroup");
+		auto Target = GetSharedObject(L"Player", true);
+		auto Targetrans = Target->GetComponent<Transform>();
+		auto TargetPos = Targetrans->GetPosition();
 		//配列の初期化
 		vector<Vec3> vec = {
-			{ 0, 0.125f, 10.0f },
-			{ 10.0f, 0.125f, 0.0f },
-			{ -10.0f, 0.125f, 0.0f },
-			{ 0, 0.125f, -10.0f },
+			{ TargetPos.x,TargetPos.y,TargetPos.z -0.5f },
 		};
 
 		//配置オブジェクトの作成

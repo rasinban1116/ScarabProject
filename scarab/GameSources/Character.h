@@ -28,6 +28,28 @@ namespace basecross{
 		virtual void OnCreate() override;
 	};
 
+
+//--------------------------------------------------------------------------------------
+///	物理計算する様々な形のボックス
+//--------------------------------------------------------------------------------------
+	class FixedObj : public GameObject {
+		Vec3 m_Scale;
+		Vec3 m_Position;
+
+	public:
+		//構築と破棄
+		FixedObj(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Vec3& Position
+
+		);
+		virtual ~FixedObj();
+		//初期化
+		virtual void OnCreate() override;
+	};
+
+
+
 	//--------------------------------------------------------------------------------------
 	//	class FixedBox : public GameObject;
 	//--------------------------------------------------------------------------------------

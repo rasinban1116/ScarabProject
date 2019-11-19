@@ -55,6 +55,8 @@ namespace basecross{
 		void SetBackupPlayerPos(const Vec3& pos) {
 			m_BackupPlayerPos = pos;
 		}
+		void CreateResourses();
+		void LoadStaticModelResources();
 	
 	};
 

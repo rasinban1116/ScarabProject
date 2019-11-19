@@ -21,11 +21,58 @@ namespace basecross{
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+			CreateResourses();
+			LoadStaticModelResources();
 		}
 		catch (...) {
 			throw;
 		}
 	}
+
+	/// ---------------------------------------------------------------------------<summary>
+/// スタティックモデルの読み込み(引数なし)
+/// </summary>----------------------------------------------------------------------------
+	void Scene::LoadStaticModelResources() {
+		wstring dataDir;
+		App::GetApp()->GetDataDirectory(dataDir);
+		struct InitializedParam {
+			wstring m_modelName;
+			wstring m_modelKey;
+		};
+		InitializedParam models[] = {
+			//{L"ファイル名",L"呼び出し時のキー"}
+			{L"scarab.bmf",L"scarab"},
+			{L"test.bmf",L"test"},
+			{L"stage.bmf",L"stage"},
+			{L"rock.bmf",L"rock"},
+			{L"tree.bmf",L"tree"}
+		
+
+		};
+		for (auto model : models) {
+			wstring srtmodel = dataDir;
+			auto staticModel = MeshResource::CreateStaticModelMesh(srtmodel, model.m_modelName);
+			App::GetApp()->RegisterResource(model.m_modelKey, staticModel);
+		}
+	}
+
+
+
+	void Scene::CreateResourses() {
+		wstring dataDir;
+		auto play = shared_ptr<BaseResource>();
+		//サンプルのためアセットディレクトリを取得
+		App::GetApp()->GetAssetsDirectory(dataDir);
+		//各ゲームは以下のようにデータディレクトリを取得すべき
+		App::GetApp()->GetDataDirectory(dataDir);
+		wstring strTexture = dataDir + L"trace.png";
+		App::GetApp()->RegisterTexture(L"TRACE_TX", strTexture);
+		strTexture = dataDir + L"sky.jpg";
+		App::GetApp()->RegisterTexture(L"A_TX", strTexture);
+		strTexture = dataDir + L"wall.jpg";
+		App::GetApp()->RegisterTexture(L"WALL_TX", strTexture);
+	}
+
 
 	Scene::~Scene() {
 	}
@@ -34,6 +81,7 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToGameStage") {
 			//最初のアクティブステージの設定
 			ResetActiveStage<GameStage>();
+
 		}
 	}
 

@@ -17,17 +17,17 @@ namespace basecross{
 		Vec3 m_PlayVelo;  //プレイヤーの速度ベクトル
 		bool active;      //プレイヤーが隠れているかどうか
 		bool isGrand;
+
 		
 		
 	//プレイヤーの動きに必要な関数
 		void DrawStrings(); //文字列の表示
 		InputHandler<Player> m_InputHandler;	//入力ハンドラー
-		Vec3 GetMoveVector() const;				//進行方向を得る
 		Vec2 GetInputState() const;				//プレイヤーが使用するコントロールとキーボード
 		void RotToHead(const Vec3& Velocity, float LerpFact);		//回転の向きを進行方向にする
 		void Move();							//プレイヤーの動き
 		void ChangeTrans();                     //トランスフォームへの設定
-		//void OnCamera();
+		
 	
 	public:
 		//構築と破棄
@@ -59,6 +59,7 @@ namespace basecross{
 		void OnPushA();
 		//Bボタンハンドラ
 		void OnPushB();
+		Vec3 GetMoveVector()const;				//進行方向を得る
 	};
 	//--------------------------------------------------------------------------------------
 	//	プレイヤーの追従オブジェクト
@@ -69,10 +70,13 @@ namespace basecross{
 		unique_ptr< StateMachine<PlayerChild> >  m_StateMachine;
 		Vec3 m_StartPos;
 		float m_StateChangeSize;
+		InputHandler<PlayerChild> m_InputHandler;
 		//フォース
 		Vec3 m_Force;
 		//速度
 		Vec3 m_Velocity;
+		//アクティブ判定
+		bool active;
 	public:
 		//構築と破棄
 		PlayerChild(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos);
@@ -105,6 +109,10 @@ namespace basecross{
 		Vec3 GetTargetPos()const;
 		//操作
 		virtual void OnUpdate() override;
+		//Aボタンハンドラ
+		void OnPushA();
+		//Bボタンハンドラ
+		void OnPushB();
 	};
 
 	//--------------------------------------------------------------------------------------
@@ -133,6 +141,19 @@ namespace basecross{
 		virtual void Enter(const shared_ptr<PlayerChild>& Obj)override;
 		virtual void Execute(const shared_ptr<PlayerChild>& Obj)override;
 		virtual void Exit(const shared_ptr<PlayerChild>& Obj)override;
+	};
+//--------------------------------------------------------------------------------------
+//	class SeekNearState : public ObjState<PlayerChild>;
+//	用途: プレイヤーについている時の行動
+//--------------------------------------------------------------------------------------
+
+	class PlayerChildStayState :public ObjState<PlayerChild> {
+		PlayerChildStayState(){}
+	public:
+		static shared_ptr<PlayerChildStayState> Instance();
+		virtual void Enter(const shared_ptr<PlayerChild>&Obj)override;
+		virtual void Execute(const shared_ptr<PlayerChild>&Obj)override;
+		virtual void Exit(const shared_ptr<PlayerChild>&Obj)override;
 	};
 	
 };

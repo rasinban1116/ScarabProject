@@ -80,8 +80,8 @@ namespace basecross {
 			ptrTransform->SetQuaternion(nowQt);
 		}
 	}
-
-	Vec3 Player::GetMoveVector() const {
+	
+	Vec3 Player::GetMoveVector()const {
 		Vec3 angle(0, 0, 0);
 		//コントローラの取得
 		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
@@ -163,10 +163,6 @@ namespace basecross {
 		//重力をつける
 		auto ptrGra = AddComponent<Gravity>();
 
-		GetStage()->SetCollisionPerformanceActive(true);
-		GetStage()->SetUpdatePerformanceActive(true);
-		GetStage()->SetDrawPerformanceActive(true);
-
 		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
 		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
 		//RigidbodySphereコンポーネントを追加
@@ -194,7 +190,7 @@ namespace basecross {
 		//透明処理
 		SetAlphaActive(true);
 
-
+	
 	}
 	//プレイヤーの動き
 	void Player::Move() {
@@ -247,17 +243,22 @@ namespace basecross {
 
 	//Aボタンハンドラ
 	void  Player::OnPushA() {
-		auto ptrTrans = GetComponent<Transform>();
-		auto ptrPs = GetComponent<RigidbodySphere>();
-		m_PlayVelo = ptrPs->GetLinearVelocity();
-		m_PlayVelo += Vec3(0, 4.0f, 0.0);
-		ptrPs->SetLinearVelocity(m_PlayVelo);
-			active = false;
+		//auto ptrTrans = GetComponent<Transform>();
+		//auto ptrPs = GetComponent<RigidbodySphere>();
+		//m_PlayVelo = ptrPs->GetLinearVelocity();
+		//m_PlayVelo += Vec3(0, 4.0f, 0.0);
+		//ptrPs->SetLinearVelocity(m_PlayVelo);
+		active = false;	
 	}
 	//Bボタンハンドラ
 	void  Player::OnPushB() {
 		active = true;
 	}
+
+	
+
+
+	
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
 		isGrand = true;
 		GetComponent<Transform>()->ClearParent();
@@ -272,6 +273,10 @@ namespace basecross {
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
 		isGrand = false;
 	}
+
+	
+
+
 
 	//文字列の表示
 	void Player::DrawStrings() {
@@ -305,8 +310,8 @@ namespace basecross {
 
 		wstring str = strMess + strObjCount + strFps + strPos + boolact;
 		//文字列をつける
-	/*	auto ptrString = GetComponent<StringSprite>();
-		ptrString->SetText(str);*/
+		auto ptrString = GetComponent<StringSprite>();
+		ptrString->SetText(str);
 	}
 
 
@@ -319,7 +324,8 @@ namespace basecross {
 		m_StartPos(StartPos),
 		m_StateChangeSize(5.0f),
 		m_Force(0),
-		m_Velocity(0)
+		m_Velocity(0),
+		active(true)
 	{
 	}
 	PlayerChild::~PlayerChild() {}
@@ -329,7 +335,7 @@ namespace basecross {
 		auto ptrTransform = GetComponent<Transform>();
 		ptrTransform->SetPosition(m_StartPos);
 		ptrTransform->SetScale(0.125f, 0.25f, 0.25f);
-		ptrTransform->SetRotation(0.0f, 0.0f, 0.0f);
+		ptrTransform->SetRotation(0.0f, 5.0f, 0.0f);
 
 		//オブジェクトのグループを得る
 		auto group = GetStage()->GetSharedObjectGroup(L"SeekGroup");
@@ -354,8 +360,9 @@ namespace basecross {
 
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		//ptrDraw->SetTextureResource(L"TRACE_TX");
+		/*ptrDraw->SetMeshResource();*/
+		ptrDraw->SetMeshResource(L"scarab");
+		ptrDraw->SetTextureResource(L"TRACE_TX");
 		//透明処理をする
 		SetAlphaActive(true);
 
@@ -373,18 +380,30 @@ namespace basecross {
 			ptrCamera->SetTargetObject(Plyaer);
 			ptrCamera->SetTargetToAt(Vec3(0, 0.25f, 0));
 		}
+		double a;
+		sqrtf(a = 100);
 	}
+
 
 
 	//操作
 	void PlayerChild::OnUpdate() {
-		m_Force = Vec3(0);
-		//ステートマシンのUpdateを行う
-		//この中でステートの切り替えが行われる
-		m_StateMachine->Update();
-		auto ptrUtil = GetBehavior<UtilBehavior>();
-		ptrUtil->RotToHead(1.0f);
-		ApplyForce();
+		m_InputHandler.PushHandle(GetThis<PlayerChild>());
+		if (active) {
+			m_Force = Vec3(0);
+			//ステートマシンのUpdateを行う
+			//この中でステートの切り替えが行われる
+			m_StateMachine->Update();
+			auto ptrUtil = GetBehavior<UtilBehavior>();
+			ptrUtil->RotToHead(1.0f);
+		}
+	}
+
+	void PlayerChild::OnPushA() {
+		SetDrawActive(false);
+	}
+	void PlayerChild::OnPushB() {
+		SetDrawActive(true);
 	}
 
 
@@ -397,20 +416,18 @@ namespace basecross {
 
 
 	void PlayerChild::ApplyForce() {
-		float elapsedTime = App::GetApp()->GetElapsedTime();
-		auto Targetptr = GetStage()->GetSharedGameObject < Player>(L"Player", true);
-		if (Targetptr) {
-			auto TargetTrans = Targetptr->GetComponent<Transform>();
-			auto TargetPos = TargetTrans->GetPosition();
-			auto TargetScale = TargetTrans->GetScale();
-
-			m_Velocity += m_Force * elapsedTime;
-			auto ptrTrans = GetComponent<Transform>();
-			auto pos = ptrTrans->GetPosition();
-			pos += m_Velocity * elapsedTime;
-			ptrTrans->SetPosition(pos);
+		auto trans = GetComponent<Transform>();
+		auto pos = trans->GetPosition();
+		auto player = GetStage()->GetSharedObject(L"Player", true);
+		if (player) {
+			auto playertrans = player->GetComponent<Transform>();
+			auto playerpos = playertrans->GetPosition();
+			Vec3 Velo = Vec3(0);
+			Velo += (playerpos - pos)*5.0f;
+			Velo *= 1.8f;
+			pos += Velo *= App::GetApp()->GetElapsedTime();
+			trans->SetPosition(pos);
 		}
-
 	}
 
 //--------------子オブジェクトのステートマシーン-------------------
@@ -426,19 +443,20 @@ namespace basecross {
 	}
 	void PlayerChildFarState::Execute(const shared_ptr<PlayerChild>& Obj) {
 		auto ptrSeek = Obj->GetBehavior<SeekSteering>();
-		//auto ptrSep = Obj->GetBehavior<SeparationSteering>();
-		//auto force = Obj->GetForce();
-		//force = ptrSeek->Execute(force, Obj->GetVelocity(), Obj->GetTargetPos());
-		//force += ptrSep->Execute(force);
-		//Obj->SetForce(force);
-		//Obj->ApplyForce();
-		//float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
-		//if (f < Obj->GetStateChangeSize()) {
-		//	Obj->GetStateMachine()->ChangeState(PlayerChildNearState::Instance());
-		//}
+		auto ptrSep = Obj->GetBehavior<SeparationSteering>();
+		auto force = Obj->GetForce();
+		force = ptrSeek->Execute(force, Obj->GetVelocity(), Obj->GetTargetPos());
+		force += ptrSep->Execute(force);
+		Obj->SetForce(force);
+		Obj->ApplyForce();
+		float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
+		if (f < Obj->GetStateChangeSize()) {
+			Obj->GetStateMachine()->ChangeState(PlayerChildNearState::Instance());
+		}
 	}
 
 	void PlayerChildFarState::Exit(const shared_ptr<PlayerChild>& Obj) {
+
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -449,23 +467,38 @@ namespace basecross {
 		return instance;
 	}
 	void PlayerChildNearState::Enter(const shared_ptr<PlayerChild>& Obj) {
+		
 	}
 	void PlayerChildNearState::Execute(const shared_ptr<PlayerChild>& Obj) {
-		auto ptrArrive = Obj->GetBehavior<ArriveSteering>();
-		auto ptrSep = Obj->GetBehavior<SeparationSteering>();
-		auto force = Obj->GetForce();
-		force = ptrArrive->Execute(force, Obj->GetVelocity(), Obj->GetTargetPos());
-		force += ptrSep->Execute(force);
-		Obj->SetForce(force);
-		Obj->ApplyForce();
 		float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
 		if (f >= Obj->GetStateChangeSize()) {
 			Obj->GetStateMachine()->ChangeState(PlayerChildFarState::Instancee());
 		}
+		else {
+			Obj->GetStateMachine()->ChangeState(PlayerChildStayState::Instance());
+		}
 	}
 	void PlayerChildNearState::Exit(const shared_ptr<PlayerChild>& Obj) {
+
 	}
 
+//--------------------------------------------------------------------------------------
+//	プレイヤーについてる時の行動
+//--------------------------------------------------------------------------------------
+	shared_ptr<PlayerChildStayState> PlayerChildStayState::Instance() {
+		static shared_ptr<PlayerChildStayState> instance(new PlayerChildStayState);
+		return instance;
+	}
+	void PlayerChildStayState::Enter(const shared_ptr<PlayerChild>& Obj) {
+
+	}
+	void PlayerChildStayState::Execute(const shared_ptr<PlayerChild>& Obj) {
+		Obj->ApplyForce();
+
+	}
+	void PlayerChildStayState::Exit(const shared_ptr<PlayerChild>& Obj) {
+
+	}
 
 
 

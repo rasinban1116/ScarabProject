@@ -8,7 +8,7 @@
 
 namespace basecross{
 
-	//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
 ///	物理計算する固定のボックス
 //--------------------------------------------------------------------------------------
 //構築と破棄
@@ -40,13 +40,57 @@ namespace basecross{
 
 		//影をつける
 		auto ptrShadow = AddComponent<Shadowmap>();
+		//ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"A_TX");
+		//物理計算ボックス
+		PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		auto PsPtr = AddComponent<RigidbodyBox>(param);
+	}
+
+//--------------------------------------------------------------------------------------
+///	物理計算する固定のボックス
+//--------------------------------------------------------------------------------------
+//構築と破棄
+	FixedObj::FixedObj(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Scale,
+		const Vec3& Position
+	) :
+		GameObject(StagePtr),
+		m_Scale(Scale),
+		m_Position(Position)
+	{}
+
+	FixedObj::~FixedObj() {}
+	//初期化
+	void FixedObj::OnCreate() {
+
+		auto ptrTrans = GetComponent<Transform>();
+		AddTag(L"Slope");
+
+		ptrTrans->SetScale(m_Scale);
+		ptrTrans->SetPosition(m_Position);
+
+		int rand = std::rand()%3;
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(true);
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap>();
 		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
 
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetMeshResource(L"tree");
+		
 		ptrDraw->SetOwnShadowActive(true);
-		//ptrDraw->SetTextureResource(L"SKY_TX");
+		ptrDraw->SetTextureResource(L"A_TX");
 		//物理計算ボックス
 		PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
 		auto PsPtr = AddComponent<RigidbodyBox>(param);
@@ -87,7 +131,7 @@ namespace basecross{
 		shadowPtr->SetMeshResource(L"DEFAULT_CUBE");
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		//ptrDraw->SetTextureResource(L"SKY_TX");
+		ptrDraw->SetTextureResource(L"A_TX");
 		ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
 		AddTag(L"sloap");
@@ -136,7 +180,7 @@ namespace basecross{
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetTextureResource(L"TRACE_TX");
+		//ptrDraw->SetTextureResource(L"TRACE_TX");
 		//透明処理をする
 		SetAlphaActive(true);
 
