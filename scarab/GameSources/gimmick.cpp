@@ -15,6 +15,7 @@ namespace basecross {
 	{
 	}
 
+	UIDraw::~UIDraw(){}
 	void UIDraw::OnCreate(){
 		//•¶Žš—ñ‚ð‚Â‚¯‚é
 		auto ptrString = AddComponent<StringSprite>();
