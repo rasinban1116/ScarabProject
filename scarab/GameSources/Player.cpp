@@ -21,6 +21,7 @@ namespace basecross {
 	{}
 
 
+
 	Vec2 Player::GetInputState() const {
 		Vec2 ret;
 		//コントローラの取得
@@ -142,56 +143,6 @@ namespace basecross {
 		return angle;
 	}
 
-	//初期化
-	void Player::OnCreate() {
-		//初期位置などの設定
-		auto ptrTrans = GetComponent<Transform>();
-		//初期位置などの設定
-		auto ptr = AddComponent<Transform>();
-		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
-		ptr->SetRotation(0.0f, 0.0f, 0.0f);
-		ptr->SetPosition(Vec3(0, 0.125f, 0));
-
-		//CollisionSphere衝突判定を付ける
-		auto ptrColl = AddComponent<CollisionSphere>();
-
-		//各パフォーマンスを得る
-		GetStage()->SetCollisionPerformanceActive(true);
-		GetStage()->SetUpdatePerformanceActive(true);
-		GetStage()->SetDrawPerformanceActive(true);
-
-		//重力をつける
-		auto ptrGra = AddComponent<Gravity>();
-
-		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
-		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
-		//RigidbodySphereコンポーネントを追加
-		auto psPtr = AddComponent<RigidbodySphere>(param);
-		//自動的にTransformを設定するフラグは無し
-		psPtr->SetAutoTransform(false);
-
-
-		//文字列をつける
-		auto ptrString = AddComponent<StringSprite>();
-		ptrString->SetText(L"");
-		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 640.0f, 480.0f));
-
-		//影をつける（シャドウマップを描画する）
-		auto ptrShadow = AddComponent<Shadowmap>();
-		//影の形（メッシュ）を設定
-		ptrShadow->SetMeshResource(L"DEFAULT_SPHERE");
-		//描画コンポーネントの設定
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		//描画するメッシュを設定
-		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-		//描画するテクスチャを設定
-		//ptrDraw->SetTextureResource(L"TRACE_TX");
-
-		//透明処理
-		SetAlphaActive(true);
-
-	
-	}
 	//プレイヤーの動き
 	void Player::Move() {
 		//コントローラチェックして入力があればコマンド呼び出し
@@ -226,6 +177,61 @@ namespace basecross {
 		}
 	}
 
+	//初期化
+	void Player::OnCreate() {
+		//初期位置などの設定
+		auto ptrTrans = GetComponent<Transform>();
+		//初期位置などの設定
+		auto ptr = AddComponent<Transform>();
+		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
+		ptr->SetRotation(0.0f, 0.0f, 0.0f);
+		ptr->SetPosition(Vec3(0, 0.125f, 0));
+
+		//CollisionSphere衝突判定を付ける
+		auto ptrColl = AddComponent<CollisionSphere>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//重力をつける
+		auto ptrGra = AddComponent<Gravity>();
+
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+
+		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
+		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
+		//RigidbodySphereコンポーネントを追加
+		auto psPtr = AddComponent<RigidbodySphere>(param);
+		//自動的にTransformを設定するフラグは無し
+		psPtr->SetAutoTransform(false);
+
+
+		//文字列をつける
+		auto ptrString = AddComponent<StringSprite>();
+		ptrString->SetText(L"");
+		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 640.0f, 480.0f));
+
+		//影をつける（シャドウマップを描画する）
+		auto ptrShadow = AddComponent<Shadowmap>();
+		//影の形（メッシュ）を設定
+		ptrShadow->SetMeshResource(L"DEFAULT_SPHERE");
+		//描画コンポーネントの設定
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		//描画するメッシュを設定
+		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");
+		//描画するテクスチャを設定
+		ptrDraw->SetTextureResource(L"J_TX");
+
+		//透明処理
+		SetAlphaActive(true);
+	}
+
+
 	//更新
 	void Player::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<Player>());
@@ -238,16 +244,11 @@ namespace basecross {
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		DrawStrings();
+		//DrawStrings();
 	}
 
 	//Aボタンハンドラ
 	void  Player::OnPushA() {
-		//auto ptrTrans = GetComponent<Transform>();
-		//auto ptrPs = GetComponent<RigidbodySphere>();
-		//m_PlayVelo = ptrPs->GetLinearVelocity();
-		//m_PlayVelo += Vec3(0, 4.0f, 0.0);
-		//ptrPs->SetLinearVelocity(m_PlayVelo);
 		active = false;	
 	}
 	//Bボタンハンドラ
@@ -258,25 +259,18 @@ namespace basecross {
 	
 
 
-	
+	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
 		isGrand = true;
-		GetComponent<Transform>()->ClearParent();
-		auto stageptr = Other->GetStage();
-		auto Slopeptr = stageptr->GetSharedGameObject<FixedBox>(L"Slope", false);
-		auto Gravi = GetComponent<Gravity>()->GetGravity();
-		bool SlopeAct = false;
-		if (!Slopeptr) {
-
-		}
+		
 	}
+
+	//コリジョンが何かから離れた時の処理
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
 		isGrand = false;
 	}
 
 	
-
-
 
 	//文字列の表示
 	void Player::DrawStrings() {
@@ -380,8 +374,6 @@ namespace basecross {
 			ptrCamera->SetTargetObject(Plyaer);
 			ptrCamera->SetTargetToAt(Vec3(0, 0.25f, 0));
 		}
-		double a;
-		sqrtf(a = 100);
 	}
 
 

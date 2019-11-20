@@ -29,47 +29,22 @@ namespace basecross{
 	};
 
 
-//--------------------------------------------------------------------------------------
-///	ï®óùåvéZÇ∑ÇÈólÅXÇ»å`ÇÃÉ{ÉbÉNÉX
-//--------------------------------------------------------------------------------------
-	class FixedObj : public GameObject {
+	//--------------------------------------------------------------------------------------
+	///	ï®óùåvéZÇ∑ÇÈóéâ∫Ç∑ÇÈÉ{Å[Éã
+	//--------------------------------------------------------------------------------------
+	class FallingBall : public GameObject {
 		Vec3 m_Scale;
-		Vec3 m_Position;
-
+		Vec3 m_Pos;
+		Vec3 m_Velocity;
 	public:
 		//ç\ízÇ∆îjä¸
-		FixedObj(const shared_ptr<Stage>& StagePtr,
-			const Vec3& Scale,
-			const Vec3& Position
-
-		);
-		virtual ~FixedObj();
-		//èâä˙âª
-		virtual void OnCreate() override;
-	};
-
-
-
-	//--------------------------------------------------------------------------------------
-	//	class FixedBox : public GameObject;
-	//--------------------------------------------------------------------------------------
-	class FixedBox : public GameObject {
-		Vec3 m_Scale;
-		Vec3 m_Rotation;
-		Vec3 m_Position;
-	public:
-		//ç\ízÇ∆îjä¸
-		FixedBox(const shared_ptr<Stage>& StagePtr,
-			const Vec3& Scale,
-			const Vec3& Rotation,
-			const Vec3& Position
-		);
-		virtual ~FixedBox();
+		FallingBall(const shared_ptr<Stage>& StagePtr, const Vec3& Position, const Vec3& Velocity);
+		virtual ~FallingBall();
 		//èâä˙âª
 		virtual void OnCreate() override;
 		//ëÄçÏ
+		virtual void OnUpdate() override;
 	};
-
 
 
 	//--------------------------------------------------------------------------------------
@@ -145,54 +120,6 @@ namespace basecross{
 		virtual void Enter(const shared_ptr<SeekObject>& Obj)override;
 		virtual void Execute(const shared_ptr<SeekObject>& Obj)override;
 		virtual void Exit(const shared_ptr<SeekObject>& Obj)override;
-	};
-
-
-	//--------------------------------------------------------------------------------------
-	//	class MoveBox : public GameObject;
-	//--------------------------------------------------------------------------------------
-	class MoveBox : public GameObject {
-		Vec3 m_Scale;
-		Vec3 m_Rotation;
-		Vec3 m_Position;
-		Vec3 m_Velocity;
-		float m_MaxVelocity;
-		float m_MinVelocity;
-		float m_Deceleration;
-	public:
-		//ç\ízÇ∆îjä¸
-		MoveBox(const shared_ptr<Stage>& StagePtr,
-			const Vec3& Scale,
-			const Vec3& Rotation,
-			const Vec3& Position
-		);
-		virtual ~MoveBox();
-		//èâä˙âª
-		virtual void OnCreate() override;
-		//ëÄçÏ
-		virtual void OnUpdate() override;
-		virtual void OnCollisionExcute(const CollisionPair& Pair) override;
-		virtual void OnCollisionExit(const CollisionPair& Pair)override;
-	};
-
-	//--------------------------------------------------------------------------------------
-	//	class MoveFixedBox : public GameObject;
-	//--------------------------------------------------------------------------------------
-	class MoveFixedBox : public GameObject {
-		Vec3 m_Scale;
-		Vec3 m_Rotation;
-		Vec3 m_Position;
-	public:
-		//ç\ízÇ∆îjä¸
-		MoveFixedBox(const shared_ptr<Stage>& StagePtr,
-			const Vec3& Scale,
-			const Vec3& Rotation,
-			const Vec3& Position
-		);
-		virtual ~MoveFixedBox();
-		//èâä˙âª
-		virtual void OnCreate() override;
-		//ëÄçÏ
 	};
 
 	//--------------------------------------------------------------------------------------

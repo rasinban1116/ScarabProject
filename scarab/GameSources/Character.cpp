@@ -37,6 +37,10 @@ namespace basecross{
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionObb>();
 		ptrColl->SetFixed(true);
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
 
 		//影をつける
 		auto ptrShadow = AddComponent<Shadowmap>();
@@ -47,99 +51,61 @@ namespace basecross{
 
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(true);
-		ptrDraw->SetTextureResource(L"A_TX");
+		ptrDraw->SetTextureResource(L"H_TX");
 		//物理計算ボックス
 		PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
 		auto PsPtr = AddComponent<RigidbodyBox>(param);
 	}
-
-//--------------------------------------------------------------------------------------
-///	物理計算する固定のボックス
-//--------------------------------------------------------------------------------------
-//構築と破棄
-	FixedObj::FixedObj(const shared_ptr<Stage>& StagePtr,
-		const Vec3& Scale,
-		const Vec3& Position
-	) :
-		GameObject(StagePtr),
-		m_Scale(Scale),
-		m_Position(Position)
-	{}
-
-	FixedObj::~FixedObj() {}
-	//初期化
-	void FixedObj::OnCreate() {
-
-		auto ptrTrans = GetComponent<Transform>();
-		AddTag(L"Slope");
-
-		ptrTrans->SetScale(m_Scale);
-		ptrTrans->SetPosition(m_Position);
-
-		int rand = std::rand()%3;
-		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionObb>();
-		ptrColl->SetFixed(true);
-
-		//影をつける
-		auto ptrShadow = AddComponent<Shadowmap>();
-		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
-
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetMeshResource(L"tree");
-		
-		ptrDraw->SetOwnShadowActive(true);
-		ptrDraw->SetTextureResource(L"A_TX");
-		//物理計算ボックス
-		PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
-		auto PsPtr = AddComponent<RigidbodyBox>(param);
-	}
-
 
 	//--------------------------------------------------------------------------------------
-	//	class FixedBox : public GameObject;
+	///	物理計算する落下するボール
 	//--------------------------------------------------------------------------------------
 	//構築と破棄
-	FixedBox::FixedBox(const shared_ptr<Stage>& StagePtr,
-		const Vec3& Scale,
-		const Vec3& Rotation,
-		const Vec3& Position
-	) :
+	FallingBall::FallingBall(const shared_ptr<Stage>& StagePtr, const Vec3& Position, const Vec3& Velocity) :
 		GameObject(StagePtr),
-		m_Scale(Scale),
-		m_Rotation(Rotation),
-		m_Position(Position)
-	{
-	}
-	FixedBox::~FixedBox() {}
+		m_Scale(0.5f),
+		m_Pos(Position),
+		m_Velocity(Velocity)
+	{}
+
+	FallingBall::~FallingBall() {}
 
 	//初期化
-	void FixedBox::OnCreate() {
+	void FallingBall::OnCreate() {
 		auto ptrTransform = GetComponent<Transform>();
-		ptrTransform->SetScale(m_Scale);
-		ptrTransform->SetRotation(m_Rotation);
-		ptrTransform->SetPosition(m_Position);
-		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionObb>();
-		ptrColl->SetFixed(true);
-		//タグをつける
-		AddTag(L"FixedBox");
-		//影をつける（シャドウマップを描画する）
-		auto shadowPtr = AddComponent<Shadowmap>();
-		//影の形（メッシュ）を設定
-		shadowPtr->SetMeshResource(L"DEFAULT_CUBE");
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetTextureResource(L"A_TX");
-		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetOwnShadowActive(true);
-		AddTag(L"sloap");
 
-		//物理計算ボックス
-		PsBoxParam param(ptrTransform->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
-		auto PsPtr = AddComponent<RigidbodyBox>(param);
+		ptrTransform->SetScale(m_Scale);
+		ptrTransform->SetRotation(0, 0, 0);
+		ptrTransform->SetPosition(m_Pos);
+
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionCapsule>();
+		ptrColl->SetFixed(true);
+
+		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
+		PsSphereParam param(ptrTransform->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
+		//Rigidbodyをつける
+		auto  ptrRigid = AddComponent<RigidbodySphere>(param);
+		ptrRigid->SetLinearVelocity(m_Velocity);
+
+		//影をつける
+		auto ShadowPtr = AddComponent<Shadowmap>();
+		ShadowPtr->SetMeshResource(L"DEFAULT_SPHERE");
+
+		auto PtrDraw = AddComponent<BcPNTStaticDraw>();
+		PtrDraw->SetMeshResource(L"DEFAULT_SPHERE");
+
 	}
+
+	void FallingBall::OnUpdate() {
+		const float activeY = 25.0f;
+		auto PtrTransform = GetComponent<Transform>();
+		if (abs(PtrTransform->GetPosition().y) > activeY) {
+			//範囲外に出たら消す
+			GetStage()->RemoveGameObject<GameObject>(GetThis<GameObject>());
+		}
+	}
+
 
 	//--------------------------------------------------------------------------------------
 	//	追いかける配置オブジェクト
@@ -270,126 +236,6 @@ namespace basecross{
 	void SeekNearState::Exit(const shared_ptr<SeekObject>& Obj) {
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	//	class MoveBox : public GameObject;
-	//--------------------------------------------------------------------------------------
-	//構築と破棄
-	MoveBox::MoveBox(const shared_ptr<Stage>& StagePtr,
-		const Vec3& Scale,
-		const Vec3& Rotation,
-		const Vec3& Position
-	) :
-		GameObject(StagePtr),
-		m_Scale(Scale),
-		m_Rotation(Rotation),
-		m_Position(Position),
-		m_Velocity(0),
-		m_MaxVelocity(5.0f),
-		m_MinVelocity(0.05f),
-		m_Deceleration(0.95f)
-	{
-	}
-	MoveBox::~MoveBox() {}
-
-	//初期化
-	void MoveBox::OnCreate() {
-		auto ptrTransform = GetComponent<Transform>();
-		ptrTransform->SetScale(m_Scale);
-		ptrTransform->SetRotation(m_Rotation);
-		ptrTransform->SetPosition(m_Position);
-		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionObb>();
-		//重力をつける
-		auto ptrGra = AddComponent<Gravity>();
-		//影をつける
-		auto shadowPtr = AddComponent<Shadowmap>();
-		shadowPtr->SetMeshResource(L"DEFAULT_CUBE");
-		//描画処理
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetTextureResource(L"WALL_TX");
-		ptrDraw->SetOwnShadowActive(true);
-	}
-
-	void MoveBox::OnUpdate() {
-		auto ptrTransform = GetComponent<Transform>();
-		float elapsedTime = App::GetApp()->GetElapsedTime();
-		auto Pos = ptrTransform->GetPosition();
-		Pos += m_Velocity * elapsedTime;
-		ptrTransform->SetPosition(Pos);
-
-	}
-
-	void MoveBox::OnCollisionExcute(const CollisionPair& Pair) {
-		auto shDest = Pair.m_Dest.lock();
-		if (shDest->IsFixed()) {
-			//減速
-			m_Velocity *= m_Deceleration;
-			if (m_Velocity.length() < m_MinVelocity) {
-				m_Velocity = Vec3(0);
-			}
-		}
-	}
-
-	void MoveBox::OnCollisionExit(const CollisionPair& Pair) {
-		auto ptrTrans = GetComponent<Transform>();
-		auto shDest = Pair.m_Dest.lock();
-		m_Velocity -= shDest->GetVelocity();
-		m_Velocity.reflect(Pair.m_SrcHitNormal);
-		if (m_Velocity.length() > m_MaxVelocity) {
-			m_Velocity.normalize();
-			m_Velocity *= m_MaxVelocity;
-		}
-
-	}
-
-	//--------------------------------------------------------------------------------------
-	//	class MoveBox : public GameObject;
-	//--------------------------------------------------------------------------------------
-	//構築と破棄
-	MoveFixedBox::MoveFixedBox(const shared_ptr<Stage>& StagePtr,
-		const Vec3& Scale,
-		const Vec3& Rotation,
-		const Vec3& Position
-	) :
-		GameObject(StagePtr),
-		m_Scale(Scale),
-		m_Rotation(Rotation),
-		m_Position(Position)
-	{
-	}
-	MoveFixedBox::~MoveFixedBox() {}
-
-	//初期化
-	void MoveFixedBox::OnCreate() {
-		AddTag(L"MoveFixedBox");
-		auto ptrTransform = GetComponent<Transform>();
-		ptrTransform->SetScale(m_Scale);
-		ptrTransform->SetRotation(m_Rotation);
-		ptrTransform->SetPosition(m_Position);
-		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionObb>();
-		ptrColl->SetFixed(true);
-		//アクションの登録
-		auto PtrAction = AddComponent<Action>();
-		PtrAction->AddMoveBy(5.0f, Vec3(5.0f, 5.0f, 0));
-		PtrAction->AddMoveBy(5.0f, Vec3(-5.0f, -5.0f, 0));
-		//ループする
-		PtrAction->SetLooped(true);
-		//アクション開始
-		PtrAction->Run();
-		//影をつける
-		auto shadowPtr = AddComponent<Shadowmap>();
-		shadowPtr->SetMeshResource(L"DEFAULT_CUBE");
-		//描画処理
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetTextureResource(L"WALL_TX");
-		ptrDraw->SetOwnShadowActive(true);
-	}
 
 	//--------------------------------------------------------------------------------------
 	///	物理計算するアクティブな球体

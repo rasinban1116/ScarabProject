@@ -24,6 +24,8 @@ namespace basecross {
 		void activeboll();
 		//コリジョンを用いた固定ボックス
 		void CreateCollisionBox2();
+		//ギミック用のオブジェクト生成
+		void CreateGimmickObj();
 	public:
 		//構築と破棄
 		GameStage() :Stage() {}

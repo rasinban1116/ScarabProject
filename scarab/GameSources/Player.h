@@ -51,7 +51,6 @@ namespace basecross{
 		virtual void OnUpdate() override;
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
-		//virtual void OnCollisionStay(shared_ptr<GameObject>&Other) override;
 
 		//後更新
 		virtual void OnUpdate2() override;
@@ -61,6 +60,8 @@ namespace basecross{
 		void OnPushB();
 		Vec3 GetMoveVector()const;				//進行方向を得る
 	};
+
+
 	//--------------------------------------------------------------------------------------
 	//	プレイヤーの追従オブジェクト
 	//--------------------------------------------------------------------------------------

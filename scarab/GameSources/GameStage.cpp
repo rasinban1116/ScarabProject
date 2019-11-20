@@ -28,34 +28,16 @@ namespace basecross {
 	void GameStage::CreateFixedBox() {
 		//下の台
 		AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
-
+	
 		//動かない台
-		AddGameObject<FixedObj>(Vec3(3.0f, 3.0f, 3.0f), Vec3(0.0f, 0.0f, 3.0f));
-		AddGameObject<FixedObj>(Vec3(2.0f, 3.0f, 2.0f), Vec3(4.0f, 0.0f, 5.0f));
+		AddGameObject<FixedPsBox>(Vec3(3.0f, 3.0f, 3.0f), Quat(), Vec3(0.0f, 0.0f, 3.0f));
+		AddGameObject<FixedPsBox>(Vec3(2.0f, 3.0f, 2.0f), Quat(), Vec3(4.0f, 0.0f, 5.0f));
+
+		//上から降ってくる球体
+		AddGameObject<ActivePsSphere>(1.0f, Quat(), Vec3(0.0f, 6.0f, 5.0f));
 
 	}
-	void GameStage::CreateCollisionBox2() {
-		vector <vector<Vec3>> vec = { {
 
-				Vec3(10.0f, 0.5f, 10.0f),
-				Vec3(-0.5f, 0.0f, -0.5f),
-				Vec3(-10.0f, 0.25f, 10.0f)
-		},
-		{
-				Vec3(10.0f, 0.5f, 10.0f),
-				Vec3(-0.0f, 0.0f, -0.0f),
-				Vec3(-10.0f,4.0f, 18.0f)
-		},
-
-		};
-		//オブジェクトの作成
-		for (auto v : vec) {
-		auto SlopeObj = AddGameObject<FixedBox>(v[0], v[1], v[2]);
-		//シェア配列に坂道オブジェクトを追加
-		//auto SlopeGroup = CreateSharedObjectGroup(L"SlopeGroup");
-		}
-
-	}
 
 	//プレイヤ―の生成
 	void GameStage::CreatePlayer() {
@@ -89,6 +71,13 @@ namespace basecross {
 		AddGameObject<ActivePsSphere>(1.0f, Quat(), Vec3(0.0f, 6.0f, 5.0f));
 	}
 
+	void GameStage::CreateGimmickObj() {
+		auto group = CreateSharedObjectGroup(L"CoinGroup");
+		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f),  Quat(), Vec3(0.0f, 0.6f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f),  Quat(), Vec3(3.0f, 0.6f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f),  Quat(), Vec3(-3.0f, 0.6f, -3.0f));
+	}
+
 
 	void GameStage::OnCreate() {
 		try {
@@ -102,10 +91,8 @@ namespace basecross {
 			CreatePlayer();
 			//プレイヤーを継承した子オブジェクトの作成
 			CreatePlayerChild();
-			//コリジョンを持ったボックスの作成
-			CreateCollisionBox2();
-			//物理演算する球体の作成
-			activeboll();
+			//ギミックの生成
+			CreateGimmickObj();
 		}
 		catch (...) {
 			throw;
