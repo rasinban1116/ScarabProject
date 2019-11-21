@@ -328,7 +328,7 @@ namespace basecross {
 	void PlayerChild::OnCreate() {
 		auto ptrTransform = GetComponent<Transform>();
 		ptrTransform->SetPosition(m_StartPos);
-		ptrTransform->SetScale(0.125f, 0.25f, 0.25f);
+		ptrTransform->SetScale(0.25f, 0.25f, 0.25f);
 		ptrTransform->SetRotation(0.0f, 5.0f, 0.0f);
 
 		//オブジェクトのグループを得る
@@ -356,7 +356,7 @@ namespace basecross {
 		ptrDraw->SetFogEnabled(true);
 		/*ptrDraw->SetMeshResource();*/
 		ptrDraw->SetMeshResource(L"scarab");
-		ptrDraw->SetTextureResource(L"TRACE_TX");
+		ptrDraw->SetTextureResource(L"A_TX");
 		//透明処理をする
 		SetAlphaActive(true);
 

@@ -29,7 +29,7 @@ namespace basecross{
 		}
 	}
 
-	/// ---------------------------------------------------------------------------<summary>
+/// ---------------------------------------------------------------------------<summary>
 /// スタティックモデルの読み込み(引数なし)
 /// </summary>----------------------------------------------------------------------------
 	void Scene::LoadStaticModelResources() {
@@ -75,6 +75,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"H_TX", strTexture);
 		strTexture = dataDir + L"haikei.png";
 		App::GetApp()->RegisterTexture(L"J_TX", strTexture);
+		strTexture = dataDir + L"testClear.png";
+		App::GetApp()->RegisterTexture(L"Cl_TX", strTexture);
 
 	}
 
@@ -86,7 +88,28 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToGameStage") {
 			//最初のアクティブステージの設定
 			ResetActiveStage<GameStage>();
+		}
+		else if (event->m_MsgStr == L"ToGameStartScene") {
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStartScene");
+		}
+	}
+	void Scene::SetScene(const shared_ptr<Event>&event,wstring name) {
+			event->m_MsgStr = name;
+			
+	}
 
+	void GameStartScene::OnCreate() {
+		try {
+			//クリアする色を設定
+			Col4 Col;
+			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
+			SetClearColor(Col);
+			//自分自身にイベントを送る
+			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStartScene");
+		}
+		catch (...) {
+			throw;
 		}
 	}
 

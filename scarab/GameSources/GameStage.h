@@ -22,10 +22,11 @@ namespace basecross {
 		void CreatePlayerChild();
 		//動く球体
 		void activeboll();
-		//コリジョンを用いた固定ボックス
-		void CreateCollisionBox2();
 		//ギミック用のオブジェクト生成
 		void CreateGimmickObj();
+		//UIの表示
+		void CreateUI();
+		void GameSystemObj();
 	public:
 		//構築と破棄
 		GameStage() :Stage() {}

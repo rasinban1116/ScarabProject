@@ -10,13 +10,16 @@ namespace basecross {
 //--------------------------------------------------------------------------------------
 ///	UI	
 //--------------------------------------------------------------------------------------
+	
+	float UIDraw::Score;
 	UIDraw::UIDraw(const shared_ptr<Stage>&Stageptr) :
-		GameObject(Stageptr)
+		GameObject(Stageptr)	
 	{
 	}
 
 	UIDraw::~UIDraw(){}
 	void UIDraw::OnCreate(){
+	
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetText(L"");
@@ -24,7 +27,7 @@ namespace basecross {
 	}
 
 	void UIDraw::OnUpdate() {
-
+		ScoreDraw();
 	}
 
 	void UIDraw::OnUpdate2() {
@@ -32,17 +35,18 @@ namespace basecross {
 	}
 
 	void UIDraw::ScoreDraw() {
-		float score=1;
-		auto Coin = GetComponent<GimmickObj>();
-		wstring Scoreptr(L"Position:\t");
-		Scoreptr += L"X=" + Util::FloatToWStr(score, 3, Util::FloatModify::Fixed) + L",\t";
+		wstring Scoreptr(L"SCORE:\t");
+		Scoreptr += L"X=" + Util::FloatToWStr(Score, 1, Util::FloatModify::Fixed) + L",\t";
 
 		wstring str = Scoreptr;
 		//文字列をつける
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 	}
+	void UIDraw::SetScore(float x) {
+		Score += x;
 
+	}
 
 
 //--------------------------------------------------------------------------------------
@@ -60,7 +64,9 @@ namespace basecross {
 		m_Position(Position)
 	{}
 
-	GimmickObj::~GimmickObj() {}
+	GimmickObj::~GimmickObj() {
+		OnDestroy();
+	}
 	//初期化
 	void GimmickObj::OnCreate() {
 
@@ -87,6 +93,10 @@ namespace basecross {
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"H_TX");
 
+		////物理計算ボックス
+		//PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		//auto PsPtr = AddComponent<RigidbodyBox>(param);
+
 		//アクションの登録
 		auto PtrAction = AddComponent<Action>();
 		PtrAction->AddRotateBy(1.0f, Vec3(0,5,0));
@@ -100,16 +110,70 @@ namespace basecross {
 	void GimmickObj::OnUpdate() {
 	}
 
-	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
-		auto play = Other->GetStage()->GetSharedObject(L"Player", true);
-		if (play) {
-			Score += 100.0f;
+	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {	
+		auto play =GetStage()->GetSharedObject(L"Player", true);
+		auto UI = GetStage()->GetSharedGameObject<UIDraw>(L"UI", true);
+		if (play&&UI) {
+			SetUpdateActive(false);
+			SetDrawActive(false);
+			UI->SetScore(100.0f);
 		}	
 	}
-	float GimmickObj::GetScore() {
-		return Score;
+
+	void GimmickObj::OnCollisionExit(shared_ptr<GameObject>&Other) {
 	}
 
+	StageClearObj::StageClearObj(const shared_ptr<Stage>&StagePtr,
+		const Vec3 &Position,
+		const Vec3 &Scale
+	) :
+		GameObject(StagePtr),
+		m_Position(Position),
+		m_Scele(Scale)
+	{}
+	StageClearObj::~StageClearObj() {
+
+	}
+	void StageClearObj::OnCreate() {
+		auto ptrtrans = AddComponent<Transform>();
+		ptrtrans->SetPosition(m_Position);
+		ptrtrans->SetScale(m_Scele);
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();;
+
+		auto gira = AddComponent<Gravity>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap>();
+		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"Cl_TX");
+
+		//物理計算ボックス
+		PsBoxParam param(ptrtrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		auto PsPtr = AddComponent<RigidbodyBox>(param);
+		//自動的にTransformを設定するフラグは無し
+		PsPtr->SetAutoTransform(false);
+	}
+	void StageClearObj::OnUpdate() {
+
+	}
+	void StageClearObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
+		auto play = Other->GetStage()->GetSharedObject(L"Player", true);
+		wstring scenename = L"ToGameStartScene";
+		const shared_ptr<Event>&event = shared_ptr<Event>();
+		if (play) {
+			Scene::SetScene(event,scenename);
+		}
+	}
 
 }
 //end basecross

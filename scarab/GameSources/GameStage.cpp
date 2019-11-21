@@ -37,6 +37,14 @@ namespace basecross {
 		AddGameObject<ActivePsSphere>(1.0f, Quat(), Vec3(0.0f, 6.0f, 5.0f));
 
 	}
+	void GameStage::CreateUI() {
+		auto UI = AddGameObject<UIDraw>();
+		SetSharedGameObject(L"UI", UI);
+	}
+	void GameStage::GameSystemObj() {
+		auto Clear = AddGameObject<StageClearObj>(Vec3(0.0f,3.0f,0.0f),Vec3(0.5f));
+		
+	}
 
 
 	//プレイヤ―の生成
@@ -93,6 +101,10 @@ namespace basecross {
 			CreatePlayerChild();
 			//ギミックの生成
 			CreateGimmickObj();
+			//UIの表示
+			CreateUI();
+			//クリアオブジェクト
+			GameSystemObj();
 		}
 		catch (...) {
 			throw;
