@@ -14,6 +14,10 @@ namespace basecross {
 	class GameStage : public Stage {
 		//ビューの作成
 		void CreateViewLight();
+		//CSVファイルそのA
+		CsvFile m_GameStageCsvA;
+		//CSVファイルそのB
+		CsvFile m_GameStageCsvB;
 		//固定のボックスの作成
 		void CreateFixedBox();
 		//プレイヤーの作成

@@ -1,0 +1,8 @@
+Name,Scale,,,Rot,,,Pos,,,
+TilingFixedBox,20,0.25,20,0,0,0,0,0,0,H_TX
+TilingFixedBox,20,1,0.5,0,0,0,0,0.5,-10,WALL_TX
+TilingFixedBox,20,1,0.5,0,0,0,0,0.5,10,WALL_TX
+TilingFixedBox,20,1,0.5000002,0,XM_PIDIV2,0,-10,0.5,0,WALL_TX
+TilingFixedBox,20,1,0.5000002,0,XM_PIDIV2,0,10,0.5,0,WALL_TX
+TilingFixedBox,6,0.25,4,0,0,40,-7,0.8,-7,H_TX
+TilingFixedBox,20,0.25,20,0,0,0,-18,2.5,-5,H_TX
