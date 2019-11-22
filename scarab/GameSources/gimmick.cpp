@@ -123,6 +123,11 @@ namespace basecross {
 	void GimmickObj::OnCollisionExit(shared_ptr<GameObject>&Other) {
 	}
 
+//--------------------------------------------------------------------------------------
+///	ゲームをクリア地点を設定するオブジェクト（判定はあるが透明にする予定）
+///※確認のためオブジェクトを可視化している
+//--------------------------------------------------------------------------------------
+
 	StageClearObj::StageClearObj(const shared_ptr<Stage>&StagePtr,
 		const Vec3 &Position,
 		const Vec3 &Scale
@@ -168,10 +173,9 @@ namespace basecross {
 	}
 	void StageClearObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
 		auto play = Other->GetStage()->GetSharedObject(L"Player", true);
-		wstring scenename = L"ToGameStartScene";
-		const shared_ptr<Event>&event = shared_ptr<Event>();
+		auto ptrScene = App::GetApp()->GetScene<Scene>();
 		if (play) {
-			Scene::SetScene(event,scenename);
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToClearStage");
 		}
 	}
 

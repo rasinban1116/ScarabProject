@@ -17,7 +17,8 @@ namespace basecross {
 		m_Scale(0.5f),
 		active(true),
 		isGrand(true),
-		m_PlayVelo(0, 0, 0)
+		m_PlayVelo(0, 0, 0),
+		m_Speed(5.0f)
 	{}
 
 
@@ -112,6 +113,7 @@ namespace basecross {
 			//右
 			fThumbLX = 1.0f;
 		}
+		
 		if (fThumbLX != 0 || fThumbLY != 0) {
 			float moveLength = 0;	//動いた時のスピード
 			auto ptrTransform = GetComponent<Transform>();
@@ -152,8 +154,8 @@ namespace basecross {
 		auto forces = GetComponent<Transform>();
 		auto force = GetComponent<Rigidbody>();
 		//xとzの速度を修正
-		m_PlayVelo.x = vec.x * 5.0f;
-		m_PlayVelo.z = vec.z * 5.0f;
+		m_PlayVelo.x = vec.x * m_Speed;
+		m_PlayVelo.z = vec.z * m_Speed;
 		if (isGrand == false) {
 			m_PlayVelo.y += -150.0f*App::GetApp()->GetElapsedTime();
 		}
@@ -250,10 +252,16 @@ namespace basecross {
 	//Aボタンハンドラ
 	void  Player::OnPushA() {
 		active = false;	
+	
+		
 	}
+
+
 	//Bボタンハンドラ
 	void  Player::OnPushB() {
 		active = true;
+
+		
 	}
 
 	

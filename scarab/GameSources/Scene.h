@@ -61,20 +61,6 @@ namespace basecross{
 		static void SetScene(const shared_ptr<Event>&event, wstring name);
 	
 	};
-
-	class GameStartScene : public SceneBase {
-		shared_ptr<MyCamera> m_BackupCamera;
-		Vec3 m_BackupPlayerPos;
-	public:
-		GameStartScene() :
-			SceneBase(){}
-		virtual ~GameStartScene();
-		virtual void OnCreate() override;
-		//virtual void OnEvent(const shared_ptr<Event>& event)override;
-		
-	};
-
-
 }
 
 //end basecross
