@@ -169,6 +169,17 @@ namespace basecross{
 		auto PsPtr = AddComponent<RigidbodyBox>(param);
 	}
 
+	void TilingFixedBox::OnCollisionEnter(shared_ptr<GameObject>&ptrObj)
+	{
+	}
+	void TilingFixedBox::OnCollisionExcute(shared_ptr<GameObject>&ptrObj) {
+		auto Grope = ptrObj->GetStage()->GetSharedObjectGroup(L"TilingGrope");
+		if (Grope) {
+			this->SetUpdateActive(false);
+		}
+		
+	}
+
 
 
 

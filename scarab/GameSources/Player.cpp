@@ -18,7 +18,7 @@ namespace basecross {
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(5.0f)
+		m_Speed(10.0f)
 	{}
 
 
@@ -186,7 +186,7 @@ namespace basecross {
 		//初期位置などの設定
 		auto ptr = AddComponent<Transform>();
 		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
-		ptr->SetRotation(0.0f, 0.0f, 0.0f);
+		ptr->SetRotation(45.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(0, 0.5f, 0));
 
 		//CollisionSphere衝突判定を付ける

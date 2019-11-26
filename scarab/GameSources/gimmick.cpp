@@ -37,11 +37,14 @@ namespace basecross {
 	void UIDraw::ScoreDraw() {
 		wstring Scoreptr(L"SCORE:\t");
 		Scoreptr += L"X=" + Util::FloatToWStr(Score, 1, Util::FloatModify::Fixed) + L",\t";
-
+		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
+		wstring strFps(L"FPS: ");
+		strFps += Util::UintToWStr(fps);
+		strFps += L"\nElapsedTime: ";
 		wstring str = Scoreptr;
 		//•¶Žš—ñ‚ð‚Â‚¯‚é
 		auto ptrString = GetComponent<StringSprite>();
-		ptrString->SetText(str);
+		ptrString->SetText(strFps);
 	}
 	void UIDraw::SetScore(float x) {
 		Score += x;

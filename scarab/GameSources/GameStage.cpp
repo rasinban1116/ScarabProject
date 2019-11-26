@@ -8,6 +8,8 @@
 
 namespace basecross {
 
+	//ステージを作り終わったら一定範囲内以外をスリープさせる処理を書く
+
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
@@ -27,6 +29,7 @@ namespace basecross {
 	}
 	//ボックスの作成
 	void GameStage::CreateFixedBox() {
+		CreateSharedObjectGroup(L"TilingBox");
 		//CSVの行単位の配列
 		vector<wstring> LineVec;
 		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
@@ -42,15 +45,25 @@ namespace basecross {
 				(float)_wtof(Tokens[2].c_str()),
 				(float)_wtof(Tokens[3].c_str())
 			);
+			
+			
 			Vec3 Rot;
 			//回転は「XM_PIDIV2」の文字列になっている場合がある
 			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
 			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
 			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
 			Quat rot;
-			rot.x = (float)_wtof(Tokens[4].c_str());
-			rot.y = (float)_wtof(Tokens[5].c_str());
-			rot.z = (float)_wtof(Tokens[6].c_str());
+			float x, y, z;
+			//rot.x = (float)_wtof(Tokens[4].c_str());
+			//rot.y = (float)_wtof(Tokens[5].c_str());
+			//rot.z = (float)_wtof(Tokens[6].c_str());
+			x = (float)_wtof(Tokens[4].c_str());
+			y = (float)_wtof(Tokens[5].c_str());
+			z = (float)_wtof(Tokens[6].c_str());
+			rot.setX(x);
+			rot.setY(y);
+			rot.setZ(z);
+			//Rot = rot;
 			Vec3 Pos(
 				(float)_wtof(Tokens[7].c_str()),
 				(float)_wtof(Tokens[8].c_str()),
@@ -58,26 +71,11 @@ namespace basecross {
 			);
 
 			//各値がそろったのでオブジェクト作成
-			auto tiling = AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
-			auto tilingquat = tiling->GetComponent<Transform>();
+			AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
+			//auto tilingquat = tiling->GetComponent<Transform>();
 			//tilingquat->SetQuaternion(rot);
 		}
 	}
-
-
-	//固定のボックスの作成
-	//void GameStage::CreateFixedBox() {
-	//	//下の台
-	//	AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
-	//
-	//	//動かない台
-	//	AddGameObject<FixedPsBox>(Vec3(3.0f, 3.0f, 3.0f), Quat(), Vec3(0.0f, 0.0f, 3.0f));
-	//	AddGameObject<FixedPsBox>(Vec3(2.0f, 3.0f, 2.0f), Quat(), Vec3(4.0f, 0.0f, 5.0f));
-
-	//	//上から降ってくる球体
-	//	AddGameObject<ActivePsSphere>(1.0f, Quat(), Vec3(0.0f, 6.0f, 5.0f));
-
-	//}
 
 	void GameStage::CreateUI() {
 		auto UI = AddGameObject<UIDraw>();
@@ -137,7 +135,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			////CSVファイルそのBの読み込み
-			m_GameStageCsvB.SetFileName(DataDir + L"test0.csv");
+			m_GameStageCsvB.SetFileName(DataDir + L"test2.csv");
 			m_GameStageCsvB.ReadCsv();
 			//物理演算するボックスの作成
 			CreateFixedBox();
