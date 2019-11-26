@@ -68,6 +68,7 @@ namespace basecross{
 		virtual ~TilingFixedBox();
 		//‰Šú‰»
 		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
 		//‘€ì
 		virtual void OnCollisionEnter(shared_ptr<GameObject>&ptrObj)override;
 		virtual void OnCollisionExcute(shared_ptr<GameObject>&ptrObj)override;

@@ -54,9 +54,6 @@ namespace basecross {
 			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
 			Quat rot;
 			float x, y, z;
-			//rot.x = (float)_wtof(Tokens[4].c_str());
-			//rot.y = (float)_wtof(Tokens[5].c_str());
-			//rot.z = (float)_wtof(Tokens[6].c_str());
 			x = (float)_wtof(Tokens[4].c_str());
 			y = (float)_wtof(Tokens[5].c_str());
 			z = (float)_wtof(Tokens[6].c_str());
@@ -104,7 +101,7 @@ namespace basecross {
 		auto TargetPos = Targetrans->GetPosition();
 		//配列の初期化
 		vector<Vec3> vec = {
-			{ TargetPos.x,TargetPos.y,TargetPos.z -0.5f },
+			{ TargetPos.x,TargetPos.y-0.5f,TargetPos.z -1.0f },
 		};
 
 		//配置オブジェクトの作成
@@ -147,8 +144,6 @@ namespace basecross {
 			CreateGimmickObj();
 			//UIの表示
 			CreateUI();
-			//クリアオブジェクト
-			//GameSystemObj();
 		}
 		catch (...) {
 			throw;

@@ -134,7 +134,9 @@ namespace basecross{
 		PtrTrans->SetRotation(m_Rotation);
 		PtrTrans->SetPosition(m_Position);
 		auto Coll = AddComponent<CollisionObb>();
+		Coll->SetSleepActive(true);
 		Coll->SetFixed(true);
+
 		vector<VertexPositionNormalTexture> vertices;
 		vector<uint16_t> indices;
 		MeshUtill::CreateCube(1.0f, vertices, indices);
@@ -169,14 +171,29 @@ namespace basecross{
 		auto PsPtr = AddComponent<RigidbodyBox>(param);
 	}
 
-	void TilingFixedBox::OnCollisionEnter(shared_ptr<GameObject>&ptrObj)
-	{
+	void TilingFixedBox::OnUpdate() {
+		auto ptrColl = GetComponent<CollisionObb>();
+		auto ptrDraw = GetComponent<BcPNTStaticDraw>();
+		ptrColl->SetSleepActive(true);
+		if (ptrColl->IsSleep()) {
+			ptrDraw->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+
+	}
+
+	void TilingFixedBox::OnCollisionEnter(shared_ptr<GameObject>&ptrObj){
+		auto Play = ptrObj->GetStage()->GetSharedObject(L"Player", true);
+		auto ptrColl = GetComponent<CollisionObb>();
+		if (Play) {
+			if (ptrColl->IsSleep()) {
+				ptrColl->SetSleepActive(false);
+			}
+		}
 	}
 	void TilingFixedBox::OnCollisionExcute(shared_ptr<GameObject>&ptrObj) {
-		auto Grope = ptrObj->GetStage()->GetSharedObjectGroup(L"TilingGrope");
-		if (Grope) {
-			this->SetUpdateActive(false);
-		}
+
+		
+		
 		
 	}
 

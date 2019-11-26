@@ -191,33 +191,22 @@ namespace basecross {
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
 		GetStage()->SetDrawPerformanceActive(true);
-
 		//重力をつける
 		auto ptrGra = AddComponent<Gravity>();
-
-		GetStage()->SetCollisionPerformanceActive(true);
-		GetStage()->SetUpdatePerformanceActive(true);
-		GetStage()->SetDrawPerformanceActive(true);
-
-
 		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
 		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
 		//RigidbodySphereコンポーネントを追加
 		auto psPtr = AddComponent<RigidbodySphere>(param);
 		//自動的にTransformを設定するフラグは無し
 		psPtr->SetAutoTransform(false);
-
-
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetText(L"");
 		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 640.0f, 480.0f));
-
 		//影をつける（シャドウマップを描画する）
 		auto ptrShadow = AddComponent<Shadowmap>();
 		//影の形（メッシュ）を設定
@@ -335,7 +324,7 @@ namespace basecross {
 	//初期化
 	void PlayerChild::OnCreate() {
 		auto ptrTransform = GetComponent<Transform>();
-		ptrTransform->SetPosition(m_StartPos);
+		ptrTransform->SetPosition(m_StartPos.x,m_StartPos.y,m_StartPos.z);
 		ptrTransform->SetScale(0.25f, 0.25f, 0.25f);
 		ptrTransform->SetRotation(0.0f, 5.0f, 0.0f);
 
@@ -343,8 +332,13 @@ namespace basecross {
 		auto group = GetStage()->GetSharedObjectGroup(L"SeekGroup");
 		//グループに自分自身を追加
 		group->IntoGroup(GetThis<PlayerChild>());
-		//Obbの衝突判定をつける
-		auto ptrColl = AddComponent<CollisionObb>();
+		//CollisionSphere衝突判定を付ける
+		auto ptrColl = AddComponent<CollisionSphere>();
+		//ptrColl->SetFixed(true);
+		//各パフォーマンスを得るs
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
 		//重力をつける
 		auto ptrGra = AddComponent<Gravity>();
 		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
