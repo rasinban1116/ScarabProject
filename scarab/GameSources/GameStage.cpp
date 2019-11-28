@@ -67,6 +67,20 @@ namespace basecross {
 
 	}
 
+	void GameStage::CreateLowEnemy() {
+		auto group = CreateSharedObjectGroup(L"Enemy_LowGroup");
+		vector< vector<Vec3> > vecSeek = {
+			{ Vec3(5.0, 0.5f, 0.0f), Vec3(5.0f, 0.0f, 5.0f) },
+		};
+		//追いかけるオブジェクトの作成
+		for (auto v : vecSeek) {
+			auto ptrPathobj = AddGameObject<FollowPathObject>(v[0], v[1]);
+			SetSharedGameObject(L"Pathobj", ptrPathobj);
+			ptrPathobj->AddTag(L"Pathobj");
+			
+		}
+	}
+
 	void GameStage::activeboll() {
 		AddGameObject<ActivePsSphere>(1.0f, Quat(), Vec3(0.0f, 6.0f, 5.0f));
 	}
@@ -91,6 +105,7 @@ namespace basecross {
 			CreatePlayer();
 			//プレイヤーを継承した子オブジェクトの作成
 			CreatePlayerChild();
+			CreateLowEnemy();
 			//ギミックの生成
 			CreateGimmickObj();
 		}
