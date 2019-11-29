@@ -562,10 +562,10 @@ namespace basecross{
 		const wstring& MsgStr,const shared_ptr<void>& Info) {
 		App::GetApp()->GetEventDispatcher()->PostEvent(DispatchTime, Sender, Receiver, MsgStr, Info);
 	}
+
 	void ObjectInterface::PostEvent(float DispatchTime, const shared_ptr<ObjectInterface>& Sender, const wstring& ReceiverKey,
 		const wstring& MsgStr, const shared_ptr<void>& Info) {
 		App::GetApp()->GetEventDispatcher()->PostEvent(DispatchTime, Sender, ReceiverKey, MsgStr, Info);
-
 	}
 
 	void ObjectInterface::SendEvent(const shared_ptr<ObjectInterface>& Sender, const shared_ptr<ObjectInterface>& Receiver,

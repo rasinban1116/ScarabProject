@@ -16,11 +16,14 @@ namespace basecross{
 		try {
 			//クリアする色を設定
 			Col4 Col;
-			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
+			Col.set(1.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
+			Col.set(BACKGROUND_RED,BACKGROUND_GREEN,BACKGROUND_BLUE,BACKGROUND_INTENSITY);
 			SetClearColor(Col);
+			
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
+			
 			CreateResourses();
 			LoadStaticModelResources();
 		}
@@ -29,7 +32,7 @@ namespace basecross{
 		}
 	}
 
-	/// ---------------------------------------------------------------------------<summary>
+/// ---------------------------------------------------------------------------<summary>
 /// スタティックモデルの読み込み(引数なし)
 /// </summary>----------------------------------------------------------------------------
 	void Scene::LoadStaticModelResources() {
@@ -75,6 +78,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"H_TX", strTexture);
 		strTexture = dataDir + L"haikei.png";
 		App::GetApp()->RegisterTexture(L"J_TX", strTexture);
+		strTexture = dataDir + L"testClear.png";
+		App::GetApp()->RegisterTexture(L"Cl_TX", strTexture);
 
 	}
 
@@ -83,12 +88,27 @@ namespace basecross{
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
-		if (event->m_MsgStr == L"ToGameStage") {
+		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
 			ResetActiveStage<GameStage>();
-
 		}
+		else if (event->m_MsgStr == L"ToSerectStage") {
+			ResetActiveStage<SerectStage>();
+		}
+		else if (event->m_MsgStr == L"ToGameStage") {
+			ResetActiveStage<GameStage>();
+		}
+		else if (event->m_MsgStr == L"ToClearStage") {
+			ResetActiveStage<ClearStage>();
+		}
+
 	}
+	void Scene::SetScene(const shared_ptr<Event>&event,wstring name) {
+			event->m_MsgStr = name;
+			
+	}
+
+
 
 }
 //end basecross

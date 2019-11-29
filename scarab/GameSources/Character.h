@@ -45,6 +45,32 @@ namespace basecross{
 		//操作
 		virtual void OnUpdate() override;
 	};
+	//--------------------------------------------------------------------------------------
+	//　タイリングする固定のボックス
+	//--------------------------------------------------------------------------------------
+	class TilingFixedBox : public GameObject {
+		Vec3 m_Scale;
+		Vec3 m_Rotation;
+		Vec3 m_Position;
+		float m_UPic;
+		float m_VPic;
+		wstring m_Texname;
+	public:
+		//構築と破棄
+		TilingFixedBox(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Vec3& Rotation,
+			const Vec3& Position,
+			float UPic,
+			float VPic,
+			const wstring& Texname
+		);
+		virtual ~TilingFixedBox();
+		//初期化
+		virtual void OnCreate() override;
+		//操作
+	};
+
 
 
 	//--------------------------------------------------------------------------------------

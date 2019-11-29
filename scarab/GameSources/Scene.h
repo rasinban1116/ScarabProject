@@ -42,6 +42,7 @@ namespace basecross{
 		*/
 		//--------------------------------------------------------------------------------------
 		virtual void OnEvent(const shared_ptr<Event>& event) override;
+
 		shared_ptr<MyCamera> GetBackupCamera() const {
 			return m_BackupCamera;
 		}
@@ -57,9 +58,9 @@ namespace basecross{
 		}
 		void CreateResourses();
 		void LoadStaticModelResources();
+		static void SetScene(const shared_ptr<Event>&event, wstring name);
 	
 	};
-
 }
 
 //end basecross

@@ -36,10 +36,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)gimmick.h">
       <Filter>Headers</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)EnemyB.h">
+=======
+    <ClInclude Include="$(MSBuildThisFileDirectory)SceneStage.h">
+>>>>>>> master
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,10 +75,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)gimmick.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)EnemyB.cpp">
+=======
+    <ClCompile Include="$(MSBuildThisFileDirectory)SourceStage.cpp">
+>>>>>>> master
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
