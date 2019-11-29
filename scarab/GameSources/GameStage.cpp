@@ -70,7 +70,7 @@ namespace basecross {
 	void GameStage::CreateLowEnemy() {
 		auto group = CreateSharedObjectGroup(L"Enemy_LowGroup");
 		vector< vector<Vec3> > vecSeek = {
-			{ Vec3(5.0, 0.5f, 0.0f), Vec3(5.0f, 0.0f, 5.0f) },
+			{ Vec3(5.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
 		};
 		//追いかけるオブジェクトの作成
 		for (auto v : vecSeek) {

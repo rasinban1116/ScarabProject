@@ -158,7 +158,9 @@ namespace basecross{
 		ptrTrans->SetPosition(GetStartPos());
 		ptrTrans->SetScale(0.25f, 0.25f, 0.25f);
 		ptrTrans->SetRotation(0.0f, 0.0f, 0.0f);
+		m_StrPos = GetStartPos();
 		AddTag(L"FollowPathObject");
+		LookOn::SetLook(false);
 		//オブジェクトのグループを得る
 		auto group = GetStage()->GetSharedObjectGroup(L"Enemy_LowGroup");
 		//グループに自分自身を追加
@@ -170,10 +172,10 @@ namespace basecross{
 		//経路巡回を付ける
 		auto ptrFollowPath = GetBehavior<FollowPathSteering>();
 		list<Vec3> pathList = {
-			Vec3(-5,0.125,5),
-			Vec3(5,0.125,5),
-			Vec3(-5,0.125,-5),
-			Vec3(5,0.125,-5),
+			Vec3(m_StrPos.x,0.125, m_StrPos.z),
+			Vec3(m_StrPos.x,0.125,m_TagePos.z),
+			Vec3(m_TagePos.x,0.125,m_TagePos.z),
+			Vec3(m_TagePos.x,0.125,m_StrPos.z),
 		};
 		ptrFollowPath->SetPathList(pathList);
 		ptrFollowPath->SetLooped(true);
@@ -194,6 +196,9 @@ namespace basecross{
 
 		auto enemyeye = GetStage()->AddGameObject<EnemyEye>(GetPos(), GetRot(),GetThis<GameObject>());
 
+		auto a = AddComponent<StringSprite>();
+		a->SetText(L"");
+		a->SetTextRect(Rect2D<float>(16.,16.,640.,480.));
 	}
 
 	//操作
@@ -210,6 +215,7 @@ namespace basecross{
 		}
 
 	}
+	
 	void FollowPathObject::FarBehavior() {
 		auto ptrFollowPath = GetBehavior<FollowPathSteering>();
 		auto ptrTrans = GetComponent<Transform>();
@@ -218,9 +224,25 @@ namespace basecross{
 		force += ptrFollowPath->Execute(force, GetVelocity());
 		SetForce(force);
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - ptrTrans->GetPosition());
-		if (f <= GetStateChangeSize()) {
+		//if (f <= GetStateChangeSize()) {
+		//	GetStateMachine()->ChangeState(EnemyNearState::Instance());
+		//}
+		if (LookOn::GetLook() == true) {
 			GetStateMachine()->ChangeState(EnemyNearState::Instance());
 		}
+	}
+
+	void FollowPathObject::DebagMesse() {
+		
+		wstring mase(L"デバック");
+		mase += LookOn::ToString();
+
+		auto ptrstring = GetComponent<StringSprite>();
+		ptrstring->SetText(mase);
+	}
+
+	void FollowPathObject::OnUpdate2() {
+		DebagMesse();
 	}
 
 	EnemyEye::EnemyEye(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& Rot, const shared_ptr<GameObject>& ParentPtr) :
@@ -230,43 +252,50 @@ namespace basecross{
 
 	void EnemyEye::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
+		ptrTrans->SetScale(0.7f, 0.5, 1.5f);
+		ptrTrans->SetParent(m_ParentPtr);
+
 		AddTag(L"EnemyEye");
 
-		ptrTrans->SetScale(1.0f, 0.5, 2.0f);
-
-		////OBB衝突j判定を付ける
-		//auto ptrColl = AddComponent<CollisionObb>();
-		//ptrColl->SetFixed(true);
-		////各パフォーマンスを得る
-		//GetStage()->SetCollisionPerformanceActive(false);
-		//GetStage()->SetUpdatePerformanceActive(true);
-		//GetStage()->SetDrawPerformanceActive(true);
-
-		//影をつける
-		//auto ptrShadow = AddComponent<Shadowmap>();
-		//ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+		//コリジョンをつける
+		auto col = AddComponent<CollisionObb>();
+		//col->SetAfterCollision(AfterCollision::None);
+		//col->SetDrawActive(true);
 
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
 
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetOwnShadowActive(true);
-		//ptrDraw->SetTextureResource(L"H_TX");
-		//物理計算ボックス
-		//PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
-		//auto PsPtr = AddComponent<RigidbodyBox>(param);
+		ptrDraw->SetOwnShadowActive(false);
+		SetDrawActive(true);
+
+
+		SetAlphaActive(false);
 
 	}
 
-	void EnemyEye::OnUpdate() {
-		auto pathobj = GetStage()->GetSharedGameObject<FollowPathObject>(L"Pathobj", true);
-		if (pathobj) {
-			auto obj = pathobj->GetComponent<Transform>();
-			auto objPos = obj->GetPosition();
-			auto objRot = obj->GetRotation();
-			auto eyecomp = this->GetComponent<Transform>();
-			eyecomp->SetPosition(objPos.x, objPos.y, objPos.z);
+	void EnemyEye::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		auto objvec = GetStage()->GetGameObjectVec();
+		for (auto& v : objvec) {
+			auto ptrPlayer = dynamic_pointer_cast<Player>(v);
+			if (ptrPlayer) {
+				auto colSphere = ptrPlayer->GetComponent<CollisionSphere>(false);
+				if (colSphere) {
+					Vec3 ret;
+					auto colSphere = ptrPlayer->GetComponent<CollisionSphere>()->GetSphere();
+					auto colObb = GetComponent<CollisionObb>()->GetObb();
+					//HitTestで衝突判定
+					if (HitTest::SPHERE_OBB(colSphere, colObb, ret)) {
+						LookOn::SetLook(true);
+					}
+				}
+			}
 		}
+	}
+
+	void EnemyEye::OnUpdate() {
+			auto eyecomp = this->GetComponent<Transform>();
+			eyecomp->SetPosition(0,0,0.8f);
 	}
 }
 //end basecross

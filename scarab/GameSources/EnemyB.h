@@ -20,6 +20,7 @@ namespace basecross{
 		Vec3 m_Force;
 		//速度
 		Vec3 m_Velocity;
+		Vec3 m_Status;
 		void ApplyForce();
 	protected:
 		//構築と破棄
@@ -84,11 +85,34 @@ namespace basecross{
 		virtual void Exit(const shared_ptr<Enemy>& Obj)override;
 	};
 
+
+	class LookOn{
+		bool lookon;
+	public :
+		void SetLook(bool ptrlook) {
+			lookon = ptrlook;
+		}
+		bool GetLook() {
+			return lookon;
+		}
+		wstring ToString() {
+			if (lookon) {
+				return L"true";
+			}
+			else {
+				return L"false";
+			}
+		}
+	};
+
 	//--------------------------------------------------------------------------------------
 	//	パスを巡回する配置オブジェクト
 	//--------------------------------------------------------------------------------------
-	class FollowPathObject : public Enemy {
+	class FollowPathObject : public Enemy, public LookOn {
 		Vec3 m_TagePos;
+		Vec3 m_StrPos;
+		Vec3 m_ParentPtr;
+		Vec3 m_Poor;//差
 	public:
 		//構築と破棄
 		FollowPathObject(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos);
@@ -98,6 +122,8 @@ namespace basecross{
 		//操作
 		virtual void NearBehavior() override;
 		virtual void FarBehavior() override;
+		virtual void OnUpdate2() override;
+		void DebagMesse();
 		Vec3 GetPos() {
 			auto pos = GetComponent<Transform>()->GetPosition();
 			return pos;
@@ -106,20 +132,20 @@ namespace basecross{
 			auto rot = GetComponent<Transform>()->GetRotation();
 			return rot;
 		}
+
 	};
 
 
-	class EnemyEye : public GameObject {
+	class EnemyEye : public GameObject, public LookOn {
 		Vec3 m_StartPos;
 		Vec3 m_Rot;
 		const shared_ptr<GameObject>& m_ParentPtr;
 	public : 
 		EnemyEye(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& Rot, const shared_ptr<GameObject>& ParentPtr);
 		virtual ~EnemyEye();
-		virtual void OnCreate();
-		virtual void OnUpdate();
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
 	};
-
-
 }
 //end basecross
