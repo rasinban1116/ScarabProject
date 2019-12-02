@@ -20,6 +20,8 @@ namespace basecross {
 		CsvFile m_GameStageCsvB;
 		//固定のボックスの作成
 		void CreateFixedBox();
+		//固定の傾いたボックスの作成
+		void CreateFixedSlopeBox();
 		//プレイヤーの作成
 		void CreatePlayer();
 		//プレイヤーを継承した子オブジェクトの継承

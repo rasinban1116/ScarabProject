@@ -72,7 +72,7 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"TRACE_TX", strTexture);
 		strTexture = dataDir + L"sky.jpg";
 		App::GetApp()->RegisterTexture(L"A_TX", strTexture);
-		strTexture = dataDir + L"wall.jpg";
+		strTexture = dataDir + L"Grand.png";
 		App::GetApp()->RegisterTexture(L"WALL_TX", strTexture);
 		strTexture = dataDir + L"Block_A.png";
 		App::GetApp()->RegisterTexture(L"H_TX", strTexture);
@@ -80,7 +80,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"J_TX", strTexture);
 		strTexture = dataDir + L"testClear.png";
 		App::GetApp()->RegisterTexture(L"Cl_TX", strTexture);
-
+		strTexture = dataDir + L"Weed.tga";
+		App::GetApp()->RegisterTexture(L"KUSA_TX", strTexture);
 	}
 
 
@@ -90,7 +91,7 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<GameStage>();
+			ResetActiveStage<SerectStage>();
 		}
 		else if (event->m_MsgStr == L"ToSerectStage") {
 			ResetActiveStage<SerectStage>();

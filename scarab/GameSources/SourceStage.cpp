@@ -113,12 +113,21 @@ namespace basecross {
 		//ビューのカメラの設定
 		auto ptrMyCamera = ObjectFactory::Create<MyCamera>();
 		ptrView->SetCamera(ptrMyCamera);
-		ptrMyCamera->SetEye(Vec3(0.0f, 5.0f, -5.0f));
+		ptrMyCamera->SetEye(Vec3(0.0f, 100.0f, .0f));
 		ptrMyCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 		//マルチライトの作成
 		auto ptrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
 		ptrMultiLight->SetDefaultLighting();
+	}
+
+	//プレイヤ―の生成
+	void SerectStage::CreatePlayer() {
+		//プレーヤーの作成
+		auto ptrPlayer = AddGameObject<Player>();
+		//シェア配列にプレイヤーを追加
+		SetSharedGameObject(L"Player", ptrPlayer);
+		ptrPlayer->AddTag(L"Player");
 	}
 
 	void SerectStage::CreateStage(){
@@ -143,6 +152,8 @@ namespace basecross {
 			CreateViewLight();
 			//ステージの生成
 			CreateStage();
+			//プレイヤーの生成
+			CreatePlayer();
 		}
 		catch (...) {
 			throw;

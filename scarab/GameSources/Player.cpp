@@ -4,7 +4,7 @@
 */
 
 #include "stdafx.h"
-#include "Project.h"
+#include "Project.h"7
 
 namespace basecross {
 	//--------------------------------------------------------------------------------------
@@ -18,7 +18,8 @@ namespace basecross {
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(10.0f)
+		m_Speed(3.0f)
+
 	{}
 
 
@@ -85,6 +86,7 @@ namespace basecross {
 	
 	Vec3 Player::GetMoveVector()const {
 		Vec3 angle(0, 0, 0);
+		float RadXZ = 0.0f;
 		//コントローラの取得
 		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 		float fThumbLY = 0.0f;
@@ -104,6 +106,7 @@ namespace basecross {
 		else if (KeyState.m_bPushKeyTbl['A']) {
 			//左
 			fThumbLX = -1.0f;
+			RadXZ += fThumbLX * App::GetApp()->GetElapsedTime() * m_Speed;
 		}
 		else if (KeyState.m_bPushKeyTbl['S']) {
 			//後ろ
@@ -112,6 +115,7 @@ namespace basecross {
 		else if (KeyState.m_bPushKeyTbl['D']) {
 			//右
 			fThumbLX = 1.0f;
+			RadXZ += -fThumbLX * App::GetApp()->GetElapsedTime() * m_Speed;
 		}
 		
 		if (fThumbLX != 0 || fThumbLY != 0) {
@@ -142,15 +146,18 @@ namespace basecross {
 			//Y軸は変化させない
 			angle.y = 0;
 		}
+
 		return angle;
 	}
+
+
 
 	//プレイヤーの動き
 	void Player::Move() {
 		//コントローラチェックして入力があればコマンド呼び出し
 		auto vec = GetMoveVector();
 		auto ptrPs = GetComponent<RigidbodySphere>();
-		m_PlayVelo = ptrPs->GetLinearVelocity();
+		//m_PlayVelo = ptrPs->GetLinearVelocity();
 		auto forces = GetComponent<Transform>();
 		auto force = GetComponent<Rigidbody>();
 		//xとzの速度を修正
@@ -161,7 +168,42 @@ namespace basecross {
 		}
 		//速度を設定
 		ptrPs->SetLinearVelocity(m_PlayVelo);
-		m_PlayVelo = Vec3(0, 0, 0);
+			m_PlayVelo = Vec3(0, 0, 0);
+
+
+	}
+
+	void Player::UnkoMove() {
+		//うんこを中心に回転する
+		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		auto vec = GetMoveVector();
+		//前回のターンからの時間
+		float elapsedTime = App::GetApp()->GetElapsedTime();
+		auto Target = GetStage()->GetSharedObject(L"UnkoBoll", true);
+		auto TargetTrans = Target->GetComponent < Transform>();
+		auto TargetPos = TargetTrans->GetPosition(); //糞玉の位置
+		auto thistrans = GetComponent<Transform>();
+		auto thisPos = thistrans->GetPosition();     //自分の位置
+		auto thisPs = GetComponent<RigidbodySphere>();
+		
+		
+		Quat q;
+		float pai = 3.14;
+		float rad = 0;
+		rad = atan2(TargetPos.z - thisPos.z,TargetPos.x - thisPos.x);
+		Vec3 unko = vec;
+		auto Usin = sin(rad * (pai / 360));
+		auto Ucos = -cos(rad * (pai / 360));
+		m_PlayVelo.z = vec.z * m_Speed;
+		m_PlayVelo.x = Usin* m_Speed;
+		m_PlayVelo.y = vec.y;
+		thisPos.x += Usin * elapsedTime + TargetPos.x;
+		thisPos.z += vec.z * m_Speed;
+		thisPos.y += TargetPos.y;
+		//TargetTrans->SetPosition(TargetPos);
+		//thistrans->SetPosition(thisPos);
+		thisPs->SetPosition(m_PlayVelo);
+	
 	}
 
 	void Player::ChangeTrans() {
@@ -186,8 +228,8 @@ namespace basecross {
 		//初期位置などの設定
 		auto ptr = AddComponent<Transform>();
 		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
-		ptr->SetRotation(45.0f, 0.0f, 0.0f);
-		ptr->SetPosition(Vec3(0, 0.5f, 0));
+		ptr->SetRotation(0.0f, .0f, 0.0f);
+		ptr->SetPosition(Vec3(0.0f, 1.0f,0.0f));
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
@@ -214,12 +256,22 @@ namespace basecross {
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");
+		ptrDraw->SetMeshResource(L"scarab");
 		//描画するテクスチャを設定
 		ptrDraw->SetTextureResource(L"J_TX");
 
 		//透明処理
 		SetAlphaActive(true);
+
+		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
+		auto stage = GetStage();
+		auto Plyaer = stage->GetSharedGameObject<Player>(L"Player", false);
+		if (ptrCamera || !Plyaer) {
+			//MyCameraである
+			//MyCameraに注目するオブジェクト（プレイヤー）の設定
+			ptrCamera->SetTargetObject(Plyaer);
+			ptrCamera->SetTargetToAt(Vec3(0, 0.5f, 0));
+		}
 	}
 
 
@@ -227,7 +279,8 @@ namespace basecross {
 	void Player::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<Player>());
 		if (active) {
-			Move();
+		Move();
+		//UnkoMove();
 		}
 	}
 
@@ -235,7 +288,7 @@ namespace basecross {
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		//DrawStrings();
+		DrawStrings();
 	}
 
 	//Aボタンハンドラ
@@ -249,7 +302,6 @@ namespace basecross {
 	//Bボタンハンドラ
 	void  Player::OnPushB() {
 		active = true;
-
 		
 	}
 
@@ -259,14 +311,24 @@ namespace basecross {
 	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
 		isGrand = true;
-		
+		//auto Unko =Other-> GetStage()->GetSharedObject(L"UnkoBoll", true);
+		auto trans = this->GetComponent<Transform>();
+		//if (Unko) {
+		//	//active = false;
+		//	//trans->SetParent(Unko);
+		//}
 	}
+
 
 	//コリジョンが何かから離れた時の処理
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
 		isGrand = false;
+
 	}
 
+	void Player::OnCollisionExcute(shared_ptr<GameObject>&Other) {
+		isGrand = true;
+	}
 	
 
 	//文字列の表示
@@ -305,196 +367,115 @@ namespace basecross {
 		ptrString->SetText(str);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	//	プレイヤーの追従オブジェクト
-	//--------------------------------------------------------------------------------------
-	//構築と破棄
-	PlayerChild::PlayerChild(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos) :
-		GameObject(StagePtr),
-		m_StartPos(StartPos),
-		m_StateChangeSize(5.0f),
-		m_Force(0),
-		m_Velocity(0),
-		active(true)
+//--------------------------------------------------------------------------------------
+//	糞玉
+//--------------------------------------------------------------------------------------
+	UnkoBoll::UnkoBoll(const shared_ptr<Stage>&StagePtr,
+		const Vec3 &Position,
+		const Vec3 &Scale,
+		const Vec3 &Rot,
+		const Vec3 &Velocity
+	):
+		Player(StagePtr),
+		UnkoPos(Position),
+		UnkoScale(Scale),
+		UnkoRot(Rot),
+		UnkoVelo(Velocity)
 	{
 	}
-	PlayerChild::~PlayerChild() {}
 
-	//初期化
-	void PlayerChild::OnCreate() {
-		auto ptrTransform = GetComponent<Transform>();
-		ptrTransform->SetPosition(m_StartPos.x,m_StartPos.y,m_StartPos.z);
-		ptrTransform->SetScale(0.25f, 0.25f, 0.25f);
-		ptrTransform->SetRotation(0.0f, 5.0f, 0.0f);
 
-		//オブジェクトのグループを得る
-		auto group = GetStage()->GetSharedObjectGroup(L"SeekGroup");
-		//グループに自分自身を追加
-		group->IntoGroup(GetThis<PlayerChild>());
-		//CollisionSphere衝突判定を付ける
-		auto ptrColl = AddComponent<CollisionSphere>();
+	void UnkoBoll::OnCreate() {
+		auto ptrTrans = AddComponent<Transform>();
+
+		ptrTrans->SetPosition(UnkoPos);
+		ptrTrans->SetRotation(UnkoRot);
+		ptrTrans->SetScale(UnkoScale);
+
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionCapsule>();
+		
 		//ptrColl->SetFixed(true);
-		//各パフォーマンスを得るs
+		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
 		GetStage()->SetDrawPerformanceActive(true);
-		//重力をつける
-		auto ptrGra = AddComponent<Gravity>();
 		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
-		PsSphereParam param(ptrTransform->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
-		//RigidbodySphereコンポーネントを追加
-		auto psPtr = AddComponent<RigidbodySphere>(param);
-		//自動的にTransformを設定するフラグは無し
-		psPtr->SetAutoTransform(false);
-		//分離行動をつける
-		auto PtrSep = GetBehavior<SeparationSteering>();
-		PtrSep->SetGameObjectGroup(group);
+		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
+		//Rigidbodyをつける
+		auto  ptrRigid = AddComponent<RigidbodySphere>(param);
+		//ptrRigid->SetLinearVelocity(UnkoVelo);
+		//auto Gravi = AddComponent<Gravity>();
 		//影をつける
-		auto ptrShadow = AddComponent<Shadowmap>();
-		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+		auto ShadowPtr = AddComponent<Shadowmap>();
+		ShadowPtr->SetMeshResource(L"DEFAULT_SPHERE");
 
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		ptrDraw->SetFogEnabled(true);
-		/*ptrDraw->SetMeshResource();*/
-		ptrDraw->SetMeshResource(L"scarab");
-		ptrDraw->SetTextureResource(L"A_TX");
-		//透明処理をする
-		SetAlphaActive(true);
+		auto PtrDraw = AddComponent<BcPNTStaticDraw>();
+		PtrDraw->SetMeshResource(L"DEFAULT_SPHERE");
 
-		//ステートマシンの構築
-		m_StateMachine.reset(new StateMachine<PlayerChild>(GetThis<PlayerChild>()));
-		//最初のステートをSeekFarStateに設定
-		m_StateMachine->ChangeState(PlayerChildFarState::Instancee());
 
 		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		auto stage = GetStage();
 		auto Plyaer = stage->GetSharedGameObject<Player>(L"Player", false);
-		if (ptrCamera||!Plyaer) {
+		if (ptrCamera || !Plyaer) {
 			//MyCameraである
 			//MyCameraに注目するオブジェクト（プレイヤー）の設定
 			ptrCamera->SetTargetObject(Plyaer);
-			ptrCamera->SetTargetToAt(Vec3(0, 0.25f, 0));
+			ptrCamera->SetTargetToAt(Vec3(0, 0.5f, 0));
+		}
+
+	}
+	void UnkoBoll::OnUpdate() {
+		if (active == true) {
+			Move();
 		}
 	}
+	void UnkoBoll::OnUpdate2() {
+
+	}
 
 
 
-	//操作
-	void PlayerChild::OnUpdate() {
-		m_InputHandler.PushHandle(GetThis<PlayerChild>());
-		if (active) {
-			m_Force = Vec3(0);
-			//ステートマシンのUpdateを行う
-			//この中でステートの切り替えが行われる
-			m_StateMachine->Update();
-			auto ptrUtil = GetBehavior<UtilBehavior>();
-			ptrUtil->RotToHead(1.0f);
+	void UnkoBoll::Move() {
+		auto thistrans = GetComponent<Transform>();
+		auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
+		auto ptrTrans = Plyaer->GetComponent<Transform>();
+		auto PsUnko = this->GetComponent<RigidbodySphere>();
+		auto ptrfor = ptrTrans->GetForword();
+		auto ptrPos = ptrTrans->GetPosition();
+		auto ptrScale = ptrTrans->GetScale();
+	
+		auto thispos = thistrans->GetPosition().y;
+		Vec3 Pos;
+	
+		//ptrfor += ptrTrans->GetRotation();
+		Pos = ptrfor + ptrPos + ptrScale/2;
+		PsUnko->SetPosition(Pos);
+
+		float maxlenge = ptrTrans->GetPosition().y+2;
+		if (Pos.y >= maxlenge) {
+			Pos.y = maxlenge;
 		}
-	}
-
-	void PlayerChild::OnPushA() {
-		SetDrawActive(false);
-	}
-	void PlayerChild::OnPushB() {
-		SetDrawActive(true);
+		//thistrans->SetPosition(Pos);
 	}
 
 
-	Vec3 PlayerChild::GetTargetPos()const {
-		auto ptrTarget = GetStage()->GetSharedObject(L"Player",true);
-		if (ptrTarget) {
-			return ptrTarget->GetComponent<Transform>()->GetWorldPosition();
-		}
-	}
-
-
-	void PlayerChild::ApplyForce() {
-		auto trans = GetComponent<Transform>();
-		auto pos = trans->GetPosition();
-		auto player = GetStage()->GetSharedObject(L"Player", true);
-		if (player) {
-			auto playertrans = player->GetComponent<Transform>();
-			auto playerpos = playertrans->GetPosition();
-			Vec3 Velo = Vec3(0);
-			Velo += (playerpos - pos)*5.0f;
-			Velo *= 1.8f;
-			pos += Velo *= App::GetApp()->GetElapsedTime();
-			trans->SetPosition(pos);
-		}
-	}
-
-//--------------子オブジェクトのステートマシーン-------------------
-
-	//--------------------------------------------------------------------------------------
-	//	プレイヤーから遠いときの移動
-	//--------------------------------------------------------------------------------------
-	shared_ptr<PlayerChildFarState> PlayerChildFarState::Instancee() {
-		static shared_ptr<PlayerChildFarState> instance(new PlayerChildFarState);
-		return instance;
-	}
-	void PlayerChildFarState::Enter(const shared_ptr<PlayerChild>& Obj) {
-	}
-	void PlayerChildFarState::Execute(const shared_ptr<PlayerChild>& Obj) {
-		auto ptrSeek = Obj->GetBehavior<SeekSteering>();
-		auto ptrSep = Obj->GetBehavior<SeparationSteering>();
-		auto force = Obj->GetForce();
-		force = ptrSeek->Execute(force, Obj->GetVelocity(), Obj->GetTargetPos());
-		force += ptrSep->Execute(force);
-		Obj->SetForce(force);
-		Obj->ApplyForce();
-		float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
-		if (f < Obj->GetStateChangeSize()) {
-			Obj->GetStateMachine()->ChangeState(PlayerChildNearState::Instance());
-		}
-	}
-
-	void PlayerChildFarState::Exit(const shared_ptr<PlayerChild>& Obj) {
+	void UnkoBoll::OnCollisionEnter(shared_ptr<GameObject>& Other){
+		auto Slope = Other->GetStage()->GetSharedObjectGroup(L"TilingBox");
+			Slope->IntoGroup(Other);
+			auto Trans = GetComponent<Transform>();
+			auto slope = Trans->GetRotation();
+			if (slope != Vec3(0)) {
+				//active = false;
+			}
 
 	}
-
-	//--------------------------------------------------------------------------------------
-	//	プレイヤーから近いときの移動
-	//--------------------------------------------------------------------------------------
-	shared_ptr<PlayerChildNearState> PlayerChildNearState::Instance() {
-		static shared_ptr<PlayerChildNearState> instance(new PlayerChildNearState);
-		return instance;
-	}
-	void PlayerChildNearState::Enter(const shared_ptr<PlayerChild>& Obj) {
-		
-	}
-	void PlayerChildNearState::Execute(const shared_ptr<PlayerChild>& Obj) {
-		float f = bsm::length(Obj->GetComponent<Transform>()->GetPosition() - Obj->GetTargetPos());
-		if (f >= Obj->GetStateChangeSize()) {
-			Obj->GetStateMachine()->ChangeState(PlayerChildFarState::Instancee());
-		}
-		else {
-			Obj->GetStateMachine()->ChangeState(PlayerChildStayState::Instance());
-		}
-	}
-	void PlayerChildNearState::Exit(const shared_ptr<PlayerChild>& Obj) {
+	void UnkoBoll::OnCollisionExcute(shared_ptr<GameObject>& Other){
 
 	}
-
-//--------------------------------------------------------------------------------------
-//	プレイヤーについてる時の行動
-//--------------------------------------------------------------------------------------
-	shared_ptr<PlayerChildStayState> PlayerChildStayState::Instance() {
-		static shared_ptr<PlayerChildStayState> instance(new PlayerChildStayState);
-		return instance;
+	void UnkoBoll::OnCollisionExit(shared_ptr<GameObject>& Other) {
+		//active = false;
 	}
-	void PlayerChildStayState::Enter(const shared_ptr<PlayerChild>& Obj) {
-
-	}
-	void PlayerChildStayState::Execute(const shared_ptr<PlayerChild>& Obj) {
-		Obj->ApplyForce();
-
-	}
-	void PlayerChildStayState::Exit(const shared_ptr<PlayerChild>& Obj) {
-
-	}
-
-
 
 
 

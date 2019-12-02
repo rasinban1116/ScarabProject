@@ -45,6 +45,7 @@ namespace basecross{
 		//操作
 		virtual void OnUpdate() override;
 	};
+
 	//--------------------------------------------------------------------------------------
 	//　タイリングする固定のボックス
 	//--------------------------------------------------------------------------------------
@@ -74,6 +75,34 @@ namespace basecross{
 		virtual void OnCollisionExcute(shared_ptr<GameObject>&ptrObj)override;
 	};
 
+	//--------------------------------------------------------------------------------------
+	//　タイリングする固定のボックス
+	//--------------------------------------------------------------------------------------
+	class TilingFixedSlopeBox : public GameObject {
+		Vec3 m_Scale;
+		Vec3 m_Rotation;
+		Vec3 m_Position;
+		float m_UPic;
+		float m_VPic;
+		wstring m_Texname;
+	public:
+		//構築と破棄
+		TilingFixedSlopeBox(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Vec3& Rotation,
+			const Vec3& Position,
+			float UPic,
+			float VPic,
+			const wstring& Texname
+		);
+		virtual ~TilingFixedSlopeBox();
+		//初期化
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		//操作
+		virtual void OnCollisionEnter(shared_ptr<GameObject>&ptrObj)override;
+		virtual void OnCollisionExcute(shared_ptr<GameObject>&ptrObj)override;
+	};
 
 
 	//--------------------------------------------------------------------------------------

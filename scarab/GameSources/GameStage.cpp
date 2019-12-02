@@ -25,11 +25,12 @@ namespace basecross {
 		auto ptrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
 		ptrMultiLight->SetDefaultLighting();
-		
+
 	}
 	//ボックスの作成
 	void GameStage::CreateFixedBox() {
 		CreateSharedObjectGroup(L"TilingBox");
+		Vec3 Rot;
 		//CSVの行単位の配列
 		vector<wstring> LineVec;
 		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
@@ -47,7 +48,7 @@ namespace basecross {
 			);
 			
 			
-			Vec3 Rot;
+
 			//回転は「XM_PIDIV2」の文字列になっている場合がある
 			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
 			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
@@ -68,10 +69,57 @@ namespace basecross {
 			);
 
 			//各値がそろったのでオブジェクト作成
-			AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
-			//auto tilingquat = tiling->GetComponent<Transform>();
-			//tilingquat->SetQuaternion(rot);
+			auto Tiling = AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
 		}
+	}
+	//ボックスの作成
+	void GameStage::CreateFixedSlopeBox() {
+		CreateSharedObjectGroup(L"TilingSlopeBox");
+		Vec3 Rot;
+		//CSVの行単位の配列
+		vector<wstring> LineVec;
+		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
+		m_GameStageCsvB.GetSelect(LineVec, 0, L"TilingFixedBox");
+		for (auto& v : LineVec) {
+			//トークン（カラム）の配列
+			vector<wstring> Tokens;
+			//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+			Util::WStrToTokenVector(Tokens, v, L',');
+			//各トークン（カラム）をスケール、回転、位置に読み込む
+			Vec3 Scale(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+
+
+			//回転は「XM_PIDIV2」の文字列になっている場合がある
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+			Quat rot;
+			float x, y, z;
+			x = (float)_wtof(Tokens[4].c_str());
+			y = (float)_wtof(Tokens[5].c_str());
+			z = (float)_wtof(Tokens[6].c_str());
+			rot.setX(x);
+			rot.setY(y);
+			rot.setZ(z);
+			//Rot = rot;
+			Vec3 Pos(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//各値がそろったのでオブジェクト作成
+			auto Tiling = AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
+			if (Rot != Vec3(0)) {
+				Tiling->AddTag(L"Slope");
+			}
+		}
+
 	}
 
 	void GameStage::CreateUI() {
@@ -94,21 +142,9 @@ namespace basecross {
 
 	//プレイヤーを継承した子オブジェクト（ふんころがしになる予定）を生成
 	void GameStage::CreatePlayerChild() {
-		//オブジェクトのグループを作成する
-		auto group = CreateSharedObjectGroup(L"SeekGroup");
-		auto Target = GetSharedObject(L"Player", true);
-		auto Targetrans = Target->GetComponent<Transform>();
-		auto TargetPos = Targetrans->GetPosition();
-		//配列の初期化
-		vector<Vec3> vec = {
-			{ TargetPos.x,TargetPos.y-0.5f,TargetPos.z -1.0f },
-		};
-
-		//配置オブジェクトの作成
-		for (size_t count = 0; count < vec.size(); count++) {
-			AddGameObject<PlayerChild>(vec[count]);
-		}
-
+		auto Unko = AddGameObject<UnkoBoll>(Vec3(-85.0f, 21.0f, -33.0f),Vec3(1.0f),Vec3(0.0f), Vec3(0.0f, 6.0f, 5.0f));
+		SetSharedGameObject(L"UnkoBoll", Unko);
+		Unko->AddTag(L"UnkoBoll");
 	}
 
 	void GameStage::activeboll() {

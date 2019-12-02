@@ -64,6 +64,7 @@ namespace basecross {
 		//‰Šú‰»
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		void CreatePlayer();
 		void OnPushA();
 		void OnPushB();
 	};
