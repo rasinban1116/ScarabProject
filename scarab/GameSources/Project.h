@@ -14,8 +14,7 @@
 #include "Player.h"
 #include "MyCamera.h"
 #include "gimmick.h"
+#include "Enemy.h"
 #include "SceneStage.h"
-
-
 
 

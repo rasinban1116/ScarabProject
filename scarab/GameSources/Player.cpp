@@ -260,6 +260,8 @@ namespace basecross {
 		//描画するテクスチャを設定
 		ptrDraw->SetTextureResource(L"J_TX");
 
+		AddTag(L"Player");
+
 		//透明処理
 		SetAlphaActive(true);
 

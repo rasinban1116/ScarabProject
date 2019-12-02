@@ -138,6 +138,7 @@ namespace basecross {
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
+		
 	}
 
 	//プレイヤーを継承した子オブジェクト（ふんころがしになる予定）を生成
@@ -145,6 +146,20 @@ namespace basecross {
 		auto Unko = AddGameObject<UnkoBoll>(Vec3(-85.0f, 21.0f, -33.0f),Vec3(1.0f),Vec3(0.0f), Vec3(0.0f, 6.0f, 5.0f));
 		SetSharedGameObject(L"UnkoBoll", Unko);
 		Unko->AddTag(L"UnkoBoll");
+	}
+
+	void GameStage::CreateLowEnemy() {
+		auto group = CreateSharedObjectGroup(L"EnemyGroup");
+		vector< vector<Vec3> > vecSeek = {
+			{ Vec3(5.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
+		};
+		//追いかけるオブジェクトの作成
+		for (auto v : vecSeek) {
+			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1]);
+			SetSharedGameObject(L"Enemy", ptreneobj);
+			ptreneobj->AddTag(L"Enemy");
+			
+		}
 	}
 
 	void GameStage::activeboll() {
@@ -176,6 +191,7 @@ namespace basecross {
 			CreatePlayer();
 			//プレイヤーを継承した子オブジェクトの作成
 			CreatePlayerChild();
+			CreateLowEnemy();
 			//ギミックの生成
 			CreateGimmickObj();
 			//UIの表示
