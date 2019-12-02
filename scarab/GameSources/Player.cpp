@@ -229,7 +229,7 @@ namespace basecross {
 		auto ptr = AddComponent<Transform>();
 		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
 		ptr->SetRotation(0.0f, .0f, 0.0f);
-		ptr->SetPosition(Vec3(0.0f, 1.0f,0.0f));
+		ptr->SetPosition(Vec3(0.0f, 1.0f, 0.0f));
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
@@ -263,14 +263,12 @@ namespace basecross {
 		//透明処理
 		SetAlphaActive(true);
 
-		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
-		auto stage = GetStage();
-		auto Plyaer = stage->GetSharedGameObject<Player>(L"Player", false);
-		if (ptrCamera || !Plyaer) {
+		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
+		if (ptrMyCamera) {
 			//MyCameraである
 			//MyCameraに注目するオブジェクト（プレイヤー）の設定
-			ptrCamera->SetTargetObject(Plyaer);
-			ptrCamera->SetTargetToAt(Vec3(0, 0.5f, 0));
+			ptrMyCamera->SetTargetObject(GetThis<GameObject>());
+			ptrMyCamera->SetTargetToAt(Vec3(0, 0.25f, 0));
 		}
 	}
 
