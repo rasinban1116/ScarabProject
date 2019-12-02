@@ -95,6 +95,7 @@ namespace basecross {
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
+		
 	}
 
 	//プレイヤーを継承した子オブジェクト（ふんころがしになる予定）を生成
@@ -117,15 +118,15 @@ namespace basecross {
 	}
 
 	void GameStage::CreateLowEnemy() {
-		auto group = CreateSharedObjectGroup(L"Enemy_LowGroup");
+		auto group = CreateSharedObjectGroup(L"EnemyGroup");
 		vector< vector<Vec3> > vecSeek = {
 			{ Vec3(5.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
 		};
 		//追いかけるオブジェクトの作成
 		for (auto v : vecSeek) {
-			auto ptrPathobj = AddGameObject<FollowPathObject>(v[0], v[1]);
-			SetSharedGameObject(L"Pathobj", ptrPathobj);
-			ptrPathobj->AddTag(L"Pathobj");
+			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1]);
+			SetSharedGameObject(L"Enemy", ptreneobj);
+			ptreneobj->AddTag(L"Enemy");
 			
 		}
 	}

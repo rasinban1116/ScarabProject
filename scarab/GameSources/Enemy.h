@@ -1,78 +1,117 @@
-/*!
-@file ProjectShader.h
-@brief プロジェクトで使用するシェーダー
-*/
-
 #pragma once
 #include "stdafx.h"
 
-namespace basecross{
-	class Enemy_Low : public GameObject {
-		Vec3 m_Scale; //大きさ
-		Vec3 m_Pos; //位置
-		float m_Speed; //動くスピード
-		float m_SeekSpeed;
-		Vec3 m_playerPos; //プレイヤーの位置
-		Vec3 m_targetPos; //目的地
-		Vec3 m_strPos; //最初の位置
+namespace basecross {
+	class LookFlg {
+		bool m_lookflg;
 
-		bool m_walkflg;//巡回する場所にいるかどうか
+	public:
+		void SetLook(bool ptrlook) {
+			m_lookflg = ptrlook;
+		}
 
-		Vec3 p_balance;// プレイヤーとの距離
+		bool GetLook() {
+			return m_lookflg;
+		}
 
-		int horizoncase;//どの行動を行わせるか
+		wstring ToString() {
+			if (m_lookflg) {
+				return L"true";
+			} else {
+				return L"false";
+			}
+		}
+	};
+
+	class Enemy : public GameObject, public LookFlg {
+		unique_ptr< StateMachine<Enemy> >  m_StateMachine;
+		Vec3 m_StrPos;
+		float m_StateChangeSize;
+		//フォース
+		Vec3 m_Force;
+		//速度
+		Vec3 m_Velocity;
+		Vec3 m_Status;
+		bool m_lookflg;
+		Vec3 m_TagePos;
+		void ApplyForce();
+		Vec3 m_ParentPtr;
 
 
-		int m_vertical;//左右どちらに進むか
-		int m_side; //上下どちらに進むか
-		int m_strvertical;
-		int m_strside;
-		float m_initial; //差の設定
-		float s_balance; //横の差
-		float v_balance; //縦の差
-		int s_case; //どっちからどっちに進むか
-		int v_case;
-		bool moveflag; //UpDateで一回だけやるやつ
-		int m_spin; //スタートの位置
-		int spin_case; //どちら周りか
+	public :
+		Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos);
+		virtual ~Enemy();
 
-	public : 
-		Enemy_Low(const shared_ptr<Stage>& StagePtr, 
-			const Vec3& Scale,
-			const Vec3& strPos,
-			const Vec3& tagePos);
-		virtual ~Enemy_Low();
-		//初期化
+		//アクセサ
+		const unique_ptr<StateMachine<Enemy>>& GetStateMachine() {
+			return m_StateMachine;
+		}
+		Vec3 GetStartPos() const {
+			return m_StrPos;
+		}
+		float GetStateChangeSize() const {
+			return m_StateChangeSize;
+		}
+		const Vec3& GetForce()const {
+			return m_Force;
+		}
+		void SetForce(const Vec3& f) {
+			m_Force = f;
+		}
+		void AddForce(const Vec3& f) {
+			m_Force += f;
+		}
+		const Vec3& GetVelocity()const {
+			return m_Velocity;
+		}
+		void SetVelocity(const Vec3& v) {
+			m_Velocity = v;
+		}
+		bool GetLook() {
+			return m_lookflg;
+		}
+
+		shared_ptr<GameObject>  GetTarget()const;
+		//virtual void NearBehavior();
+		//virtual void FarBehavior();
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		virtual void OnUpdate2() override;
-		void SetState();
-		void MoveChange();
-		void Seek();
-		void Walk();
-		void Horizon();
-		float m_sqrt(float s);
 	};
-	
+
+	class LookOfState : public ObjState<Enemy>
+	{
+		LookOfState() {}
+	public:
+		static shared_ptr<LookOfState> Instance();
+		virtual void Enter(const shared_ptr<Enemy>& Obj)override;
+		virtual void Execute(const shared_ptr<Enemy>& Obj)override;
+		virtual void Exit(const shared_ptr<Enemy>& Obj)override;
+	};
+
+	//--------------------------------------------------------------------------------------
+	//	 プレイヤーから近いときの移動
+	//--------------------------------------------------------------------------------------
+	class LookOnState : public ObjState<Enemy>
+	{
+		LookOnState() {}
+	public:
+		static shared_ptr<LookOnState> Instance();
+		virtual void Enter(const shared_ptr<Enemy>& Obj)override;
+		virtual void Execute(const shared_ptr<Enemy>& Obj)override;
+		virtual void Exit(const shared_ptr<Enemy>& Obj)override;
+	};
 
 
-
-	//class Enemy_Horizon : public Enemy_Low {
-	//		Vec3 m_Scale;
-	//		Quat m_Qt;
-	//		Vec3 m_Position;
-	//	public:
-	//		//構築と破棄
-	//		Enemy_Horizon(const shared_ptr<Stage>& StagePtr,
-	//			const Vec3& Scale,
-	//			const Quat& Qt,
-	//			const Vec3& Position
-	//		);
-	//		virtual ~Enemy_Horizon();
-	//		//初期化
-	//		virtual void OnCreate() override;
-	//		virtual void OnUpdate() override;
-	//};
+	class EnemyEye : public GameObject, public LookFlg{
+		Vec3 m_StartPos;
+		Vec3 m_Rot;
+		const shared_ptr<GameObject>& m_ParentPtr;
+	public:
+		EnemyEye(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const shared_ptr<GameObject>& ParentPtr);
+		virtual ~EnemyEye();
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		void DebagMesse();
+	};
 }
-//end basecross
-

@@ -36,6 +36,7 @@ namespace basecross{
 
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionObb>();
+		AddTag(L"Ground");
 		ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
