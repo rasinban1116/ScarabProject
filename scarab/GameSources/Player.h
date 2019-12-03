@@ -15,11 +15,11 @@ namespace basecross{
 		float m_Speed;    //プレイヤーのスピード
 		float m_Scale;    //プレイヤーの大きさ（直径）
 		Vec3 m_PlayVelo;  //プレイヤーの速度ベクトル
+		Vec3 m_pos;
 		bool active;      //プレイヤーが隠れているかどうか
 		bool isGrand;
 
-		
-		
+	
 	//プレイヤーの動きに必要な関数
 		void DrawStrings(); //文字列の表示
 		InputHandler<Player> m_InputHandler;	//入力ハンドラー
@@ -38,7 +38,8 @@ namespace basecross{
 		@param[in]	StagePtr	ステージ
 		*/
 		//--------------------------------------------------------------------------------------
-		Player(const shared_ptr<Stage>& StagePtr);
+		Player(const shared_ptr<Stage>& StagePtr,
+			const Vec3 &Position);
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief	デストラクタ

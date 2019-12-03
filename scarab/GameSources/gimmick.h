@@ -75,7 +75,22 @@ namespace basecross {
 
 
 //--------------------------------------------------------------------------------------
-///	
+///	ステージセレクト
 //--------------------------------------------------------------------------------------
+	class StageSrectObj : public GameObject {
+		Vec3 m_Position;
+		Vec3 m_Scele;
+
+	public:
+		StageSrectObj(const shared_ptr<Stage>&StagePtr,
+			const Vec3 &Posion,
+			const Vec3 &Scale
+		);
+		virtual ~StageSrectObj();
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+
+		virtual void OnCollisionEnter(shared_ptr<GameObject>&StagePtr);
+	};
 }
 //end basecross
