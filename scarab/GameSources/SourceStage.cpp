@@ -124,14 +124,16 @@ namespace basecross {
 	//プレイヤ―の生成
 	void SerectStage::CreatePlayer() {
 		//プレーヤーの作成
-		auto ptrPlayer = AddGameObject<Player>();
+		auto ptrPlayer = AddGameObject<Player>(Vec3(0.0f,1.0f,-5.0f));
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
 	}
 
 	void SerectStage::CreateStage(){
-			AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
+		
+		auto Grand = AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
+		Grand->AddTag(L"Grand");
 	}
 	void SerectStage::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<SerectStage>());
@@ -141,6 +143,17 @@ namespace basecross {
 		PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameStage");
 	}
 	void SerectStage::OnPushB() {
+
+	}
+	void SerectStage::OnCreateSrectObj() {
+		CreateSharedObjectGroup(L"SerectObj");
+		AddGameObject<StageSrectObj>(Vec3(-10.0f, 3.0f, -10.0f), Vec3(2.5f, 1.5f, 2.5f));
+		AddGameObject<StageSrectObj>(Vec3(-10.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
+		AddGameObject<StageSrectObj>(Vec3(0.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
+		AddGameObject<StageSrectObj>(Vec3(5.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
+		AddGameObject<StageSrectObj>(Vec3(10.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
+		AddGameObject<StageSrectObj>(Vec3(10.0f, 3.0f, 10.0f), Vec3(2.5f, 1.5f, 2.5f));
+
 
 	}
 
@@ -154,6 +167,8 @@ namespace basecross {
 			CreateStage();
 			//プレイヤーの生成
 			CreatePlayer();
+			//ステージセレクトオブジェクトの生成
+			OnCreateSrectObj();
 		}
 		catch (...) {
 			throw;

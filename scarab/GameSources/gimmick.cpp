@@ -178,8 +178,69 @@ namespace basecross {
 		auto play = Other->GetStage()->GetSharedObject(L"Player", true);
 		auto ptrScene = App::GetApp()->GetScene<Scene>();
 		if (play) {
-			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToClearStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGmaeStage");
 		}
+	}
+
+//--------------------------------------------------------------------------------------
+///	
+///※確認のためオブジェクトを可視化している
+//--------------------------------------------------------------------------------------
+
+	StageSrectObj::StageSrectObj(const shared_ptr<Stage>&StagePtr,
+		const Vec3 &Position,
+		const Vec3 &Scale
+	) :
+		GameObject(StagePtr),
+		m_Position(Position),
+		m_Scele(Scale)
+	{}
+	StageSrectObj::~StageSrectObj() {
+
+	}
+	void StageSrectObj::OnCreate() {
+		auto ptrtrans = AddComponent<Transform>();
+		ptrtrans->SetPosition(m_Position);
+		ptrtrans->SetScale(m_Scele);
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();;
+		//ptrColl->AddExcludeCollisionTag(L"Grand");
+		auto gira = AddComponent<Gravity>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap>();
+		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"KUSA_TX");
+
+	/*	物理計算ボックス
+		PsBoxParam param(ptrtrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		auto PsPtr = AddComponent<RigidbodyBox>(param);
+		自動的にTransformを設定するフラグは無し
+		PsPtr->SetAutoTransform(false);*/
+	}
+	void StageSrectObj::OnUpdate() {
+
+	}
+	void StageSrectObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
+		auto play = Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
+		auto ptrScene = App::GetApp()->GetScene<Scene>();
+
+		if (Other->FindTag(L"Player")) {
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameStage");
+		}
+		else {
+			
+		}
+
 	}
 
 }

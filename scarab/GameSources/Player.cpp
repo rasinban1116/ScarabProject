@@ -12,13 +12,16 @@ namespace basecross {
 	//	用途: プレイヤー
 	//--------------------------------------------------------------------------------------
 	//構築
-	Player::Player(const shared_ptr<Stage>& StagePtr) :
+	Player::Player(const shared_ptr<Stage>& StagePtr,
+		const Vec3 &Position
+		) :
 		GameObject(StagePtr),
 		m_Scale(0.5f),
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(3.0f)
+		m_Speed(3.0f),
+		m_pos(Position)
 
 	{}
 
@@ -229,7 +232,7 @@ namespace basecross {
 		auto ptr = AddComponent<Transform>();
 		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
 		ptr->SetRotation(0.0f, .0f, 0.0f);
-		ptr->SetPosition(Vec3(0.0f, 1.0f, 0.0f));
+		ptr->SetPosition(m_pos);
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
@@ -376,7 +379,7 @@ namespace basecross {
 		const Vec3 &Rot,
 		const Vec3 &Velocity
 	):
-		Player(StagePtr),
+		Player(StagePtr,Position),
 		UnkoPos(Position),
 		UnkoScale(Scale),
 		UnkoRot(Rot),
@@ -405,7 +408,7 @@ namespace basecross {
 		//Rigidbodyをつける
 		auto  ptrRigid = AddComponent<RigidbodySphere>(param);
 		//ptrRigid->SetLinearVelocity(UnkoVelo);
-		//auto Gravi = AddComponent<Gravity>();
+		auto Gravi = AddComponent<Gravity>();
 		//影をつける
 		auto ShadowPtr = AddComponent<Shadowmap>();
 		ShadowPtr->SetMeshResource(L"DEFAULT_SPHERE");
@@ -426,9 +429,9 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-		if (active == true) {
+
 			Move();
-		}
+		
 	}
 	void UnkoBoll::OnUpdate2() {
 
@@ -449,14 +452,14 @@ namespace basecross {
 		Vec3 Pos;
 	
 		//ptrfor += ptrTrans->GetRotation();
-		Pos = ptrfor + ptrPos + ptrScale/2;
+		Pos = ptrfor + ptrPos;
 		PsUnko->SetPosition(Pos);
 
 		float maxlenge = ptrTrans->GetPosition().y+2;
 		if (Pos.y >= maxlenge) {
 			Pos.y = maxlenge;
 		}
-		//thistrans->SetPosition(Pos);
+	thistrans->SetPosition(Pos);
 	}
 
 

@@ -67,6 +67,7 @@ namespace basecross {
 		void CreatePlayer();
 		void OnPushA();
 		void OnPushB();
+		void OnCreateSrectObj();
 	};
 
 //--------------------------------------------------------------------------------------
@@ -87,6 +88,7 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		void OnPushA();
 		void OnPushB();
+
 	};
 }
 //end basecross
