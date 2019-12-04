@@ -311,7 +311,43 @@ namespace basecross {
 		Camera::OnUpdate();
 	}
 
+	//--------------------------------------------------------------------------------------
+	//	オープニングカメラ（コンポーネントではない）
+	//--------------------------------------------------------------------------------------
+	OpeningCamera::OpeningCamera() :
+		Camera()
+	{}
+	OpeningCamera::~OpeningCamera() {}
 
+	void OpeningCamera::OnUpdate() {
+		auto ptrOpeningCameraman = dynamic_pointer_cast<OpeningCameraman>(GetCameraObject());
+		if (ptrOpeningCameraman) {
+			auto pos = ptrOpeningCameraman->GetAtPos();
+			SetAt(pos);
+		}
+		Camera::OnUpdate();
+	}
+	//--------------------------------------------------------------------------------------
+	//	オブジェクトカメラ（コンポーネントではない）
+	//--------------------------------------------------------------------------------------
+	//構築と破棄
+	ObjCamera::ObjCamera() :
+		Camera()
+	{}
+	ObjCamera::~ObjCamera() {}
+
+	void ObjCamera::SetTargetObject(const shared_ptr<GameObject>& Obj) {
+		m_TargetObject = Obj;
+	}
+
+	void ObjCamera::OnUpdate() {
+		auto ptrTarget = m_TargetObject.lock();
+		if (ptrTarget) {
+			auto pos = ptrTarget->GetComponent<Transform>()->GetPosition();
+			SetAt(pos);
+		}
+		Camera::OnUpdate();
+	}
 
 }
 //end basecross

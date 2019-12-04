@@ -176,39 +176,6 @@ namespace basecross {
 
 	}
 
-	void Player::UnkoMove() {
-		//うんこを中心に回転する
-		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
-		auto vec = GetMoveVector();
-		//前回のターンからの時間
-		float elapsedTime = App::GetApp()->GetElapsedTime();
-		auto Target = GetStage()->GetSharedObject(L"UnkoBoll", true);
-		auto TargetTrans = Target->GetComponent < Transform>();
-		auto TargetPos = TargetTrans->GetPosition(); //糞玉の位置
-		auto thistrans = GetComponent<Transform>();
-		auto thisPos = thistrans->GetPosition();     //自分の位置
-		auto thisPs = GetComponent<RigidbodySphere>();
-		
-		
-		Quat q;
-		float pai = 3.14;
-		float rad = 0;
-		rad = atan2(TargetPos.z - thisPos.z,TargetPos.x - thisPos.x);
-		Vec3 unko = vec;
-		auto Usin = sin(rad * (pai / 360));
-		auto Ucos = -cos(rad * (pai / 360));
-		m_PlayVelo.z = vec.z * m_Speed;
-		m_PlayVelo.x = Usin* m_Speed;
-		m_PlayVelo.y = vec.y;
-		thisPos.x += Usin * elapsedTime + TargetPos.x;
-		thisPos.z += vec.z * m_Speed;
-		thisPos.y += TargetPos.y;
-		//TargetTrans->SetPosition(TargetPos);
-		//thistrans->SetPosition(thisPos);
-		thisPs->SetPosition(m_PlayVelo);
-	
-	}
-
 	void Player::ChangeTrans() {
 		//RigidbodySphereからTransformへのパラメータの設定
 		//自動的に設定はされない設定になっているので自分で行う
@@ -259,10 +226,11 @@ namespace basecross {
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		ptrDraw->SetMeshResource(L"scarab");
+		ptrDraw->SetMeshResource(L"scarab");	
 		//描画するテクスチャを設定
-		ptrDraw->SetTextureResource(L"J_TX");
-
+		ptrDraw->SetTextureResource(L"KUSA_TX");
+		ptrDraw->SetAlpha(true);
+		SetAlphaActive(true);
 		AddTag(L"Player");
 
 		//透明処理
@@ -281,31 +249,35 @@ namespace basecross {
 	//更新
 	void Player::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<Player>());
-		if (active) {
-		Move();
-		//UnkoMove();
+		auto ptrGameStage = dynamic_pointer_cast<GameStage>(GetStage());
+		if (this->GetStage() == ptrGameStage) {
+			if (ptrGameStage->GetCameraSelect() == CameraSelect::openingCamera) {
+				return;
+			}
 		}
+
+		if (active) {
+			Move();
+		}
+
 	}
 
 	//後更新
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		DrawStrings();
+		//DrawStrings();
 	}
 
 	//Aボタンハンドラ
 	void  Player::OnPushA() {
 		active = false;	
-	
-		
 	}
 
 
 	//Bボタンハンドラ
 	void  Player::OnPushB() {
-		active = true;
-		
+		active = true;	
 	}
 
 	
@@ -314,19 +286,13 @@ namespace basecross {
 	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
 		isGrand = true;
-		//auto Unko =Other-> GetStage()->GetSharedObject(L"UnkoBoll", true);
 		auto trans = this->GetComponent<Transform>();
-		//if (Unko) {
-		//	//active = false;
-		//	//trans->SetParent(Unko);
-		//}
 	}
 
 
 	//コリジョンが何かから離れた時の処理
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
 		isGrand = false;
-
 	}
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>&Other) {
@@ -429,9 +395,7 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-
-			Move();
-		
+	Move();
 	}
 	void UnkoBoll::OnUpdate2() {
 

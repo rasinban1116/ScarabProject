@@ -8,6 +8,25 @@
 
 namespace basecross {
 //--------------------------------------------------------------------------------------
+///	UI全般の表示
+//--------------------------------------------------------------------------------------
+
+	class UIDraw : public GameObject {
+
+		void ScoreDraw();
+	public:
+		//構築
+		UIDraw(const shared_ptr<Stage>&StagePtr);
+		virtual ~UIDraw();
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+		virtual void OnUpdate2()override;
+		static void SetScore(float);
+	private:
+		static float Score;
+	};
+
+//--------------------------------------------------------------------------------------
 ///	うんコイン
 //--------------------------------------------------------------------------------------
 	class GimmickObj : public GameObject {
@@ -31,24 +50,7 @@ namespace basecross {
 		
 	};
 
-//--------------------------------------------------------------------------------------
-///	UI全般の表示
-//--------------------------------------------------------------------------------------
 
-	class UIDraw : public GameObject {
-
-		void ScoreDraw();
-	public:
-		//構築
-		UIDraw(const shared_ptr<Stage>&StagePtr);
-		virtual ~UIDraw();
-		virtual void OnCreate()override;
-		virtual void OnUpdate()override;
-		virtual void OnUpdate2()override;
-		static void SetScore(float);
-	private:
-		static float Score;
-	};
 
 //--------------------------------------------------------------------------------------
 ///	ステージクリア条件オブジェクト
@@ -71,11 +73,8 @@ namespace basecross {
 
 
 
-
-
-
 //--------------------------------------------------------------------------------------
-///	ステージセレクト
+///	ステージセレクトオブジェクト
 //--------------------------------------------------------------------------------------
 	class StageSrectObj : public GameObject {
 		Vec3 m_Position;

@@ -36,15 +36,15 @@ namespace basecross {
 
 	void UIDraw::ScoreDraw() {
 		wstring Scoreptr(L"SCORE:\t");
-		Scoreptr += L"X=" + Util::FloatToWStr(Score, 1, Util::FloatModify::Fixed) + L",\t";
+		Scoreptr += Util::FloatToWStr(Score, 1, Util::FloatModify::Fixed) + L",\t";
 		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
-		wstring strFps(L"FPS: ");
-		strFps += Util::UintToWStr(fps);
-		strFps += L"\nElapsedTime: ";
-		wstring str = Scoreptr;
+		//wstring strFps(L"FPS: ");
+		//strFps += Util::UintToWStr(fps);
+		//strFps += L"\nElapsedTime: ";
+		//wstring str = Scoreptr;
 		//文字列をつける
 		auto ptrString = GetComponent<StringSprite>();
-		ptrString->SetText(strFps);
+		ptrString->SetText(Scoreptr);
 	}
 	void UIDraw::SetScore(float x) {
 		Score += x;
@@ -96,14 +96,9 @@ namespace basecross {
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"H_TX");
 
-		////物理計算ボックス
-		//PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
-		//auto PsPtr = AddComponent<RigidbodyBox>(param);
-
 		//アクションの登録
 		auto PtrAction = AddComponent<Action>();
 		PtrAction->AddRotateBy(1.0f, Vec3(0,5,0));
-
 		//ループする
 		PtrAction->SetLooped(true);
 		//アクション開始
@@ -114,8 +109,8 @@ namespace basecross {
 	}
 
 	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {	
-		auto play =GetStage()->GetSharedObject(L"Player", true);
-		auto UI = GetStage()->GetSharedGameObject<UIDraw>(L"UI", true);
+		auto play =Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
+		auto UI = Other->GetStage()->GetSharedGameObject<UIDraw>(L"UI", true);
 		if (play&&UI) {
 			SetUpdateActive(false);
 			SetDrawActive(false);
@@ -149,7 +144,7 @@ namespace basecross {
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionObb>();;
 
-		auto gira = AddComponent<Gravity>();
+		//auto gira = AddComponent<Gravity>();
 
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
@@ -183,8 +178,7 @@ namespace basecross {
 	}
 
 //--------------------------------------------------------------------------------------
-///	
-///※確認のためオブジェクトを可視化している
+///	ステージセレクト用オブジェクト
 //--------------------------------------------------------------------------------------
 
 	StageSrectObj::StageSrectObj(const shared_ptr<Stage>&StagePtr,
@@ -221,11 +215,6 @@ namespace basecross {
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"KUSA_TX");
 
-	/*	物理計算ボックス
-		PsBoxParam param(ptrtrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
-		auto PsPtr = AddComponent<RigidbodyBox>(param);
-		自動的にTransformを設定するフラグは無し
-		PsPtr->SetAutoTransform(false);*/
 	}
 	void StageSrectObj::OnUpdate() {
 

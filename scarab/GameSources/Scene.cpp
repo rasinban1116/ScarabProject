@@ -44,7 +44,7 @@ namespace basecross{
 		};
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
-			{L"scarab.bmf",L"scarab"},
+			{L"scarabtest.bmf",L"scarab"},
 			{L"test.bmf",L"test"},
 			{L"stage.bmf",L"stage"},
 			{L"rock.bmf",L"rock"},
@@ -55,6 +55,7 @@ namespace basecross{
 		for (auto model : models) {
 			wstring srtmodel = dataDir;
 			auto staticModel = MeshResource::CreateStaticModelMesh(srtmodel, model.m_modelName);
+			//auto malti = MeshResource::CreateMeshResource(strmodel, model._modelName);
 			App::GetApp()->RegisterResource(model.m_modelKey, staticModel);
 		}
 	}
@@ -80,7 +81,7 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"J_TX", strTexture);
 		strTexture = dataDir + L"testClear.png";
 		App::GetApp()->RegisterTexture(L"Cl_TX", strTexture);
-		strTexture = dataDir + L"UV_Scarab.png";
+		strTexture = dataDir + L"UV_Scarab.tga";
 		App::GetApp()->RegisterTexture(L"KUSA_TX", strTexture);
 	}
 

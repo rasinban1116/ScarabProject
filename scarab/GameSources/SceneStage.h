@@ -56,7 +56,6 @@ namespace basecross {
 		void CreateViewLight();
 		void CreateStage();
 		InputHandler<SerectStage> m_InputHandler;	//入力ハンドラー
-
 	public:
 		//構築と破棄
 		SerectStage() :Stage() {}
@@ -68,6 +67,7 @@ namespace basecross {
 		void OnPushA();
 		void OnPushB();
 		void OnCreateSrectObj();
+
 	};
 
 //--------------------------------------------------------------------------------------

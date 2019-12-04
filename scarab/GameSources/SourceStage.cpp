@@ -113,7 +113,7 @@ namespace basecross {
 		//ビューのカメラの設定
 		auto ptrMyCamera = ObjectFactory::Create<MyCamera>();
 		ptrView->SetCamera(ptrMyCamera);
-		ptrMyCamera->SetEye(Vec3(0.0f, 100.0f, .0f));
+		ptrMyCamera->SetEye(Vec3(0.0f, 5.0f, -5.0f));
 		ptrMyCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 		//マルチライトの作成
 		auto ptrMultiLight = CreateLight<MultiLight>();
@@ -131,7 +131,6 @@ namespace basecross {
 	}
 
 	void SerectStage::CreateStage(){
-		
 		auto Grand = AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
 		Grand->AddTag(L"Grand");
 	}
@@ -153,9 +152,10 @@ namespace basecross {
 		AddGameObject<StageSrectObj>(Vec3(5.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
 		AddGameObject<StageSrectObj>(Vec3(10.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
 		AddGameObject<StageSrectObj>(Vec3(10.0f, 3.0f, 10.0f), Vec3(2.5f, 1.5f, 2.5f));
-
-
 	}
+
+
+
 
 	void SerectStage::OnCreate() {
 		try {
