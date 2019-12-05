@@ -58,6 +58,8 @@ namespace basecross{
 		}
 		void CreateResourses();
 		void LoadStaticModelResources();
+		void LoadStaticBornModelResources();
+		void LoadMaltiModelResources();
 		static void SetScene(const shared_ptr<Event>&event, wstring name);
 	
 	};
