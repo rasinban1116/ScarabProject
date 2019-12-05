@@ -279,7 +279,7 @@ namespace basecross {
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		DrawStrings();
+		//DrawStrings();
 	}
 
 	//Aボタンハンドラ

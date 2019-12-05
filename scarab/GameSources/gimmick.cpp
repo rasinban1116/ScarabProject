@@ -27,7 +27,7 @@ namespace basecross {
 	}
 
 	void UIDraw::OnUpdate() {
-		ScoreDraw();
+		//ScoreDraw();
 	}
 
 	void UIDraw::OnUpdate2() {
@@ -158,7 +158,7 @@ namespace basecross {
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"Cl_TX");
-
+		ptrDraw->SetDrawActive(false);
 		//物理計算ボックス
 		PsBoxParam param(ptrtrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
 		auto PsPtr = AddComponent<RigidbodyBox>(param);
