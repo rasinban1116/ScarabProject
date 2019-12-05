@@ -123,8 +123,9 @@ namespace basecross {
 		auto group = CreateSharedObjectGroup(L"EnemyGroup");
 		vector< vector<Vec3> > vecSeek = {
 			{ Vec3(5.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
-			{ Vec3(-15.0f, 3.0f, -5.0f), Vec3(-23.0f,2.3f,-4.0f) },
-			{ Vec3(5.0, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) }
+			{ Vec3(-15.0f, 3.0f, -5.0f), Vec3(-23.0f,3.0f,-4.0f) },
+			{ Vec3(5.0, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) },
+
 
 			
 		};
