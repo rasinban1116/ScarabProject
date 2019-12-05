@@ -16,5 +16,6 @@
 #include "gimmick.h"
 #include "Enemy.h"
 #include "SceneStage.h"
+#include "Sprite.h"
 
 

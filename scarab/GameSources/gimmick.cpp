@@ -48,7 +48,6 @@ namespace basecross {
 	}
 	void UIDraw::SetScore(float x) {
 		Score += x;
-
 	}
 
 
@@ -114,8 +113,8 @@ namespace basecross {
 	}
 
 	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {	
-		auto play =GetStage()->GetSharedObject(L"Player", true);
-		auto UI = GetStage()->GetSharedGameObject<UIDraw>(L"UI", true);
+		auto play = GetStage()->GetSharedObject(L"Player", true);
+		auto UI = GetStage()->GetSharedGameObject<ScoreSprite>(L"ScoreSprite", true);
 		if (play&&UI) {
 			SetUpdateActive(false);
 			SetDrawActive(false);
@@ -182,6 +181,53 @@ namespace basecross {
 		}
 	}
 
+
+	//構築と破棄
+	SkyBox::SkyBox(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Scale,
+		const Quat& Qt,
+		const Vec3& Position
+	) :
+		GameObject(StagePtr),
+		m_Scale(Scale),
+		m_Qt(Qt),
+		m_Position(Position)
+	{}
+
+	SkyBox::~SkyBox() {}
+	//初期化
+	void SkyBox::OnCreate() {
+
+		auto ptrTrans = GetComponent<Transform>();
+		//AddTag(L"Slope");
+
+		ptrTrans->SetScale(m_Scale);
+		ptrTrans->SetQuaternion(m_Qt);
+		ptrTrans->SetPosition(m_Position);
+
+		////OBB衝突j判定を付ける
+		//auto ptrColl = AddComponent<CollisionObb>();
+		//AddTag(L"Ground");
+		//ptrColl->SetFixed(true);
+		////各パフォーマンスを得る
+		//GetStage()->SetCollisionPerformanceActive(true);
+		//GetStage()->SetUpdatePerformanceActive(true);
+		//GetStage()->SetDrawPerformanceActive(true);
+
+		////影をつける
+		//auto ptrShadow = AddComponent<Shadowmap>();
+		////ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"SKY_TX");
+		////物理計算ボックス
+		//PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		//auto PsPtr = AddComponent<RigidbodyBox>(param);
+	}
 }
 //end basecross
 

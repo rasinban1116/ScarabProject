@@ -69,13 +69,24 @@ namespace basecross {
 		virtual void OnCollisionEnter(shared_ptr<GameObject>&StagePtr);
 	};
 
-
-
-
-
-
 //--------------------------------------------------------------------------------------
-///	
+// スカイボックス
 //--------------------------------------------------------------------------------------
+
+	class SkyBox : public GameObject {
+		Vec3 m_Scale;
+		Quat m_Qt;
+		Vec3 m_Position;
+	public:
+		//構築と破棄
+		SkyBox(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Quat& Qt,
+			const Vec3& Position
+		);
+		virtual ~SkyBox();
+		//初期化
+		virtual void OnCreate() override;
+	};
 }
 //end basecross

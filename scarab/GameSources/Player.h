@@ -61,6 +61,10 @@ namespace basecross{
 		//Bボタンハンドラ
 		void OnPushB();
 
+		void OnPushDOWN(){}
+
+		void OnPushUP(){}
+
 
 
 	};

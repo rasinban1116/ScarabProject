@@ -15,6 +15,7 @@ namespace basecross {
 		void CreateViewLight();
 		void GameSystemObj();
 		void System();
+		int m_cursornum;
 		InputHandler<TitleStage> m_InputHandler;	//入力ハンドラー
 
 	public:
@@ -24,8 +25,11 @@ namespace basecross {
 		//初期化
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		void CreateTitleSprite();
 		void OnPushA();
-		void OnPushB();
+		void OnPushB(){}
+		void OnPushUP();
+		void OnPushDOWN();
 	};
 //--------------------------------------------------------------------------------------
 ///　ステージクリア用ステージ
@@ -35,6 +39,10 @@ namespace basecross {
 		void CreateViewLight();
 		void GameSystemObj();
 		void System();
+		int m_cursornum;
+		float m_strSprite;
+		float m_sprite;
+		float m_spriteif;
 		InputHandler<ClearStage> m_InputHandler;	//入力ハンドラー
 
 	public:
@@ -44,8 +52,11 @@ namespace basecross {
 		//初期化
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		void CreateClearSprite();
 		void OnPushA();
-		void OnPushB();
+		void OnPushB(){}
+		void OnPushUP();
+		void OnPushDOWN();
 	};
 
 //--------------------------------------------------------------------------------------
@@ -67,6 +78,8 @@ namespace basecross {
 		void CreatePlayer();
 		void OnPushA();
 		void OnPushB();
+		void OnPushUP(){}
+		void OnPushDOWN(){}
 	};
 
 //--------------------------------------------------------------------------------------
@@ -77,6 +90,7 @@ namespace basecross {
 		void CreateViewLight();
 		void CreateStage();
 		InputHandler<GameOverStage> m_InputHandler;	//入力ハンドラー
+		int m_cursornum;
 
 	public:
 		//構築と破棄
@@ -87,6 +101,9 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		void OnPushA();
 		void OnPushB();
+		void OnPushUP(){}
+		void OnPushDOWN(){}
+
 	};
 }
 //end basecross

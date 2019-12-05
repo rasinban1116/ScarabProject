@@ -4,7 +4,7 @@
 */
 
 #include "stdafx.h"
-#include "Project.h"7
+#include "Project.h"
 
 namespace basecross {
 	//--------------------------------------------------------------------------------------

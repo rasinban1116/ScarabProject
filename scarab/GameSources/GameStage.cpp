@@ -158,8 +158,8 @@ namespace basecross {
 			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1]);
 			SetSharedGameObject(L"Enemy", ptreneobj);
 			ptreneobj->AddTag(L"Enemy");
-			
 		}
+
 	}
 
 	void GameStage::activeboll() {
@@ -171,6 +171,23 @@ namespace basecross {
 		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f),  Quat(), Vec3(0.0f, 0.6f, -3.0f));
 		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f),  Quat(), Vec3(3.0f, 0.6f, -3.0f));
 		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f),  Quat(), Vec3(-3.0f, 0.6f, -3.0f));
+
+		auto ptrScore = AddGameObject<ScoreSprite>(3,
+			L"NUMBER_TX",
+			true,
+			Vec2(80.0f, 80.0f),
+			Vec3(-480.0f, 360.0f, 0.0f));
+
+
+		//vector< vector<Vec3> > vecSeek = {
+		////	{ Vec3(5.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f), Vec3(0,0,0) },
+		////};
+		//////追いかけるオブジェクトの作成
+		////for (auto v : vecSeek) {
+		////	AddGameObject<SkyBox>(v[0], v[1], v[2]);
+		////	//SetSharedGameObject(L"Enemy", ptreneobj);
+		////	//ptreneobj->AddTag(L"Enemy");
+		//}
 	}
 
 

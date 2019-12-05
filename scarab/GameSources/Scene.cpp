@@ -22,7 +22,7 @@ namespace basecross{
 			
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToClearStage");
 			
 			CreateResourses();
 			LoadStaticModelResources();
@@ -80,8 +80,20 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"J_TX", strTexture);
 		strTexture = dataDir + L"testClear.png";
 		App::GetApp()->RegisterTexture(L"Cl_TX", strTexture);
-		//strTexture = dataDir + L"Weed.tga";
-		//App::GetApp()->RegisterTexture(L"KUSA_TX", strTexture);
+		strTexture = dataDir + L"Weed.png";
+		App::GetApp()->RegisterTexture(L"KUSA_TX", strTexture);
+		strTexture = dataDir + L"number.png";
+		App::GetApp()->RegisterTexture(L"NUMBER_TX", strTexture);
+		strTexture = dataDir + L"clear.png";
+		App::GetApp()->RegisterTexture(L"CLEAR_TX", strTexture);
+		strTexture = dataDir + L"score.png";
+		App::GetApp()->RegisterTexture(L"SCORE_TX", strTexture);
+		strTexture = dataDir + L"stageselect.png";
+		App::GetApp()->RegisterTexture(L"STAGESELECT_TX", strTexture);
+		strTexture = dataDir + L"gamestart.png";
+		App::GetApp()->RegisterTexture(L"GAMESTART_TX", strTexture);
+		strTexture = dataDir + L"sky.png";
+		App::GetApp()->RegisterTexture(L"SKY_TX", strTexture);
 	}
 
 
@@ -91,7 +103,7 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<SerectStage>();
+			ResetActiveStage<TitleStage>();
 		}
 		else if (event->m_MsgStr == L"ToSerectStage") {
 			ResetActiveStage<SerectStage>();
