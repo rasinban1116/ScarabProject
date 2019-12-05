@@ -109,19 +109,22 @@ namespace basecross {
 		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
 
 		//描画コンポーネントの設定
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		auto ptrDraw = AddComponent<PNTBoneModelDraw>();
 		//描画するメッシュを設定
 		switch (size)
 		{
 		case 1:
-			ptrDraw->SetMeshResource(L"enemy");
-			ptrDraw->SetTextureResource(L"KUSA_TX");
-			ptrDraw->SetFogEnabled(true);
+			ptrDraw->SetMeshResource(L"Enemy");
+			ptrDraw->SetTextureResource(L"ENEMY_TX");
+			//ptrDraw->SetFogEnabled(true);
+			ptrDraw->AddAnimation(L"Enemy",0,60,true,30);
+			ptrDraw->ChangeCurrentAnimation(L"Enemy",0);
 			break;
 		case 2:
 			ptrDraw->SetMeshResource(L"liz");
-			ptrDraw->SetFogEnabled(true);
+			//ptrDraw->SetFogEnabled(true);
 		}
+		auto a = ptrDraw->GetCurrentAnimation();
 
 		//描画するテクスチャを設定
 
@@ -150,6 +153,10 @@ namespace basecross {
 		ApplyForce();
 		auto ptrUtil = GetBehavior<UtilBehavior>();
 		ptrUtil->RotToHead(1.0f);
+
+		auto ptrDraw = GetComponent<PNTBoneModelDraw>();
+		auto unko = App::GetApp()->GetElapsedTime();
+		ptrDraw->UpdateAnimation(unko);
 	}
 
 

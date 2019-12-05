@@ -26,6 +26,8 @@ namespace basecross{
 			
 			CreateResourses();
 			LoadStaticModelResources();
+			LoadStaticBornModelResources();
+			LoadMaltiModelResources();
 		}
 		catch (...) {
 			throw;
@@ -45,7 +47,6 @@ namespace basecross{
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
 			{L"scarabtest.bmf",L"scarab"},
-			{L"Scarab_Enemy_Walking.bmf",L"enemy"},
 			{L"test.bmf",L"test"},
 			{L"stage.bmf",L"stage"},
 			{L"rock.bmf",L"rock"},
@@ -54,6 +55,7 @@ namespace basecross{
 			{L"Base.bmf",L"Base"},
 			{L"falltree.bmf",L"fallntree"},
 			{L"lizard.bmf",L"liz"}
+				
 		
 
 		};
@@ -65,6 +67,54 @@ namespace basecross{
 		}
 	}
 
+	/// ---------------------------------------------------------------------------<summary>
+/// スタティックモデルの読み込み(引数なし)
+/// </summary>----------------------------------------------------------------------------
+	void Scene::LoadStaticBornModelResources() {
+		wstring dataDir;
+		App::GetApp()->GetDataDirectory(dataDir);
+		struct InitializedParam {
+			wstring m_modelName;
+			wstring m_modelKey;
+		};
+		InitializedParam models[] = {
+			//{L"ファイル名",L"呼び出し時のキー"}
+			{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
+			//{L"Scarab_Walking.bmf",L"scrab"}
+
+
+
+		};
+		for (auto model : models) {
+			wstring srtmodel = dataDir;
+			auto staticModel = MeshResource::CreateBoneModelMesh(srtmodel, model.m_modelName);
+
+			App::GetApp()->RegisterResource(model.m_modelKey, staticModel);
+		}
+	}
+	void Scene::LoadMaltiModelResources()
+	{
+		wstring dataDir;
+		App::GetApp()->GetDataDirectory(dataDir);
+		struct InitializedParam {
+			wstring m_modelName;
+			wstring m_modelKey;
+		};
+		InitializedParam models[] = {
+			//{L"ファイル名",L"呼び出し時のキー"}
+			//{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
+			{L"ScarabOnPoop_Walking.bmf",L"scrab"}
+
+
+
+		};
+		for (auto model : models) {
+			wstring srtmodel = dataDir;
+			auto staticModel = MultiMeshResource::CreateBoneModelMultiMesh(srtmodel, model.m_modelName);
+			App::GetApp()->RegisterResource(model.m_modelKey, staticModel);
+		}
+	}
+	
 
 
 	void Scene::CreateResourses() {

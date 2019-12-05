@@ -20,7 +20,7 @@ namespace basecross {
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(5.0f),
+		m_Speed(10.0f),
 		m_pos(Position)
 
 	{}
@@ -171,12 +171,12 @@ namespace basecross {
 		}
 		//速度を設定
 		auto forwrd = forces->GetForword();
-		//forces->SetRotation(Vec3(forwrd * 45.0f));
-		//forces->SetRotation(-45.0f, 0.0f, 0.0f);
 		ptrPs->SetLinearVelocity(m_PlayVelo);
 			m_PlayVelo = Vec3(0, 0, 0);
 
-
+			auto drawcomp = GetComponent<PNTBoneModelDraw>();
+			auto time = App::GetApp()->GetElapsedTime();
+			drawcomp->UpdateAnimation(time);
 	}
 
 	void Player::ChangeTrans() {
@@ -206,8 +206,7 @@ namespace basecross {
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		
-		ptrColl->SetDrawActive(true);
+		//ptrColl->SetDrawActive(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
@@ -229,17 +228,11 @@ namespace basecross {
 		//影の形（メッシュ）を設定
 		ptrShadow->SetMeshResource(L"DEFAULT_SPHERE");
 		//描画コンポーネントの設定
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		//描画するメッシュを設定
-		//ptrDraw->SetMeshResource(L"scarab");	
-		////描画するテクスチャを設定
-		//ptrDraw->SetTextureResource(L"KUSA_TX");
-		ptrDraw->SetAlpha(true);
 		SetAlphaActive(true);
 		AddTag(L"Player");
 		//透明処理
 		SetAlphaActive(true);
-		auto drawcomp = AddComponent<PNTStaticModelDraw>();
+		auto drawcomp = AddComponent<PNTBoneModelDraw>();
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
 			Vec3(0.5f),
@@ -248,8 +241,10 @@ namespace basecross {
 			Vec3(0,-0.5f,0)
 		);
 		drawcomp->SetMeshToTransformMatrix(spanMat);
-		drawcomp->SetMeshResource(L"scarab");
+		drawcomp->SetMultiMeshResource(L"scrab");
 		drawcomp->SetTextureResource(L"KUSA_TX");
+		drawcomp->AddAnimation(L"scrab", 0, 60, true, 30);
+		drawcomp->ChangeCurrentAnimation(L"scrab", 0);
 		
 
 
@@ -381,26 +376,22 @@ namespace basecross {
 
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		ptrColl->SetDrawActive(true);
+		//ptrColl->SetDrawActive(true);
 		
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
 		GetStage()->SetDrawPerformanceActive(true);
-		////WorldMatrixをもとにRigidbodySphereのパラメータを作成
-		//PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
-		////Rigidbodyをつける
-		//auto  ptrRigid = AddComponent<RigidbodySphere>(param);
-		//ptrRigid->SetLinearVelocity(UnkoVelo);
-		//auto Gravi = AddComponent<Gravity>();
+
 		//影をつける
 		auto ShadowPtr = AddComponent<Shadowmap>();
 		ShadowPtr->SetMeshResource(L"DEFAULT_SPHERE");
 
 		auto PtrDraw = AddComponent<BcPNTStaticDraw>();
 		PtrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-		PtrDraw->SetDrawActive(false);
+		//PtrDraw->SetDrawActive(false);
+		PtrDraw->SetTextureResource(L"UNKO_TX");
 
 		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		auto stage = GetStage();
@@ -419,7 +410,7 @@ namespace basecross {
 	void UnkoBoll::OnUpdate2() {
 
 	}
-
+	//a
 
 
 	void UnkoBoll::Move() {
