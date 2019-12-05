@@ -93,6 +93,7 @@ namespace basecross{
 		auto ptrShadow = AddComponent<Shadowmap>();
 		//ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
 		auto drawcomp = AddComponent<PNTStaticModelDraw>();
+		auto DrawComp = AddComponent<PNTStaticDraw>();
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
 			Vec3(1),
@@ -105,17 +106,18 @@ namespace basecross{
 		{
 		case 1:
 			drawcomp->SetMeshResource(L"rock");
-			drawcomp->SetTextureResource(L"A_TX");
+			drawcomp->SetTextureResource(L"Cl_TX");
 			break;
 		case 2:
 			drawcomp->SetMeshResource(L"tree");
-			drawcomp->SetTextureResource(L"A_TX");
+			drawcomp->SetTextureResource(L"Cl_TX");
 			break;
 		case 3:
-			drawcomp->SetMeshResource(L"fallntree");
-			drawcomp->SetTextureResource(L"A_TX");
+			DrawComp->SetMeshResource(L"unko");
+			DrawComp->SetTextureResource(L"UNKO_TX");
 			break;
 		default:
+			
 			break;
 		}
 
