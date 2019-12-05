@@ -8,6 +8,25 @@
 
 namespace basecross {
 //--------------------------------------------------------------------------------------
+///	UI全般の表示
+//--------------------------------------------------------------------------------------
+
+	class UIDraw : public GameObject {
+
+		void ScoreDraw();
+	public:
+		//構築
+		UIDraw(const shared_ptr<Stage>&StagePtr);
+		virtual ~UIDraw();
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+		virtual void OnUpdate2()override;
+		static void SetScore(float);
+	private:
+		static float Score;
+	};
+
+//--------------------------------------------------------------------------------------
 ///	うんコイン
 //--------------------------------------------------------------------------------------
 	class GimmickObj : public GameObject {
@@ -31,24 +50,7 @@ namespace basecross {
 		
 	};
 
-//--------------------------------------------------------------------------------------
-///	UI全般の表示
-//--------------------------------------------------------------------------------------
 
-	class UIDraw : public GameObject {
-
-		void ScoreDraw();
-	public:
-		//構築
-		UIDraw(const shared_ptr<Stage>&StagePtr);
-		virtual ~UIDraw();
-		virtual void OnCreate()override;
-		virtual void OnUpdate()override;
-		virtual void OnUpdate2()override;
-		static void SetScore(float);
-	private:
-		static float Score;
-	};
 
 //--------------------------------------------------------------------------------------
 ///	ステージクリア条件オブジェクト
@@ -69,6 +71,7 @@ namespace basecross {
 		virtual void OnCollisionEnter(shared_ptr<GameObject>&StagePtr);
 	};
 
+
 //--------------------------------------------------------------------------------------
 // スカイボックス
 //--------------------------------------------------------------------------------------
@@ -87,6 +90,25 @@ namespace basecross {
 		virtual ~SkyBox();
 		//初期化
 		virtual void OnCreate() override;
+
+
+//--------------------------------------------------------------------------------------
+///	ステージセレクトオブジェクト
+//--------------------------------------------------------------------------------------
+	class StageSrectObj : public GameObject {
+		Vec3 m_Position;
+		Vec3 m_Scele;
+
+	public:
+		StageSrectObj(const shared_ptr<Stage>&StagePtr,
+			const Vec3 &Posion,
+			const Vec3 &Scale
+		);
+		virtual ~StageSrectObj();
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+
+		virtual void OnCollisionEnter(shared_ptr<GameObject>&StagePtr);
 	};
 }
 //end basecross

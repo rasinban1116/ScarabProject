@@ -12,13 +12,16 @@ namespace basecross {
 	//	用途: プレイヤー
 	//--------------------------------------------------------------------------------------
 	//構築
-	Player::Player(const shared_ptr<Stage>& StagePtr) :
+	Player::Player(const shared_ptr<Stage>& StagePtr,
+		const Vec3 &Position
+		) :
 		GameObject(StagePtr),
 		m_Scale(0.5f),
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(3.0f)
+		m_Speed(5.0f),
+		m_pos(Position)
 
 	{}
 
@@ -167,43 +170,13 @@ namespace basecross {
 			m_PlayVelo.y += -150.0f*App::GetApp()->GetElapsedTime();
 		}
 		//速度を設定
+		auto forwrd = forces->GetForword();
+		//forces->SetRotation(Vec3(forwrd * 45.0f));
+		//forces->SetRotation(-45.0f, 0.0f, 0.0f);
 		ptrPs->SetLinearVelocity(m_PlayVelo);
 			m_PlayVelo = Vec3(0, 0, 0);
 
 
-	}
-
-	void Player::UnkoMove() {
-		//うんこを中心に回転する
-		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
-		auto vec = GetMoveVector();
-		//前回のターンからの時間
-		float elapsedTime = App::GetApp()->GetElapsedTime();
-		auto Target = GetStage()->GetSharedObject(L"UnkoBoll", true);
-		auto TargetTrans = Target->GetComponent < Transform>();
-		auto TargetPos = TargetTrans->GetPosition(); //糞玉の位置
-		auto thistrans = GetComponent<Transform>();
-		auto thisPos = thistrans->GetPosition();     //自分の位置
-		auto thisPs = GetComponent<RigidbodySphere>();
-		
-		
-		Quat q;
-		float pai = 3.14;
-		float rad = 0;
-		rad = atan2(TargetPos.z - thisPos.z,TargetPos.x - thisPos.x);
-		Vec3 unko = vec;
-		auto Usin = sin(rad * (pai / 360));
-		auto Ucos = -cos(rad * (pai / 360));
-		m_PlayVelo.z = vec.z * m_Speed;
-		m_PlayVelo.x = Usin* m_Speed;
-		m_PlayVelo.y = vec.y;
-		thisPos.x += Usin * elapsedTime + TargetPos.x;
-		thisPos.z += vec.z * m_Speed;
-		thisPos.y += TargetPos.y;
-		//TargetTrans->SetPosition(TargetPos);
-		//thistrans->SetPosition(thisPos);
-		thisPs->SetPosition(m_PlayVelo);
-	
 	}
 
 	void Player::ChangeTrans() {
@@ -228,11 +201,13 @@ namespace basecross {
 		//初期位置などの設定
 		auto ptr = AddComponent<Transform>();
 		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
-		ptr->SetRotation(0.0f, .0f, 0.0f);
-		ptr->SetPosition(Vec3(0.0f, 1.0f, 0.0f));
+		ptr->SetRotation(-45.0f, 0.0f, 0.0f);
+		ptr->SetPosition(m_pos);
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
+		
+		ptrColl->SetDrawActive(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
@@ -256,14 +231,28 @@ namespace basecross {
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		ptrDraw->SetMeshResource(L"scarab");
-		//描画するテクスチャを設定
-		ptrDraw->SetTextureResource(L"J_TX");
-
+		//ptrDraw->SetMeshResource(L"scarab");	
+		////描画するテクスチャを設定
+		//ptrDraw->SetTextureResource(L"KUSA_TX");
+		ptrDraw->SetAlpha(true);
+		SetAlphaActive(true);
 		AddTag(L"Player");
-
 		//透明処理
 		SetAlphaActive(true);
+		auto drawcomp = AddComponent<PNTStaticModelDraw>();
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(0.5f),
+			Vec3(0),
+			Vec3(0),
+			Vec3(0,-0.5f,0)
+		);
+		drawcomp->SetMeshToTransformMatrix(spanMat);
+		drawcomp->SetMeshResource(L"scarab");
+		drawcomp->SetTextureResource(L"KUSA_TX");
+		
+
+
 
 		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		if (ptrMyCamera) {
@@ -278,10 +267,17 @@ namespace basecross {
 	//更新
 	void Player::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<Player>());
-		if (active) {
-		Move();
-		//UnkoMove();
+		auto ptrGameStage = dynamic_pointer_cast<GameStage>(GetStage());
+		if (this->GetStage() == ptrGameStage) {
+			if (ptrGameStage->GetCameraSelect() == CameraSelect::openingCamera) {
+				return;
+			}
 		}
+
+		if (active) {
+			Move();
+		}
+
 	}
 
 	//後更新
@@ -294,15 +290,12 @@ namespace basecross {
 	//Aボタンハンドラ
 	void  Player::OnPushA() {
 		active = false;	
-	
-		
 	}
 
 
 	//Bボタンハンドラ
 	void  Player::OnPushB() {
-		active = true;
-		
+		active = true;	
 	}
 
 	
@@ -311,19 +304,13 @@ namespace basecross {
 	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
 		isGrand = true;
-		//auto Unko =Other-> GetStage()->GetSharedObject(L"UnkoBoll", true);
 		auto trans = this->GetComponent<Transform>();
-		//if (Unko) {
-		//	//active = false;
-		//	//trans->SetParent(Unko);
-		//}
 	}
 
 
 	//コリジョンが何かから離れた時の処理
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
 		isGrand = false;
-
 	}
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>&Other) {
@@ -376,7 +363,7 @@ namespace basecross {
 		const Vec3 &Rot,
 		const Vec3 &Velocity
 	):
-		Player(StagePtr),
+		Player(StagePtr,Position),
 		UnkoPos(Position),
 		UnkoScale(Scale),
 		UnkoRot(Rot),
@@ -393,17 +380,18 @@ namespace basecross {
 		ptrTrans->SetScale(UnkoScale);
 
 		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionCapsule>();
+		auto ptrColl = AddComponent<CollisionSphere>();
+		ptrColl->SetDrawActive(true);
 		
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
 		GetStage()->SetDrawPerformanceActive(true);
-		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
-		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
-		//Rigidbodyをつける
-		auto  ptrRigid = AddComponent<RigidbodySphere>(param);
+		////WorldMatrixをもとにRigidbodySphereのパラメータを作成
+		//PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
+		////Rigidbodyをつける
+		//auto  ptrRigid = AddComponent<RigidbodySphere>(param);
 		//ptrRigid->SetLinearVelocity(UnkoVelo);
 		//auto Gravi = AddComponent<Gravity>();
 		//影をつける
@@ -412,7 +400,7 @@ namespace basecross {
 
 		auto PtrDraw = AddComponent<BcPNTStaticDraw>();
 		PtrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-
+		PtrDraw->SetDrawActive(false);
 
 		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		auto stage = GetStage();
@@ -426,9 +414,7 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-		if (active == true) {
-			Move();
-		}
+	Move();
 	}
 	void UnkoBoll::OnUpdate2() {
 
@@ -440,7 +426,7 @@ namespace basecross {
 		auto thistrans = GetComponent<Transform>();
 		auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
 		auto ptrTrans = Plyaer->GetComponent<Transform>();
-		auto PsUnko = this->GetComponent<RigidbodySphere>();
+	//	auto PsUnko = this->GetComponent<RigidbodySphere>();
 		auto ptrfor = ptrTrans->GetForword();
 		auto ptrPos = ptrTrans->GetPosition();
 		auto ptrScale = ptrTrans->GetScale();
@@ -448,15 +434,15 @@ namespace basecross {
 		auto thispos = thistrans->GetPosition().y;
 		Vec3 Pos;
 	
-		//ptrfor += ptrTrans->GetRotation();
-		Pos = ptrfor + ptrPos + ptrScale/2;
-		PsUnko->SetPosition(Pos);
-
+		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
+		//PsUnko->SetPosition(Pos);
+		thistrans->SetRotation(Vec3(0));
 		float maxlenge = ptrTrans->GetPosition().y+2;
 		if (Pos.y >= maxlenge) {
 			Pos.y = maxlenge;
 		}
-		//thistrans->SetPosition(Pos);
+	
+		thistrans->SetPosition(Pos);
 	}
 
 

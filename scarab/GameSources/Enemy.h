@@ -36,10 +36,11 @@ namespace basecross {
 		Vec3 m_TagePos;
 		void ApplyForce();
 		Vec3 m_ParentPtr;
+		int size;
 
 
 	public :
-		Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos);
+		Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos, const int&size);
 		virtual ~Enemy();
 
 		//アクセサ

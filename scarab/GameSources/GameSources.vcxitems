@@ -37,8 +37,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="$(MSBuildThisFileDirectory)SourceStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
+=======
+    <ClCompile Include="$(MSBuildThisFileDirectory)SceneStage.cpp" />
+>>>>>>> c446d124f4b62fa9a96645fad72b9d4ea1503255
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
   </ItemGroup>
 </Project>

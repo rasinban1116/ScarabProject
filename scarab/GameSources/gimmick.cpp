@@ -19,7 +19,7 @@ namespace basecross {
 
 	UIDraw::~UIDraw(){}
 	void UIDraw::OnCreate(){
-	
+		Score = 0;
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetText(L"");
@@ -36,15 +36,15 @@ namespace basecross {
 
 	void UIDraw::ScoreDraw() {
 		wstring Scoreptr(L"SCORE:\t");
-		Scoreptr += L"X=" + Util::FloatToWStr(Score, 1, Util::FloatModify::Fixed) + L",\t";
+		Scoreptr += Util::FloatToWStr(Score, 1, Util::FloatModify::Fixed) + L",\t";
 		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
-		wstring strFps(L"FPS: ");
-		strFps += Util::UintToWStr(fps);
-		strFps += L"\nElapsedTime: ";
-		wstring str = Scoreptr;
+		//wstring strFps(L"FPS: ");
+		//strFps += Util::UintToWStr(fps);
+		//strFps += L"\nElapsedTime: ";
+		//wstring str = Scoreptr;
 		//文字列をつける
 		auto ptrString = GetComponent<StringSprite>();
-		ptrString->SetText(strFps);
+		ptrString->SetText(Scoreptr);
 	}
 	void UIDraw::SetScore(float x) {
 		Score += x;
@@ -91,18 +91,13 @@ namespace basecross {
 		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetMeshResource(L"unko");
 		ptrDraw->SetOwnShadowActive(true);
-		ptrDraw->SetTextureResource(L"H_TX");
-
-		////物理計算ボックス
-		//PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
-		//auto PsPtr = AddComponent<RigidbodyBox>(param);
+		ptrDraw->SetTextureResource(L"UNKO_TX");
 
 		//アクションの登録
 		auto PtrAction = AddComponent<Action>();
 		PtrAction->AddRotateBy(1.0f, Vec3(0,5,0));
-
 		//ループする
 		PtrAction->SetLooped(true);
 		//アクション開始
@@ -113,8 +108,8 @@ namespace basecross {
 	}
 
 	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {	
-		auto play = GetStage()->GetSharedObject(L"Player", true);
-		auto UI = GetStage()->GetSharedGameObject<ScoreSprite>(L"ScoreSprite", true);
+		auto play = Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
+		auto UI = Other->GetStage()->GetSharedGameObject<UIDraw>(L"UI", true);
 		if (play&&UI) {
 			SetUpdateActive(false);
 			SetDrawActive(false);
@@ -148,7 +143,7 @@ namespace basecross {
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionObb>();;
 
-		auto gira = AddComponent<Gravity>();
+		//auto gira = AddComponent<Gravity>();
 
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
@@ -177,10 +172,9 @@ namespace basecross {
 		auto play = Other->GetStage()->GetSharedObject(L"Player", true);
 		auto ptrScene = App::GetApp()->GetScene<Scene>();
 		if (play) {
-			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToClearStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGmaeStage");
 		}
 	}
-
 
 	//構築と破棄
 	SkyBox::SkyBox(const shared_ptr<Stage>& StagePtr,
@@ -227,6 +221,74 @@ namespace basecross {
 		////物理計算ボックス
 		//PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
 		//auto PsPtr = AddComponent<RigidbodyBox>(param);
+	}
+
+//--------------------------------------------------------------------------------------
+///	ステージセレクト用オブジェクト
+//--------------------------------------------------------------------------------------
+
+	StageSrectObj::StageSrectObj(const shared_ptr<Stage>&StagePtr,
+		const Vec3 &Position,
+		const Vec3 &Scale
+	) :
+		GameObject(StagePtr),
+		m_Position(Position),
+		m_Scele(Scale)
+	{}
+	StageSrectObj::~StageSrectObj() {
+
+	}
+	void StageSrectObj::OnCreate() {
+		auto ptrtrans = AddComponent<Transform>();
+		ptrtrans->SetPosition(m_Position);
+		ptrtrans->SetScale(m_Scele);
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();;
+		//ptrColl->AddExcludeCollisionTag(L"Grand");
+		auto gira = AddComponent<Gravity>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap>();
+		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"Cl_TX");
+		//auto drawcomp = AddComponent<PNTStaticModelDraw>();
+		//Mat4x4 spanMat;
+		//spanMat.affineTransformation(
+		//	Vec3(0.5f),
+		//	Vec3(90,0,0),
+		//	Vec3(0),
+		//	Vec3(0, -0.5f, 0)
+		//);
+		//drawcomp->SetMeshToTransformMatrix(spanMat);
+		//drawcomp->SetMeshResource(L"Base");
+		//drawcomp->SetTextureResource(L"UNKO_TX");
+		SetAlphaActive(true);
+	
+
+	}
+	void StageSrectObj::OnUpdate() {
+
+	}
+	void StageSrectObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
+		auto play = Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
+		auto ptrScene = App::GetApp()->GetScene<Scene>();
+
+		if (Other->FindTag(L"Player")) {
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameStage");
+		}
+		else {
+			
+		}
+
 	}
 }
 //end basecross
