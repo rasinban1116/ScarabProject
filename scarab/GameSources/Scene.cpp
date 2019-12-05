@@ -45,10 +45,15 @@ namespace basecross{
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
 			{L"scarabtest.bmf",L"scarab"},
+			{L"Scarab_Enemy_Walking.bmf",L"enemy"},
 			{L"test.bmf",L"test"},
 			{L"stage.bmf",L"stage"},
 			{L"rock.bmf",L"rock"},
-			{L"tree.bmf",L"tree"}
+			{L"tree.bmf",L"tree"},
+			{L"poop.bmf",L"unko"},
+			{L"Base.bmf",L"Base"},
+			{L"falltree.bmf",L"fallntree"},
+			{L"lizard.bmf",L"liz"}
 		
 
 		};
@@ -79,10 +84,14 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"H_TX", strTexture);
 		strTexture = dataDir + L"haikei.png";
 		App::GetApp()->RegisterTexture(L"J_TX", strTexture);
-		strTexture = dataDir + L"testClear.png";
+		strTexture = dataDir + L"Weed.png";
 		App::GetApp()->RegisterTexture(L"Cl_TX", strTexture);
 		strTexture = dataDir + L"UV_Scarab.tga";
 		App::GetApp()->RegisterTexture(L"KUSA_TX", strTexture);
+		strTexture = dataDir + L"poop_UV.png";
+		App::GetApp()->RegisterTexture(L"UNKO_TX", strTexture);
+		strTexture = dataDir + L"UV_Scarab_Enemy.png";
+		App::GetApp()->RegisterTexture(L"ENEMY_TX", strTexture);
 	}
 
 

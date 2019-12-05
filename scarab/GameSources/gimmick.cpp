@@ -19,7 +19,7 @@ namespace basecross {
 
 	UIDraw::~UIDraw(){}
 	void UIDraw::OnCreate(){
-	
+		Score = 0;
 		//•¶Žš—ñ‚ð‚Â‚¯‚é
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetText(L"");
@@ -92,9 +92,9 @@ namespace basecross {
 		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetMeshResource(L"unko");
 		ptrDraw->SetOwnShadowActive(true);
-		ptrDraw->SetTextureResource(L"H_TX");
+		ptrDraw->SetTextureResource(L"UNKO_TX");
 
 		//ƒAƒNƒVƒ‡ƒ“‚Ì“o˜^
 		auto PtrAction = AddComponent<Action>();
@@ -213,7 +213,20 @@ namespace basecross {
 		ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(true);
-		ptrDraw->SetTextureResource(L"KUSA_TX");
+		ptrDraw->SetTextureResource(L"Cl_TX");
+		//auto drawcomp = AddComponent<PNTStaticModelDraw>();
+		//Mat4x4 spanMat;
+		//spanMat.affineTransformation(
+		//	Vec3(0.5f),
+		//	Vec3(90,0,0),
+		//	Vec3(0),
+		//	Vec3(0, -0.5f, 0)
+		//);
+		//drawcomp->SetMeshToTransformMatrix(spanMat);
+		//drawcomp->SetMeshResource(L"Base");
+		//drawcomp->SetTextureResource(L"UNKO_TX");
+		SetAlphaActive(true);
+	
 
 	}
 	void StageSrectObj::OnUpdate() {

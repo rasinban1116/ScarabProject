@@ -38,6 +38,15 @@ namespace basecross {
 		PtrMultiLight->SetDefaultLighting();
 
 	}
+
+	void GameStage::CreateBox(){
+		auto treeGrope = CreateSharedObjectGroup(L"Tree");
+		AddGameObject<WallPsBox>(Vec3(1), Quat(0),Vec3(-60.0f, 8.5f, -25.0f),int(1));
+		AddGameObject<WallPsBox>(Vec3(1), Quat(0), Vec3(-50.0f, 10.5f, -20.0f), int(2));
+		AddGameObject<WallPsBox>(Vec3(1), Quat(0), Vec3(-30.0f, 10.5f, -35.0f), int(3));
+
+
+	}
 	//ボックスの作成
 	void GameStage::CreateFixedBox() {
 		CreateSharedObjectGroup(L"TilingBox");
@@ -114,26 +123,34 @@ namespace basecross {
 		auto group = CreateSharedObjectGroup(L"EnemyGroup");
 		vector< vector<Vec3> > vecSeek = {
 			{ Vec3(5.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
+			{ Vec3(-15.0f, 3.0f, -5.0f), Vec3(-23.0f,2.3f,-4.0f) },
+			{ Vec3(5.0, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) }
+
+			
 		};
 		//追いかけるオブジェクトの作成
 		for (auto v : vecSeek) {
-			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1]);
-			SetSharedGameObject(L"Enemy", ptreneobj);
+			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1],1);
+			//AddGameObject<Enemy>(v[0], v[1], 1);
 			ptreneobj->AddTag(L"Enemy");
 			
 		}
 	}
 
-	void GameStage::activeboll() {
-		AddGameObject<ActivePsSphere>(1.0f, Quat(), Vec3(0.0f, 6.0f, 5.0f));
-	}
-
 	void GameStage::CreateGimmickObj() {
 		auto group = CreateSharedObjectGroup(L"CoinGroup");
-		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f),  Quat(), Vec3(0.0f, 0.6f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f),  Quat(), Vec3(3.0f, 0.6f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.1f, 0.5f, 0.5f), Quat(), Vec3(-3.0f, 0.6f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(0.0f, 0.6f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(3.0f, 0.6f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-83.0f, 18.2f, -35.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-80.0f, 18.2f, -40.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-43.0f, 4.2f, -2.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-37.0f, 4.2f, -8.0f));		
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-50.0f, 13.0f, -40.0f));		
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-43.0f, 13.0f, -46.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-77.0f, 9.2f, -4.2f));
+	
 	}
+
 	void GameStage::CreateClearObj() {
 		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0), Vec3(1));
 		SetSharedGameObject(L"Clear",ClearObj);
@@ -185,6 +202,8 @@ namespace basecross {
 			CreateUI();
 			//カメラマンの作成
 			CreateCameraman();
+			//壁の生成
+			CreateBox();
 		}
 		catch (...) {
 			throw;

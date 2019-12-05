@@ -27,6 +27,26 @@ namespace basecross{
 		//初期化
 		virtual void OnCreate() override;
 	};
+	//--------------------------------------------------------------------------------------
+	///	物理計算する固定のボックス
+	//--------------------------------------------------------------------------------------
+	class WallPsBox : public GameObject {
+		Vec3 m_Scale;
+		Quat m_Qt;
+		Vec3 m_Position;
+		int size;
+	public:
+		//構築と破棄
+		WallPsBox(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Quat& Qt,
+			const Vec3& Position,
+			const int& size
+		);
+		virtual ~WallPsBox();
+		//初期化
+		virtual void OnCreate() override;
+	};
 
 
 	//--------------------------------------------------------------------------------------

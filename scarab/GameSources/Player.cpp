@@ -20,7 +20,7 @@ namespace basecross {
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(3.0f),
+		m_Speed(5.0f),
 		m_pos(Position)
 
 	{}
@@ -170,6 +170,9 @@ namespace basecross {
 			m_PlayVelo.y += -150.0f*App::GetApp()->GetElapsedTime();
 		}
 		//速度を設定
+		auto forwrd = forces->GetForword();
+		//forces->SetRotation(Vec3(forwrd * 45.0f));
+		//forces->SetRotation(-45.0f, 0.0f, 0.0f);
 		ptrPs->SetLinearVelocity(m_PlayVelo);
 			m_PlayVelo = Vec3(0, 0, 0);
 
@@ -198,11 +201,13 @@ namespace basecross {
 		//初期位置などの設定
 		auto ptr = AddComponent<Transform>();
 		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
-		ptr->SetRotation(0.0f, .0f, 0.0f);
+		ptr->SetRotation(-45.0f, 0.0f, 0.0f);
 		ptr->SetPosition(m_pos);
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
+		
+		ptrColl->SetDrawActive(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
@@ -226,15 +231,28 @@ namespace basecross {
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		ptrDraw->SetMeshResource(L"scarab");	
-		//描画するテクスチャを設定
-		ptrDraw->SetTextureResource(L"KUSA_TX");
+		//ptrDraw->SetMeshResource(L"scarab");	
+		////描画するテクスチャを設定
+		//ptrDraw->SetTextureResource(L"KUSA_TX");
 		ptrDraw->SetAlpha(true);
 		SetAlphaActive(true);
 		AddTag(L"Player");
-
 		//透明処理
 		SetAlphaActive(true);
+		auto drawcomp = AddComponent<PNTStaticModelDraw>();
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(0.5f),
+			Vec3(0),
+			Vec3(0),
+			Vec3(0,-0.5f,0)
+		);
+		drawcomp->SetMeshToTransformMatrix(spanMat);
+		drawcomp->SetMeshResource(L"scarab");
+		drawcomp->SetTextureResource(L"KUSA_TX");
+		
+
+
 
 		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		if (ptrMyCamera) {
@@ -266,7 +284,7 @@ namespace basecross {
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		//DrawStrings();
+		DrawStrings();
 	}
 
 	//Aボタンハンドラ
@@ -362,26 +380,27 @@ namespace basecross {
 		ptrTrans->SetScale(UnkoScale);
 
 		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionCapsule>();
+		auto ptrColl = AddComponent<CollisionSphere>();
+		ptrColl->SetDrawActive(true);
 		
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
 		GetStage()->SetDrawPerformanceActive(true);
-		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
-		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
-		//Rigidbodyをつける
-		auto  ptrRigid = AddComponent<RigidbodySphere>(param);
+		////WorldMatrixをもとにRigidbodySphereのパラメータを作成
+		//PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
+		////Rigidbodyをつける
+		//auto  ptrRigid = AddComponent<RigidbodySphere>(param);
 		//ptrRigid->SetLinearVelocity(UnkoVelo);
-		auto Gravi = AddComponent<Gravity>();
+		//auto Gravi = AddComponent<Gravity>();
 		//影をつける
 		auto ShadowPtr = AddComponent<Shadowmap>();
 		ShadowPtr->SetMeshResource(L"DEFAULT_SPHERE");
 
 		auto PtrDraw = AddComponent<BcPNTStaticDraw>();
 		PtrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-
+		PtrDraw->SetDrawActive(false);
 
 		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		auto stage = GetStage();
@@ -407,7 +426,7 @@ namespace basecross {
 		auto thistrans = GetComponent<Transform>();
 		auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
 		auto ptrTrans = Plyaer->GetComponent<Transform>();
-		auto PsUnko = this->GetComponent<RigidbodySphere>();
+	//	auto PsUnko = this->GetComponent<RigidbodySphere>();
 		auto ptrfor = ptrTrans->GetForword();
 		auto ptrPos = ptrTrans->GetPosition();
 		auto ptrScale = ptrTrans->GetScale();
@@ -415,15 +434,15 @@ namespace basecross {
 		auto thispos = thistrans->GetPosition().y;
 		Vec3 Pos;
 	
-		//ptrfor += ptrTrans->GetRotation();
-		Pos = ptrfor + ptrPos;
-		PsUnko->SetPosition(Pos);
-
+		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
+		//PsUnko->SetPosition(Pos);
+		thistrans->SetRotation(Vec3(0));
 		float maxlenge = ptrTrans->GetPosition().y+2;
 		if (Pos.y >= maxlenge) {
 			Pos.y = maxlenge;
 		}
-	thistrans->SetPosition(Pos);
+	
+		thistrans->SetPosition(Pos);
 	}
 
 

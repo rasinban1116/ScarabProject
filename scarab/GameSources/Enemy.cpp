@@ -2,13 +2,14 @@
 #include "Project.h"
 
 namespace basecross {
-	Enemy::Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos) :
+	Enemy::Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos,const int& size) :
 		GameObject(StagePtr),
 		m_StrPos(StartPos),
 		m_TagePos(TagePos),
 		m_StateChangeSize(5.0f),
 		m_Force(0),
-		m_Velocity(0)
+		m_Velocity(0),
+		size(size)
 	{
 	}
 	Enemy::~Enemy() {}
@@ -110,13 +111,23 @@ namespace basecross {
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		ptrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-		ptrDraw->SetFogEnabled(true);
+		switch (size)
+		{
+		case 1:
+			ptrDraw->SetMeshResource(L"enemy");
+			ptrDraw->SetTextureResource(L"KUSA_TX");
+			ptrDraw->SetFogEnabled(true);
+			break;
+		case 2:
+			ptrDraw->SetMeshResource(L"liz");
+			ptrDraw->SetFogEnabled(true);
+		}
+
 		//描画するテクスチャを設定
-		////ptrDraw->SetTextureResource(L"CHECKER_TX");
+
 
 		//プレイヤーの視界になるオブジェクトを作る
-		auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
+		//auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
 
 
 	}

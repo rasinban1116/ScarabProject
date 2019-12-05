@@ -33,7 +33,7 @@ namespace basecross {
 		//固定のボックスの作成
 		void CreateFixedBox();
 		//固定の傾いたボックスの作成
-		void CreateFixedSlopeBox();
+		void CreateBox();
 		//プレイヤーの作成
 		void CreatePlayer();
 		//敵の作成
