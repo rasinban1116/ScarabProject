@@ -20,7 +20,7 @@ namespace basecross {
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(10.0f),
+		m_Speed(50.0f),
 		m_pos(Position)
 
 	{}

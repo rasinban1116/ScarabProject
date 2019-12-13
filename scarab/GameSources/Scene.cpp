@@ -22,7 +22,7 @@ namespace basecross{
 			
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
 			
 			CreateResourses();
 			LoadStaticModelResources();
@@ -142,6 +142,31 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"UNKO_TX", strTexture);
 		strTexture = dataDir + L"UV_Scarab_Enemy.png";
 		App::GetApp()->RegisterTexture(L"ENEMY_TX", strTexture);
+		strTexture = dataDir + L"number.png";
+		App::GetApp()->RegisterTexture(L"NUMBER_TX", strTexture);
+
+		strTexture = dataDir + L"clear.png";
+		App::GetApp()->RegisterTexture(L"CLEAR_TX", strTexture);
+		strTexture = dataDir + L"nextstage.png";
+		App::GetApp()->RegisterTexture(L"NEXTSTAGE_TX", strTexture);
+		strTexture = dataDir + L"gamestart.png";
+		App::GetApp()->RegisterTexture(L"GAMESTART_TX", strTexture);
+		strTexture = dataDir + L"gameend.png";
+		App::GetApp()->RegisterTexture(L"GAMEEND_TX", strTexture);
+		strTexture = dataDir + L"title.png";
+		App::GetApp()->RegisterTexture(L"TITLE_TX", strTexture);
+		strTexture = dataDir + L"stageselect.png";
+		App::GetApp()->RegisterTexture(L"STAGESELECT_TX", strTexture);
+		strTexture = dataDir + L"retry.png";
+		App::GetApp()->RegisterTexture(L"RETRY_TX", strTexture);
+		strTexture = dataDir + L"Title_01.png";
+		App::GetApp()->RegisterTexture(L"TITLEBACK_TX", strTexture);
+		strTexture = dataDir + L"Title02.png";
+		App::GetApp()->RegisterTexture(L"TITLECHARA_TX", strTexture);
+		strTexture = dataDir + L"poop_cursor.png";
+		App::GetApp()->RegisterTexture(L"ICON_TX", strTexture);
+		strTexture = dataDir + L"backsky.png";
+		App::GetApp()->RegisterTexture(L"SKY_TX", strTexture);
 	}
 
 

@@ -46,6 +46,8 @@ namespace basecross {
 		void CreateGimmickObj();
 		//ゲームクリア用のオブジェクト作成
 		void CreateClearObj();
+		//空の作成
+		void CreateSky();
 		//UIの表示
 		void CreateUI();
 		void GameSystemObj();

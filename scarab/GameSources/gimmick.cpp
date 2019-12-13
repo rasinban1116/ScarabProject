@@ -253,6 +253,39 @@ namespace basecross {
 
 	}
 
+	SkyObj::SkyObj(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Scale,
+		const Quat& Qt,
+		const Vec3& Position
+	) :
+		GameObject(StagePtr),
+		m_Scale(Scale),
+		m_Qt(Qt),
+		m_Position(Position)
+	{}
+
+	SkyObj::~SkyObj() {}
+	//èâä˙âª
+	void SkyObj::OnCreate() {
+
+		auto ptrTrans = GetComponent<Transform>();
+		//AddTag(L"Slope");
+
+		ptrTrans->SetScale(m_Scale);
+		ptrTrans->SetQuaternion(m_Qt);
+		ptrTrans->SetPosition(m_Position);
+
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		//ptrDraw->SetFogEnabled(true);
+
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"SKY_TX");
+	}
 }
 //end basecross
 

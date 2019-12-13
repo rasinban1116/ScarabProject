@@ -130,7 +130,7 @@ namespace basecross {
 
 
 		//プレイヤーの視界になるオブジェクトを作る
-		//auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
+		auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
 
 
 	}
@@ -176,12 +176,12 @@ namespace basecross {
 		force += ptrFollowPath->Execute(force, Obj->GetVelocity());
 		Obj->SetForce(force);
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
-		if (f < Obj->GetStateChangeSize()) {
-			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
-		}
-		//if (Obj->LookFlg::GetLook() == true) {
+		//if (f < Obj->GetStateChangeSize()) {
 		//	Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
 		//}
+		if (Obj->LookFlg::GetLook() == true) {
+			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
+		}
 	}
 	void LookOfState::Exit(const shared_ptr<Enemy>& Obj) {
 	}
@@ -219,7 +219,7 @@ namespace basecross {
 
 	void EnemyEye::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetScale(0.7f, 0.5, 1.5f);
+		ptrTrans->SetScale(0.7f, 0.5, 2.0f);
 		ptrTrans->SetParent(m_ParentPtr);
 
 		AddTag(L"EnemyEye");
@@ -235,6 +235,7 @@ namespace basecross {
 
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(false);
+		ptrDraw->SetDrawActive(false);
 		SetDrawActive(true);
 
 

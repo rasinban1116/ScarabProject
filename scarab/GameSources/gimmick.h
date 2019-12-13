@@ -92,5 +92,22 @@ namespace basecross {
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>&StagePtr);
 	};
+
+	class SkyObj : public GameObject {
+		Vec3 m_Scale;
+		Quat m_Qt;
+		Vec3 m_Position;
+	public:
+		//ç\ízÇ∆îjä¸
+		SkyObj(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Quat& Qt,
+			const Vec3& Position
+		);
+		virtual ~SkyObj();
+
+		virtual void OnCreate();
+	};
+
 }
 //end basecross
