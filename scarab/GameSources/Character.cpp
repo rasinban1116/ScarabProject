@@ -12,122 +12,96 @@ namespace basecross{
 ///	物理計算する固定のボックス
 //--------------------------------------------------------------------------------------
 //構築と破棄
-	FixedPsBox::FixedPsBox(const shared_ptr<Stage>& StagePtr,
+	SlopeFixedBox::SlopeFixedBox(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Scale,
-		const Quat& Qt,
-		const Vec3& Position
-	) :
-		GameObject(StagePtr),
-		m_Scale(Scale),
-		m_Qt(Qt),
-		m_Position(Position)
-	{}
-
-	FixedPsBox::~FixedPsBox() {}
-	//初期化
-	void FixedPsBox::OnCreate() {
-		
-		auto ptrTrans = GetComponent<Transform>();
-		//AddTag(L"Slope");
-
-		ptrTrans->SetScale(m_Scale);
-		ptrTrans->SetQuaternion(m_Qt);
-		ptrTrans->SetPosition(m_Position);
-
-		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionObb>();
-		AddTag(L"Ground");
-		ptrColl->SetFixed(true);
-		ptrColl->SetDrawActive(true);
-		//各パフォーマンスを得る
-		GetStage()->SetCollisionPerformanceActive(true);
-		GetStage()->SetUpdatePerformanceActive(true);
-		GetStage()->SetDrawPerformanceActive(true);
-
-		//影をつける
-		auto ptrShadow = AddComponent<Shadowmap>();
-		//ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
-
-		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		ptrDraw->SetFogEnabled(true);
-
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetOwnShadowActive(true);
-		ptrDraw->SetTextureResource(L"WALL_TX");
-		ptrDraw->SetDrawActive(false);
-		////物理計算ボックス
-		//PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeWall);
-		//auto PsPtr = AddComponent<RigidbodyBox>(param);
-	}
-	//--------------------------------------------------------------------------------------
-///	物理計算する固定のボックス
-//--------------------------------------------------------------------------------------
-//構築と破棄
-	WallPsBox::WallPsBox(const shared_ptr<Stage>& StagePtr,
-		const Vec3& Scale,
-		const Quat& Qt,
+		const Vec3& Rotation,
 		const Vec3& Position,
-		const int& size
+		float UPic,
+		float VPic,
+		const wstring& Texname
 	) :
 		GameObject(StagePtr),
 		m_Scale(Scale),
-		m_Qt(Qt),
+		m_Rotation(Rotation),
 		m_Position(Position),
-		size(size)
+		m_UPic(UPic),
+		m_VPic(VPic),
+		m_Texname(Texname)
 	{}
-
-	WallPsBox::~WallPsBox() {}
+	SlopeFixedBox::~SlopeFixedBox() {}
 	//初期化
-	void WallPsBox::OnCreate() {
+	void SlopeFixedBox::OnCreate() {
+		AddTag(L"Slope");
+		auto PtrTrans = GetComponent<Transform>();
+		PtrTrans->SetScale(m_Scale);
+		PtrTrans->SetRotation(m_Rotation);
+		PtrTrans->SetPosition(m_Position);
+		auto Coll = AddComponent<CollisionObb>();
+		Coll->SetSleepActive(true);
+		Coll->SetFixed(true);
+		Coll->SetDrawActive(true);
 
-		auto ptrTrans = GetComponent<Transform>();
+		vector<VertexPositionNormalTexture> vertices;
+		vector<uint16_t> indices;
+		MeshUtill::CreateCube(1.0f, vertices, indices);
+		float UCount = m_Scale.x / m_UPic;
+		float VCount = m_Scale.z / m_VPic;
+		for (size_t i = 0; i < vertices.size(); i++) {
+			if (vertices[i].textureCoordinate.x >= 1.0f) {
+				vertices[i].textureCoordinate.x = UCount;
+			}
+			if (vertices[i].textureCoordinate.y >= 1.0f) {
+				float FrontBetween = bsm::angleBetweenNormals(vertices[i].normal, Vec3(0, 1, 0));
+				float BackBetween = bsm::angleBetweenNormals(vertices[i].normal, Vec3(0, -1, 0));
+				if (FrontBetween < 0.01f || BackBetween < 0.01f) {
+					vertices[i].textureCoordinate.y = VCount;
+				}
+			}
+		}
+		//描画コンポーネントの追加
+		auto PtrDraw = AddComponent<BcPNTStaticDraw>();
+		//描画コンポーネントに形状（メッシュ）を設定
+		PtrDraw->CreateOriginalMesh(vertices, indices);
+		PtrDraw->SetOriginalMeshUse(true);
+		PtrDraw->SetFogEnabled(true);
+		//自分に影が映りこむようにする
+		PtrDraw->SetOwnShadowActive(true);
+		//描画コンポーネントテクスチャの設定
+		PtrDraw->SetTextureResource(m_Texname);
+		//タイリング設定
+		PtrDraw->SetSamplerState(SamplerState::LinearWrap);
+		//物理計算ボックス
+		PsBoxParam param(PtrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		auto PsPtr = AddComponent<RigidbodyBox>(param);
+		PtrDraw->SetAlpha(true);
+		SetAlphaActive(true);
+		PtrDraw->SetDrawActive(false);
 
-		ptrTrans->SetScale(m_Scale);
-		ptrTrans->SetQuaternion(m_Qt);
-		ptrTrans->SetPosition(m_Position);
+	}
 
-		//各パフォーマンスを得る
-		GetStage()->SetCollisionPerformanceActive(true);
-		GetStage()->SetUpdatePerformanceActive(true);
-		GetStage()->SetDrawPerformanceActive(true);
-
-		//影をつける
-		auto ptrShadow = AddComponent<Shadowmap>();
-		//ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
-		auto drawcomp = AddComponent<PNTStaticModelDraw>();
-		auto DrawComp = AddComponent<PNTStaticDraw>();
-		Mat4x4 spanMat;
-		spanMat.affineTransformation(
-			Vec3(1),
-			Vec3(0),
-			Vec3(0),
-			Vec3(0, -0.5f, 0)
-		);
-		drawcomp->SetMeshToTransformMatrix(spanMat);
-		switch (size)
-		{
-		case 1:
-			drawcomp->SetMeshResource(L"rock");
-			drawcomp->SetTextureResource(L"Cl_TX");
-			break;
-		case 2:
-			drawcomp->SetMeshResource(L"tree");
-			drawcomp->SetTextureResource(L"Cl_TX");
-			break;
-		case 3:
-			DrawComp->SetMeshResource(L"unko");
-			DrawComp->SetTextureResource(L"UNKO_TX");
-			break;
-		default:
-			
-			break;
+	void SlopeFixedBox::OnUpdate() {
+		auto ptrColl = GetComponent<CollisionObb>();
+		auto ptrDraw = GetComponent<BcPNTStaticDraw>();
+		ptrColl->SetSleepActive(true);
+		if (ptrColl->IsSleep()) {
+			ptrDraw->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 
-		drawcomp->SetDrawActive(true);
-		AddTag(L"Ground");
 	}
 
+	void SlopeFixedBox::OnCollisionEnter(shared_ptr<GameObject>&ptrObj) {
+		auto Play = ptrObj->GetStage()->GetSharedObject(L"Player", true);
+		auto ptrColl = GetComponent<CollisionObb>();
+		if (Play) {
+			if (ptrColl->IsSleep()) {
+				ptrColl->SetSleepActive(false);
+			}
+		}
+	}
+	void SlopeFixedBox::OnCollisionExcute(shared_ptr<GameObject>&ptrObj) {
 
+
+	}
 	//--------------------------------------------------------------------------------------
 	///	物理計算する落下するボール
 	//--------------------------------------------------------------------------------------
@@ -200,6 +174,7 @@ namespace basecross{
 	TilingFixedBox::~TilingFixedBox() {}
 	//初期化
 	void TilingFixedBox::OnCreate() {
+		AddTag(L"Ground");
 		auto PtrTrans = GetComponent<Transform>();
 		PtrTrans->SetScale(m_Scale);
 		PtrTrans->SetRotation(m_Rotation);
