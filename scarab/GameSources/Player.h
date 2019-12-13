@@ -107,6 +107,7 @@ namespace basecross{
 		//å„çXêV
 		virtual void OnUpdate2() override;
 		void Move();
+		static float  ScaleUp();
 		bool active;
 	
 	};
