@@ -11,44 +11,31 @@ namespace basecross{
 
 	//--------------------------------------------------------------------------------------
 	///	物理計算する固定のボックス
-	//--------------------------------------------------------------------------------------
-	class FixedPsBox : public GameObject {
+	class SlopeFixedBox : public GameObject {
 		Vec3 m_Scale;
-		Quat m_Qt;
+		Vec3 m_Rotation;
 		Vec3 m_Position;
+		float m_UPic;
+		float m_VPic;
+		wstring m_Texname;
 	public:
 		//構築と破棄
-		FixedPsBox(const shared_ptr<Stage>& StagePtr,
+		SlopeFixedBox(const shared_ptr<Stage>& StagePtr,
 			const Vec3& Scale,
-			const Quat& Qt,
-			const Vec3& Position
-		);
-		virtual ~FixedPsBox();
-		//初期化
-		virtual void OnCreate() override;
-	};
-	//--------------------------------------------------------------------------------------
-	///	物理計算する固定のボックス
-	//--------------------------------------------------------------------------------------
-	class WallPsBox : public GameObject {
-		Vec3 m_Scale;
-		Quat m_Qt;
-		Vec3 m_Position;
-		int size;
-	public:
-		//構築と破棄
-		WallPsBox(const shared_ptr<Stage>& StagePtr,
-			const Vec3& Scale,
-			const Quat& Qt,
+			const Vec3& Rotation,
 			const Vec3& Position,
-			const int& size
+			float UPic,
+			float VPic,
+			const wstring& Texname
 		);
-		virtual ~WallPsBox();
+		virtual ~SlopeFixedBox();
 		//初期化
 		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		//操作
+		virtual void OnCollisionEnter(shared_ptr<GameObject>&ptrObj)override;
+		virtual void OnCollisionExcute(shared_ptr<GameObject>&ptrObj)override;
 	};
-
-
 	//--------------------------------------------------------------------------------------
 	///	物理計算する落下するボール
 	//--------------------------------------------------------------------------------------

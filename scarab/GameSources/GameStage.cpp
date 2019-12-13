@@ -66,8 +66,8 @@ namespace basecross {
 				(float)_wtof(Tokens[2].c_str()),
 				(float)_wtof(Tokens[3].c_str())
 			);
-			
-			
+
+
 
 			//回転は「XM_PIDIV2」の文字列になっている場合がある
 			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
@@ -91,8 +91,9 @@ namespace basecross {
 			//各値がそろったのでオブジェクト作成
 			auto Tiling = AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
 		}
+
 		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
-		m_GameStageCsvB.GetSelect(LineVec, 0, L"TilingFixedBox");
+		m_GameStageCsvB.GetSelect(LineVec, 0, L"SlopeFixedBox");
 		for (auto& v : LineVec) {
 			//トークン（カラム）の配列
 			vector<wstring> Tokens;
@@ -127,11 +128,11 @@ namespace basecross {
 			);
 
 			//各値がそろったのでオブジェクト作成
-			auto Tiling = AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
+			auto Tiling = AddGameObject<SlopeFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
 		}
-
-
 	}
+
+	
 
 	void GameStage::CreateUI() {
 		auto UI = AddGameObject<UIDraw>();
