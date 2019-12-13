@@ -29,7 +29,7 @@ namespace basecross {
 	void UIDraw::OnUpdate() {
 		//ScoreDraw();
 	}
-
+	
 	void UIDraw::OnUpdate2() {
 
 	}
@@ -48,8 +48,13 @@ namespace basecross {
 	}
 	void UIDraw::SetScore(float x) {
 		Score += x;
-
 	}
+
+	float UIDraw::GetScore()
+	{
+		return Score;
+	}
+
 
 
 //--------------------------------------------------------------------------------------
@@ -74,7 +79,7 @@ namespace basecross {
 	void GimmickObj::OnCreate() {
 
 		auto ptrTrans = GetComponent<Transform>();
-		AddTag(L"Slope");
+		AddTag(L"UnCoin");
 
 		ptrTrans->SetScale(m_Scale);
 		ptrTrans->SetQuaternion(m_Qt);
@@ -111,10 +116,13 @@ namespace basecross {
 	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {	
 		auto play =Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
 		auto UI = Other->GetStage()->GetSharedGameObject<UIDraw>(L"UI", true);
+
 		if (play&&UI) {
 			SetUpdateActive(false);
 			SetDrawActive(false);
 			UI->SetScore(100.0f);
+			UnkoBoll::ScaleUp();
+
 		}	
 	}
 

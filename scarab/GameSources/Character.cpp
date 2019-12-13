@@ -26,7 +26,7 @@ namespace basecross{
 	FixedPsBox::~FixedPsBox() {}
 	//初期化
 	void FixedPsBox::OnCreate() {
-
+		
 		auto ptrTrans = GetComponent<Transform>();
 		//AddTag(L"Slope");
 
@@ -38,6 +38,7 @@ namespace basecross{
 		auto ptrColl = AddComponent<CollisionObb>();
 		AddTag(L"Ground");
 		ptrColl->SetFixed(true);
+		ptrColl->SetDrawActive(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
@@ -53,6 +54,7 @@ namespace basecross{
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"WALL_TX");
+		ptrDraw->SetDrawActive(false);
 		////物理計算ボックス
 		//PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeWall);
 		//auto PsPtr = AddComponent<RigidbodyBox>(param);
@@ -122,6 +124,7 @@ namespace basecross{
 		}
 
 		drawcomp->SetDrawActive(true);
+		AddTag(L"Ground");
 	}
 
 
@@ -204,7 +207,7 @@ namespace basecross{
 		auto Coll = AddComponent<CollisionObb>();
 		Coll->SetSleepActive(true);
 		Coll->SetFixed(true);
-		//Coll->SetDrawActive(true);
+		Coll->SetDrawActive(true);
 
 		vector<VertexPositionNormalTexture> vertices;
 		vector<uint16_t> indices;
@@ -240,7 +243,7 @@ namespace basecross{
 		auto PsPtr = AddComponent<RigidbodyBox>(param);
 		PtrDraw->SetAlpha(true);
 		SetAlphaActive(true);
-		//PtrDraw->SetDrawActive(false);
+		PtrDraw->SetDrawActive(false);
 		
 	}
 

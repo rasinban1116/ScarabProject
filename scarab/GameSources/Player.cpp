@@ -376,7 +376,7 @@ namespace basecross {
 
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		//ptrColl->SetDrawActive(true);
+		ptrColl->SetDrawActive(true);
 		
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
@@ -390,8 +390,13 @@ namespace basecross {
 
 		auto PtrDraw = AddComponent<BcPNTStaticDraw>();
 		PtrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-		//PtrDraw->SetDrawActive(false);
+		PtrDraw->SetDrawActive(false);
 		PtrDraw->SetTextureResource(L"UNKO_TX");
+
+		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
+		//PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
+		//Rigidbodyをつける
+		//auto  ptrRigid = AddComponent<RigidbodySphere>(param);
 
 		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		auto stage = GetStage();
@@ -423,11 +428,12 @@ namespace basecross {
 		auto ptrScale = ptrTrans->GetScale();
 	
 		auto thispos = thistrans->GetPosition().y;
+		auto thisScale = thistrans->GetScale();
 		Vec3 Pos;
 	
 		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
 		//PsUnko->SetPosition(Pos);
-		thistrans->SetRotation(Vec3(0));
+		//thistrans->SetRotation(Vec3(0));
 		float maxlenge = ptrTrans->GetPosition().y+2;
 		if (Pos.y >= maxlenge) {
 			Pos.y = maxlenge;
@@ -436,15 +442,25 @@ namespace basecross {
 		thistrans->SetPosition(Pos);
 	}
 
+	float UnkoBoll::ScaleUp() {
+		float upscale;
+		auto score = UIDraw::GetScore();
+		upscale = score / 1000.0f;
+		return upscale;
+	}
 
 	void UnkoBoll::OnCollisionEnter(shared_ptr<GameObject>& Other){
-		auto Slope = Other->GetStage()->GetSharedObjectGroup(L"TilingBox");
-			Slope->IntoGroup(Other);
-			auto Trans = GetComponent<Transform>();
-			auto slope = Trans->GetRotation();
-			if (slope != Vec3(0)) {
-				//active = false;
-			}
+		auto UnCoin = Other->GetStage()->GetSharedObjectGroup(L"CoinGrope");
+		auto thistrans = GetComponent<Transform>();
+		if (Other->FindTag(L"UnCoin")){ 
+			ScaleUp();
+			auto scale = thistrans->GetScale();
+			scale = scale + UnkoBoll::ScaleUp();
+			thistrans->SetScale(scale);
+		}
+		else if (Other->FindTag(L"Slope")) {
+
+		}
 
 	}
 	void UnkoBoll::OnCollisionExcute(shared_ptr<GameObject>& Other){

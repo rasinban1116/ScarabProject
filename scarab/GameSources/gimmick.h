@@ -22,6 +22,7 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		virtual void OnUpdate2()override;
 		static void SetScore(float);
+		static float GetScore();
 	private:
 		static float Score;
 	};
