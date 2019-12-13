@@ -157,6 +157,15 @@ namespace basecross {
 		SetSharedGameObject(L"Clear",ClearObj);
 	}
 
+	void GameStage::CreateSky() {
+		AddGameObject<SkyObj>(Vec3(200.f, 100.f, 0.5f), Quat(), Vec3(0.0f, 0.0f, 100.0f));
+		AddGameObject<SkyObj>(Vec3(200.f, 100.f, 0.5f), Quat(), Vec3(0.0f, 0.0f, -100.0f));
+		AddGameObject<SkyObj>(Vec3(0.5f, 100.f, 200.0f), Quat(), Vec3(100.0f, 0.0f, 0.0f));
+		AddGameObject<SkyObj>(Vec3(0.5f, 100.f, 200.0f), Quat(), Vec3(-100.0f, 0.0f, 0.0f));
+		AddGameObject<SkyObj>(Vec3(200.0f, 0.5f, 200.0f), Quat(), Vec3(0.0f, 50.0f, 0.0f));
+
+	}
+
 	//カメラマンの作成
 	void GameStage::CreateCameraman() {
 		//auto ptrCameraman = AddGameObject<Cameraman>(2.0f);
@@ -195,7 +204,10 @@ namespace basecross {
 			CreatePlayer();
 			//プレイヤーを継承した子オブジェクトの作成
 			CreatePlayerChild();
+			//敵の追加
 			CreateLowEnemy();
+			//空の追加
+			CreateSky();
 			//ギミックの生成
 			CreateGimmickObj();
 			CreateClearObj();

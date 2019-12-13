@@ -130,7 +130,7 @@ namespace basecross {
 
 
 		//プレイヤーの視界になるオブジェクトを作る
-		//auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
+		auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
 
 
 	}
@@ -176,12 +176,12 @@ namespace basecross {
 		force += ptrFollowPath->Execute(force, Obj->GetVelocity());
 		Obj->SetForce(force);
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
-		if (f < Obj->GetStateChangeSize()) {
-			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
-		}
-		//if (Obj->LookFlg::GetLook() == true) {
+		//if (f < Obj->GetStateChangeSize()) {
 		//	Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
 		//}
+		if (Obj->LookFlg::GetLook() == true) {
+			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
+		}
 	}
 	void LookOfState::Exit(const shared_ptr<Enemy>& Obj) {
 	}
