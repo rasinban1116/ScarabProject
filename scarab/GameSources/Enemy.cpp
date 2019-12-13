@@ -219,7 +219,7 @@ namespace basecross {
 
 	void EnemyEye::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetScale(0.7f, 0.5, 1.5f);
+		ptrTrans->SetScale(0.7f, 0.5, 2.0f);
 		ptrTrans->SetParent(m_ParentPtr);
 
 		AddTag(L"EnemyEye");
@@ -235,6 +235,7 @@ namespace basecross {
 
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(false);
+		ptrDraw->SetDrawActive(false);
 		SetDrawActive(true);
 
 
