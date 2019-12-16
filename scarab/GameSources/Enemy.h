@@ -2,10 +2,18 @@
 #include "stdafx.h"
 
 namespace basecross {
+
+	enum class EnemyLook {
+		LookOf,
+		LookOn
+	};
+
 	class LookFlg {
+
 		bool m_lookflg;
 
-	public:
+	public :
+
 		void SetLook(bool ptrlook) {
 			m_lookflg = ptrlook;
 		}
@@ -23,7 +31,7 @@ namespace basecross {
 		}
 	};
 
-	class Enemy : public GameObject, public LookFlg {
+	class Enemy : public GameObject, public LookFlg{
 		unique_ptr< StateMachine<Enemy> >  m_StateMachine;
 		Vec3 m_StrPos;
 		float m_StateChangeSize;
@@ -37,7 +45,7 @@ namespace basecross {
 		void ApplyForce();
 		Vec3 m_ParentPtr;
 		int size;
-
+		EnemyLook m_state;
 
 	public :
 		Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos, const int&size);
@@ -79,8 +87,12 @@ namespace basecross {
 		virtual void OnUpdate() override;
 	};
 
-	class LookOfState : public ObjState<Enemy>
+	//--------------------------------------------------------------------------------------
+	//	 ÉvÉåÉCÉÑÅ[Ç©ÇÁâìÇ¢Ç∆Ç´ÇÃà⁄ìÆ
+	//--------------------------------------------------------------------------------------
+	class LookOfState : public ObjState<Enemy>, public LookFlg
 	{
+		bool m_lookflg;
 		LookOfState() {}
 	public:
 		static shared_ptr<LookOfState> Instance();

@@ -35,8 +35,7 @@ namespace basecross {
 		ptrTrans->SetScale(0.25f, 0.25f, 0.25f);
 		ptrTrans->SetRotation(0.0f, 0.0f, 0.0f);
 
-		//視界の初期化
-		LookFlg::SetLook(false);
+
 		//オブジェクトのグループを得る
 		auto group = GetStage()->GetSharedObjectGroup(L"EnemyGroup");
 		//グループに自分自身を追加
@@ -85,7 +84,7 @@ namespace basecross {
 		//ステートマシンの構築
 		m_StateMachine.reset(new StateMachine<Enemy>(GetThis<Enemy>()));
 		//最初のステートをSeekEnemyFarStateに設定
-		m_StateMachine->ChangeState(LookOfState::Instance());
+		//m_StateMachine->ChangeState(LookOfState::Instance());
 
 
 
@@ -132,7 +131,6 @@ namespace basecross {
 		//プレイヤーの視界になるオブジェクトを作る
 		auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
 
-
 	}
 
 	//更新
@@ -143,7 +141,7 @@ namespace basecross {
 		m_Force += ptrWall->Execute(m_Force, GetVelocity());
 		//ステートマシンのUpdateを行う
 		//この中でステートの切り替えが行われる
-		m_StateMachine->Update();
+		//m_StateMachine->Update();
 		
 		//共通のステアリング2
 		auto ptrSep = GetBehavior<SeparationSteering>();
@@ -157,6 +155,15 @@ namespace basecross {
 		auto ptrDraw = GetComponent<PNTBoneModelDraw>();
 		auto unko = App::GetApp()->GetElapsedTime();
 		ptrDraw->UpdateAnimation(unko);
+		m_lookflg = LookFlg::GetLook();
+
+
+		//if (!m_lookflg) {
+		//	m_StateMachine->ChangeState(LookOfState::Instance());
+		//}
+		//else {
+		//	m_StateMachine->ChangeState(LookOnState::Instance());
+		//}
 	}
 
 
@@ -179,9 +186,12 @@ namespace basecross {
 		//if (f < Obj->GetStateChangeSize()) {
 		//	Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
 		//}
-		if (Obj->LookFlg::GetLook() == true) {
-			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
-		}
+
+		//m_lookflg = Obj->GetLook();
+
+		//if (m_lookflg == true) {
+		//	Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
+		//}
 	}
 	void LookOfState::Exit(const shared_ptr<Enemy>& Obj) {
 	}
@@ -203,9 +213,9 @@ namespace basecross {
 		force += ptrArrive->Execute(force, Obj->GetVelocity(), ptrPlayerTrans->GetPosition());
 		Obj->SetForce(force);
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
-		if (f >= Obj->GetStateChangeSize()) {
-			Obj->GetStateMachine()->ChangeState(LookOfState::Instance());
-		}
+		//if (f >= Obj->GetStateChangeSize()) {
+		//	Obj->GetStateMachine()->ChangeState(LookOfState::Instance());
+		//}
 	}
 	void LookOnState::Exit(const shared_ptr<Enemy>& Obj) {
 	}
@@ -240,6 +250,9 @@ namespace basecross {
 
 
 		SetAlphaActive(false);
+
+		//視界の初期化
+		LookFlg::SetLook(false);
 
 	}
 

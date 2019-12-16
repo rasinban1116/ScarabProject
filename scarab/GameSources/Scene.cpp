@@ -167,6 +167,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"ICON_TX", strTexture);
 		strTexture = dataDir + L"backsky.png";
 		App::GetApp()->RegisterTexture(L"SKY_TX", strTexture);
+		strTexture = dataDir + L"Ball_poop_Tx.png";
+		App::GetApp()->RegisterTexture(L"POOP_TX", strTexture);
 	}
 
 

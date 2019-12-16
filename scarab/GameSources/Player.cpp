@@ -4,7 +4,7 @@
 */
 
 #include "stdafx.h"
-#include "Project.h"7
+#include "Project.h"
 
 namespace basecross {
 	//--------------------------------------------------------------------------------------
@@ -376,7 +376,7 @@ namespace basecross {
 
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		ptrColl->SetDrawActive(true);
+		ptrColl->SetDrawActive(false);
 		
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
@@ -390,8 +390,8 @@ namespace basecross {
 
 		auto PtrDraw = AddComponent<BcPNTStaticDraw>();
 		PtrDraw->SetMeshResource(L"DEFAULT_SPHERE");
-		PtrDraw->SetDrawActive(false);
-		PtrDraw->SetTextureResource(L"UNKO_TX");
+		PtrDraw->SetDrawActive(true);
+		PtrDraw->SetTextureResource(L"POOP_TX");
 
 		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
 		//PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
