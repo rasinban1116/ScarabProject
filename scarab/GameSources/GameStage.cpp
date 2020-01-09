@@ -172,7 +172,7 @@ namespace basecross {
 		};
 		//追いかけるオブジェクトの作成
 		for (auto v : vecSeek) {
-			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1],1);
+			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1], 1, L"ENEMY_TX", L"Enemy");
 			//AddGameObject<Enemy>(v[0], v[1], 1);
 			ptreneobj->AddTag(L"Enemy");
 			

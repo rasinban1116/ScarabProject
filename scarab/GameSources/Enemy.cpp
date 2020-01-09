@@ -2,14 +2,17 @@
 #include "Project.h"
 
 namespace basecross {
-	Enemy::Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos,const int& size) :
+	Enemy::Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos,const int& size, 
+		const wstring ptrtex, wstring ptrmodel) :
 		GameObject(StagePtr),
 		m_StrPos(StartPos),
 		m_TagePos(TagePos),
 		m_StateChangeSize(5.0f),
 		m_Force(0),
 		m_Velocity(0),
-		size(size)
+		size(size),
+		tex(ptrtex),
+		model(ptrmodel)
 	{
 	}
 	Enemy::~Enemy() {}
@@ -84,7 +87,7 @@ namespace basecross {
 		//ステートマシンの構築
 		m_StateMachine.reset(new StateMachine<Enemy>(GetThis<Enemy>()));
 		//最初のステートをSeekEnemyFarStateに設定
-		//m_StateMachine->ChangeState(LookOfState::Instance());
+		m_StateMachine->ChangeState(LookOfState::Instance());
 
 
 
@@ -113,11 +116,11 @@ namespace basecross {
 		switch (size)
 		{
 		case 1:
-			ptrDraw->SetMeshResource(L"Enemy");
-			ptrDraw->SetTextureResource(L"ENEMY_TX");
+			ptrDraw->SetMeshResource(model);
+			ptrDraw->SetTextureResource(tex);
 			//ptrDraw->SetFogEnabled(true);
-			ptrDraw->AddAnimation(L"Enemy",0,60,true,30);
-			ptrDraw->ChangeCurrentAnimation(L"Enemy",0);
+			ptrDraw->AddAnimation(model,0,60,true,30);
+			ptrDraw->ChangeCurrentAnimation(model,0);
 			break;
 		case 2:
 			ptrDraw->SetMeshResource(L"liz");
@@ -141,7 +144,7 @@ namespace basecross {
 		m_Force += ptrWall->Execute(m_Force, GetVelocity());
 		//ステートマシンのUpdateを行う
 		//この中でステートの切り替えが行われる
-		//m_StateMachine->Update();
+		m_StateMachine->Update();
 		
 		//共通のステアリング2
 		auto ptrSep = GetBehavior<SeparationSteering>();
@@ -183,9 +186,9 @@ namespace basecross {
 		force += ptrFollowPath->Execute(force, Obj->GetVelocity());
 		Obj->SetForce(force);
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
-		//if (f < Obj->GetStateChangeSize()) {
-		//	Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
-		//}
+		if (f < Obj->GetStateChangeSize()) {
+			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
+		}
 
 		//m_lookflg = Obj->GetLook();
 

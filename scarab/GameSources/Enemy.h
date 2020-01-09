@@ -46,9 +46,12 @@ namespace basecross {
 		Vec3 m_ParentPtr;
 		int size;
 		EnemyLook m_state;
+		wstring tex;
+		wstring model;
 
 	public :
-		Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos, const int&size);
+		Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos, const int&size,
+			const wstring ptrtex, const wstring ptrmodel);
 		virtual ~Enemy();
 
 		//アクセサ
