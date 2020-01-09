@@ -362,7 +362,8 @@ namespace basecross {
 		UnkoPos(Position),
 		UnkoScale(Scale),
 		UnkoRot(Rot),
-		UnkoVelo(Velocity)
+		UnkoVelo(Velocity),
+		active(true)
 	{
 	}
 
@@ -394,9 +395,9 @@ namespace basecross {
 		PtrDraw->SetTextureResource(L"UNKO_TX");
 
 		//WorldMatrix‚ð‚à‚Æ‚ÉRigidbodySphere‚Ìƒpƒ‰ƒ[ƒ^‚ðì¬
-		//PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
+		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
 		//Rigidbody‚ð‚Â‚¯‚é
-		//auto  ptrRigid = AddComponent<RigidbodySphere>(param);
+		auto  ptrRigid = AddComponent<RigidbodySphere>(param);
 
 		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		auto stage = GetStage();
@@ -410,36 +411,60 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-	Move();
+		if (active == true) {
+			Move();
+		}
 	}
 	void UnkoBoll::OnUpdate2() {
 
 	}
-	//a
-
-
-	void UnkoBoll::Move() {
+	
+	Vec3 UnkoBoll::holdon() {
 		auto thistrans = GetComponent<Transform>();
 		auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
 		auto ptrTrans = Plyaer->GetComponent<Transform>();
-	//	auto PsUnko = this->GetComponent<RigidbodySphere>();
+		auto PsUnko = this->GetComponent<RigidbodySphere>();
 		auto ptrfor = ptrTrans->GetForword();
 		auto ptrPos = ptrTrans->GetPosition();
 		auto ptrScale = ptrTrans->GetScale();
-	
+
 		auto thispos = thistrans->GetPosition().y;
 		auto thisScale = thistrans->GetScale();
 		Vec3 Pos;
-	
+
 		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
 		//PsUnko->SetPosition(Pos);
 		//thistrans->SetRotation(Vec3(0));
-		float maxlenge = ptrTrans->GetPosition().y+2;
+		float maxlenge = ptrTrans->GetPosition().y + 2;
 		if (Pos.y >= maxlenge) {
 			Pos.y = maxlenge;
 		}
+		return Pos;
+	}
+
+		void UnkoBoll::Move() {
+		//auto thistrans = GetComponent<Transform>();
+		//auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
+		//auto ptrTrans = Plyaer->GetComponent<Transform>();
+			auto Pos = holdon();
+		auto PsUnko = this->GetComponent<RigidbodySphere>();
+		//auto ptrfor = ptrTrans->GetForword();
+		//auto ptrPos = ptrTrans->GetPosition();
+		//auto ptrScale = ptrTrans->GetScale();
 	
-		thistrans->SetPosition(Pos);
+		//auto thispos = thistrans->GetPosition().y;
+		//auto thisScale = thistrans->GetScale();
+		//Vec3 Pos;
+	
+		//Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
+		////PsUnko->SetPosition(Pos);
+		////thistrans->SetRotation(Vec3(0));
+		//float maxlenge = ptrTrans->GetPosition().y+2;
+		//if (Pos.y >= maxlenge) {
+		//	Pos.y = maxlenge;
+		//}
+		PsUnko->SetPosition(Pos);
+		//thistrans->SetPosition(Pos);
 	}
 
 	float UnkoBoll::ScaleUp() {
@@ -458,16 +483,18 @@ namespace basecross {
 			scale = scale + UnkoBoll::ScaleUp();
 			thistrans->SetScale(scale);
 		}
-		else if (Other->FindTag(L"Slope")) {
+		if (Other->FindTag(L"Player")) {
 
 		}
 
 	}
 	void UnkoBoll::OnCollisionExcute(shared_ptr<GameObject>& Other){
-
+		 if (Other->FindTag(L"Slope")) {
+			active = false;
+		}
 	}
 	void UnkoBoll::OnCollisionExit(shared_ptr<GameObject>& Other) {
-		//active = false;
+		active = true;
 	}
 
 

@@ -73,6 +73,7 @@ namespace basecross{
 		Vec3 UnkoScale;
 		Vec3 UnkoRot;
 		Vec3 UnkoVelo;
+
 	
 	public:
 		//ç\ízÇ∆îjä¸
@@ -106,6 +107,7 @@ namespace basecross{
 		virtual void OnUpdate2() override;
 		void Move();
 		static float  ScaleUp();
+		Vec3 holdon();
 		bool active;
 	
 	};
