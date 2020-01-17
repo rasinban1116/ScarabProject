@@ -124,6 +124,8 @@ namespace basecross{
 		App::GetApp()->GetAssetsDirectory(dataDir);
 		//各ゲームは以下のようにデータディレクトリを取得すべき
 		App::GetApp()->GetDataDirectory(dataDir);
+		
+		//ステージオブジェクト＆プレイヤー・エネミー用テクスチャ
 		wstring strTexture = dataDir + L"trace.png";
 		App::GetApp()->RegisterTexture(L"TRACE_TX", strTexture);
 		strTexture = dataDir + L"sky.jpg";
@@ -142,9 +144,10 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"UNKO_TX", strTexture);
 		strTexture = dataDir + L"UV_Scarab_Enemy.png";
 		App::GetApp()->RegisterTexture(L"ENEMY_TX", strTexture);
-		strTexture = dataDir + L"number.png";
-		App::GetApp()->RegisterTexture(L"NUMBER_TX", strTexture);
+		strTexture = dataDir + L"Stage_Select.png";
+		App::GetApp()->RegisterTexture(L"SERECT_TX", strTexture);
 
+		//UIやスコア表示用のテクスチャ
 		strTexture = dataDir + L"clear.png";
 		App::GetApp()->RegisterTexture(L"CLEAR_TX", strTexture);
 		strTexture = dataDir + L"nextstage.png";
@@ -171,9 +174,13 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"POOP_TX", strTexture);
 		strTexture = dataDir + L"Game_over_enemy_Scarab.png";
 		App::GetApp()->RegisterTexture(L"GAMEOVER_SCARAB_TX", strTexture);
+		strTexture = dataDir + L"number.png";
+		App::GetApp()->RegisterTexture(L"NUMBER_TX", strTexture);
 
+		//BGM用
 		strTexture = dataDir + L"12098.mp3";
 		App::GetApp()->RegisterWav(L"GAMESTAGEBGM", strTexture);
+
 	}
 
 
@@ -184,7 +191,7 @@ namespace basecross{
 		auto XAPtr = App::GetApp()->GetXAudio2Manager();
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<GameStage>();
+			ResetActiveStage<SerectStage>();
 		}
 		else if (event->m_MsgStr == L"ToSerectStage") {
 			XAPtr->Start(L"GAMESTAGEBGM", XAUDIO2_LOOP_INFINITE, 0.08);
@@ -195,6 +202,9 @@ namespace basecross{
 		}
 		else if (event->m_MsgStr == L"ToClearStage") {
 			ResetActiveStage<ClearStage>();
+		}
+		else if (event->m_MsgStr == L"ToGameOverStage") {
+			ResetActiveStage<GameOverStage>();
 		}
 
 	}

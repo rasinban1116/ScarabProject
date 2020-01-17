@@ -362,7 +362,8 @@ namespace basecross {
 		UnkoPos(Position),
 		UnkoScale(Scale),
 		UnkoRot(Rot),
-		UnkoVelo(Velocity)
+		UnkoVelo(Velocity),
+		active(true)
 	{
 	}
 
@@ -376,8 +377,9 @@ namespace basecross {
 
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		ptrColl->SetDrawActive(false);
-		
+
+		ptrColl->SetDrawActive(true);
+
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
@@ -394,9 +396,11 @@ namespace basecross {
 		PtrDraw->SetTextureResource(L"POOP_TX");
 
 		//WorldMatrixをもとにRigidbodySphereのパラメータを作成
-		//PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
+		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
 		//Rigidbodyをつける
-		//auto  ptrRigid = AddComponent<RigidbodySphere>(param);
+		auto  ptrRigid = AddComponent<RigidbodySphere>(param);
+		ptrRigid->SetAutoTransform(false);
+		ptrRigid->SetAutoGravity(true);
 
 		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		auto stage = GetStage();
@@ -410,36 +414,70 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-	Move();
+		if (active == true) {
+			//Move();
+		}
 	}
 	void UnkoBoll::OnUpdate2() {
 
 	}
-	//a
-
-
-	void UnkoBoll::Move() {
+	
+	Vec3 UnkoBoll::holdon() {
+		auto Time = App::GetApp()->GetElapsedTime();
 		auto thistrans = GetComponent<Transform>();
+		auto thiscol = GetComponent<CollisionSphere>();
+		
 		auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
 		auto ptrTrans = Plyaer->GetComponent<Transform>();
-	//	auto PsUnko = this->GetComponent<RigidbodySphere>();
+		auto PsUnko = this->GetComponent<RigidbodySphere>();
+
 		auto ptrfor = ptrTrans->GetForword();
 		auto ptrPos = ptrTrans->GetPosition();
 		auto ptrScale = ptrTrans->GetScale();
-	
+		auto ptrrot = ptrTrans->GetRotation();
+
 		auto thispos = thistrans->GetPosition().y;
 		auto thisScale = thistrans->GetScale();
+		auto thisrot = thistrans->GetRotation();
+		
+		Vec3 Rot;
+		//var translation = this.rigidbody.velocity * Time.deltaTime; // 位置の変化量
+		//var distance = translation.magnitude; // 移動した距離
+		//var scaleXYZ = transform.lossyScale; // ワールド空間でのスケール推定値
+		//var scale = Mathf.Max(scaleXYZ.x, scaleXYZ.y, scaleXYZ.z); // 各軸のうち最大のスケール
+		//var angle = distance / (this.sphereCollider.radius * scale); // 球が回転するべき量
+		//var axis = Vector3.Cross(Vector3.up, translation).normalized; // 球が回転するべき軸
+		//var deltaRotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, axis); // 現在の回転に加えるべき回転
+
+		//// 現在の回転からさらにdeltaRotationだけ回転させる
+		//this.rigidbody.MoveRotation(deltaRotation * this.rigidbody.rotation);
+	/*	auto translation = PsUnko->GetAngularVelocity()*Time;
+		auto distance = translation.length();
+		auto scaleXYZ = thisScale;
+		auto angle = distance / (thiscol->GetMakedRadius * scaleXYZ);
+		auto axis = Vec3(0, 1, 0) * translation;
+		auto DeltaRotation = XMQuaternionRotationAxis(axis, angle);*/
+
+
 		Vec3 Pos;
-	
+		//Pos = Vec3(DeltaRotation.)
+	//	PsUnko->SetAngularVelocity(DeltaRotation);
+		
 		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
-		//PsUnko->SetPosition(Pos);
-		//thistrans->SetRotation(Vec3(0));
-		float maxlenge = ptrTrans->GetPosition().y+2;
+		float maxlenge = ptrTrans->GetPosition().y + 2;
+
+		//thistrans->SetRotation()
 		if (Pos.y >= maxlenge) {
 			Pos.y = maxlenge;
 		}
-	
-		thistrans->SetPosition(Pos);
+		return Pos;
+	}
+
+		void UnkoBoll::Move() {
+		auto Pos = holdon();
+		auto PsUnko = this->GetComponent<RigidbodySphere>();
+		//PsUnko->SetAngularVelocity(Pos);
+		PsUnko->SetPosition(Pos);
 	}
 
 	float UnkoBoll::ScaleUp() {
@@ -458,16 +496,18 @@ namespace basecross {
 			scale = scale + UnkoBoll::ScaleUp();
 			thistrans->SetScale(scale);
 		}
-		else if (Other->FindTag(L"Slope")) {
+		if (Other->FindTag(L"Player")) {
 
 		}
 
 	}
 	void UnkoBoll::OnCollisionExcute(shared_ptr<GameObject>& Other){
-
+		 if (Other->FindTag(L"Slope")) {
+			active = false;
+		}
 	}
 	void UnkoBoll::OnCollisionExit(shared_ptr<GameObject>& Other) {
-		//active = false;
+		active = true;
 	}
 
 
