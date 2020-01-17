@@ -1,7 +1,10 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Project.h"
 
 namespace basecross {
+	//--------------------------------------------------------------------------------------
+	//	æ•µæœ¬ä½“
+	//--------------------------------------------------------------------------------------
 	Enemy::Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos,const int& size, 
 		const wstring ptrtex, wstring ptrmodel) :
 		GameObject(StagePtr),
@@ -26,27 +29,30 @@ namespace basecross {
 		ptrTrans->SetPosition(pos);
 	}
 
-	//ƒQ[ƒ€ƒXƒe[ƒW‚©‚çƒvƒŒƒCƒ„[‚ğ‚Æ‚Á‚Ä‚­‚é
+	//ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã‹ã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ã¨ã£ã¦ãã‚‹
 	shared_ptr<GameObject>  Enemy::GetTarget()const {
 		return GetStage()->GetSharedObject(L"Player");
 	}
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void Enemy::OnCreate() {
+		//è¦–ç•Œã®åˆæœŸåŒ–
+		m_lookflg = false;
+
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(m_StrPos);
 		ptrTrans->SetScale(0.25f, 0.25f, 0.25f);
 		ptrTrans->SetRotation(0.0f, 0.0f, 0.0f);
 
 
-		//ƒIƒuƒWƒFƒNƒg‚ÌƒOƒ‹[ƒv‚ğ“¾‚é
+		//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚°ãƒ«ãƒ¼ãƒ—ã‚’å¾—ã‚‹
 		auto group = GetStage()->GetSharedObjectGroup(L"EnemyGroup");
-		//ƒOƒ‹[ƒv‚É©•ª©g‚ğ’Ç‰Á
+		//ã‚°ãƒ«ãƒ¼ãƒ—ã«è‡ªåˆ†è‡ªèº«ã‚’è¿½åŠ 
 		group->IntoGroup(GetThis<Enemy>());
-		//•ª—£s“®‚ğ‚Â‚¯‚é
+		//åˆ†é›¢è¡Œå‹•ã‚’ã¤ã‘ã‚‹
 		auto ptrSep = GetBehavior<SeparationSteering>();
 		ptrSep->SetGameObjectGroup(group);
-		//•Ç‰ñ”ğs“®‚ğ•t‚¯‚é
+		//å£å›é¿è¡Œå‹•ã‚’ä»˜ã‘ã‚‹
 		auto ptrWall = GetBehavior<WallAvoidanceSteering>();
 		vector<PLANE> planeVec = {
 			{
@@ -71,7 +77,7 @@ namespace basecross {
 			},
 		};
 		ptrWall->SetPlaneVec(planeVec);
-		//áŠQ•¨‰ñ”ğs“®‚ğ•t‚¯‚é
+		//éšœå®³ç‰©å›é¿è¡Œå‹•ã‚’ä»˜ã‘ã‚‹
 		vector<shared_ptr<GameObject>> spObjVec;
 		GetStage()->GetUsedTagObjectVec(L"FixedSphere", spObjVec);
 		vector<SPHERE> spVec;
@@ -84,18 +90,17 @@ namespace basecross {
 		}
 		auto ptrAvoidance = GetBehavior<ObstacleAvoidanceSteering>();
 		ptrAvoidance->SetObstacleSphereVec(spVec);
-		//ƒXƒe[ƒgƒ}ƒVƒ“‚Ì\’z
+		//ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ³ã®æ§‹ç¯‰
 		m_StateMachine.reset(new StateMachine<Enemy>(GetThis<Enemy>()));
-		//Å‰‚ÌƒXƒe[ƒg‚ğSeekEnemyFarState‚Éİ’è
+		//æœ€åˆã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’SeekEnemyFarStateã«è¨­å®š
 		m_StateMachine->ChangeState(LookOfState::Instance());
 
 
-
-		//CollisionSphereÕ“Ë”»’è‚ğ•t‚¯‚é
+		//CollisionSphereè¡çªåˆ¤å®šã‚’ä»˜ã‘ã‚‹
 		auto ptrColl = AddComponent<CollisionSphere>();
-		//d—Í‚ğ‚Â‚¯‚é
+		//é‡åŠ›ã‚’ã¤ã‘ã‚‹
 		auto ptrGra = AddComponent<Gravity>();
-		//Œo˜H„‰ñ‚ğ•t‚¯‚é
+		//çµŒè·¯å·¡å›ã‚’ä»˜ã‘ã‚‹
 		auto ptrFollowPath = GetBehavior<FollowPathSteering>();
 		list<Vec3> pathList = {
 			Vec3(m_StrPos.x,0.125, m_StrPos.z),
@@ -105,14 +110,14 @@ namespace basecross {
 		};
 		ptrFollowPath->SetPathList(pathList);
 		ptrFollowPath->SetLooped(true);
-		//‰e‚ğ‚Â‚¯‚éiƒVƒƒƒhƒEƒ}ƒbƒv‚ğ•`‰æ‚·‚éj
+		//å½±ã‚’ã¤ã‘ã‚‹ï¼ˆã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ã‚’æç”»ã™ã‚‹ï¼‰
 		auto ptrShadow = AddComponent<Shadowmap>();
-		//‰e‚ÌŒ`iƒƒbƒVƒ…j‚ğİ’è
+		//å½±ã®å½¢ï¼ˆãƒ¡ãƒƒã‚·ãƒ¥ï¼‰ã‚’è¨­å®š
 		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
 
-		//•`‰æƒRƒ“ƒ|[ƒlƒ“ƒg‚Ìİ’è
+		//æç”»ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®è¨­å®š
 		auto ptrDraw = AddComponent<PNTBoneModelDraw>();
-		//•`‰æ‚·‚éƒƒbƒVƒ…‚ğİ’è
+		//æç”»ã™ã‚‹ãƒ¡ãƒƒã‚·ãƒ¥ã‚’è¨­å®š
 		switch (size)
 		{
 		case 1:
@@ -128,28 +133,25 @@ namespace basecross {
 		}
 		auto a = ptrDraw->GetCurrentAnimation();
 
-		//•`‰æ‚·‚éƒeƒNƒXƒ`ƒƒ‚ğİ’è
-
-
-		//ƒvƒŒƒCƒ„[‚Ì‹ŠE‚É‚È‚éƒIƒuƒWƒFƒNƒg‚ğì‚é
+		//â—¤â—¢â—¤â—¢â—¤â—¢â—¤ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¦–ç•Œã«ãªã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œã‚‹â—¢â—¤â—¢â—¤â—¢â—¤ â—¢
 		auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
-
 	}
 
-	//XV
+	//æ›´æ–°
 	void Enemy::OnUpdate() {
 		m_Force = Vec3(0);
-		////‹¤’Ê‚ÌƒXƒeƒAƒŠƒ“ƒO1
+		////å…±é€šã®ã‚¹ãƒ†ã‚¢ãƒªãƒ³ã‚°1
 		auto ptrWall = GetBehavior<WallAvoidanceSteering>();
 		m_Force += ptrWall->Execute(m_Force, GetVelocity());
-		//ƒXƒe[ƒgƒ}ƒVƒ“‚ÌUpdate‚ğs‚¤
-		//‚±‚Ì’†‚ÅƒXƒe[ƒg‚ÌØ‚è‘Ö‚¦‚ªs‚í‚ê‚é
+		//ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ³ã®Updateã‚’è¡Œã†
+		//ã“ã®ä¸­ã§ã‚¹ãƒ†ãƒ¼ãƒˆã®åˆ‡ã‚Šæ›¿ãˆãŒè¡Œã‚ã‚Œã‚‹
 		m_StateMachine->Update();
 		
-		//‹¤’Ê‚ÌƒXƒeƒAƒŠƒ“ƒO2
+		//å…±é€šã®ã‚¹ãƒ†ã‚¢ãƒªãƒ³ã‚°2
 		auto ptrSep = GetBehavior<SeparationSteering>();
 		m_Force += ptrSep->Execute(m_Force);
 		auto ptrAvoidance = GetBehavior<ObstacleAvoidanceSteering>();
+
 		m_Force += ptrAvoidance->Execute(m_Force, GetVelocity());
 		ApplyForce();
 		auto ptrUtil = GetBehavior<UtilBehavior>();
@@ -158,21 +160,12 @@ namespace basecross {
 		auto ptrDraw = GetComponent<PNTBoneModelDraw>();
 		auto unko = App::GetApp()->GetElapsedTime();
 		ptrDraw->UpdateAnimation(unko);
-		m_lookflg = LookFlg::GetLook();
-
-
-		//if (!m_lookflg) {
-		//	m_StateMachine->ChangeState(LookOfState::Instance());
-		//}
-		//else {
-		//	m_StateMachine->ChangeState(LookOnState::Instance());
-		//}
 	}
 
 
 	//--------------------------------------------------------------------------------------
-//	ƒvƒŒƒCƒ„[‚ğ’T‚µ‚Ä‚¢‚é‚Æ‚«
-//--------------------------------------------------------------------------------------
+	//	ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ¢ã—ã¦ã„ã‚‹ã¨ã
+	//--------------------------------------------------------------------------------------
 	shared_ptr<LookOfState> LookOfState::Instance() {
 		static shared_ptr<LookOfState> instance(new LookOfState);
 		return instance;
@@ -186,21 +179,20 @@ namespace basecross {
 		force += ptrFollowPath->Execute(force, Obj->GetVelocity());
 		Obj->SetForce(force);
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
-		if (f < Obj->GetStateChangeSize()) {
-			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
-		}
-
-		//m_lookflg = Obj->GetLook();
-
-		//if (m_lookflg == true) {
+		//if (f < Obj->GetStateChangeSize()) {
 		//	Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
 		//}
+
+		//m_lookflgãŒtrueã«ãªã£ãŸæ™‚ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ¼ãƒ³ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+		if (Obj->GetLook() == true) {
+			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
+		}
 	}
 	void LookOfState::Exit(const shared_ptr<Enemy>& Obj) {
 	}
 
 	//--------------------------------------------------------------------------------------
-	//	ƒvƒŒƒCƒ„[‚ğŒ©‚Â‚¯‚Ä‚¢‚é‚Æ‚«
+	//	ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦‹ã¤ã‘ã¦ã„ã‚‹ã¨ã
 	//--------------------------------------------------------------------------------------
 	shared_ptr<LookOnState> LookOnState::Instance() {
 		static shared_ptr<LookOnState> instance(new LookOnState);
@@ -216,13 +208,21 @@ namespace basecross {
 		force += ptrArrive->Execute(force, Obj->GetVelocity(), ptrPlayerTrans->GetPosition());
 		Obj->SetForce(force);
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
-		//if (f >= Obj->GetStateChangeSize()) {
-		//	Obj->GetStateMachine()->ChangeState(LookOfState::Instance());
-		//}
+
+		//è‡ªåˆ†ã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è·é›¢ãŒä¸€å®šä»¥ä¸Šã«ãªã£ãŸæ™‚ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ¼ãƒ³ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+		if (f >= Obj->GetStateChangeSize()) {
+			Obj->GetStateMachine()->ChangeState(LookOfState::Instance());
+		}
 	}
 	void LookOnState::Exit(const shared_ptr<Enemy>& Obj) {
+		//åˆ‡ã‚Šæ›¿ã‚ã‚‹ã¨ãã«m_lookflgã‚’falseã«ã—ã¦ãŠã
+		Obj->SetLook(false);
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	//	ã‚¨ãƒãƒŸãƒ¼ã®è¦–ç•Œ
+	//--------------------------------------------------------------------------------------
 	EnemyEye::EnemyEye(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const shared_ptr<GameObject>& ParentPtr) :
 		GameObject(StagePtr),
 		m_StartPos(StartPos),
@@ -237,7 +237,7 @@ namespace basecross {
 
 		AddTag(L"EnemyEye");
 
-		//ƒRƒŠƒWƒ‡ƒ“‚ğ‚Â‚¯‚é
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ã¤ã‘ã‚‹
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
 		col->SetDrawActive(true);
@@ -251,12 +251,7 @@ namespace basecross {
 		ptrDraw->SetDrawActive(false);
 		SetDrawActive(true);
 
-
 		SetAlphaActive(false);
-
-		//‹ŠE‚Ì‰Šú‰»
-		LookFlg::SetLook(false);
-
 	}
 
 
@@ -268,22 +263,14 @@ namespace basecross {
 		a->SetText(L"");
 		a->SetFontColor(bsm::Col4(0, 0, 0, 10));
 		a->SetTextRect(Rect2D<float>(16., 16., 640., 480.));
-		DebagMesse();
 	}
-
-
-	void EnemyEye::DebagMesse() {
-		wstring mase(L"ƒfƒoƒbƒN");
-		mase += LookFlg::ToString();
-
-		auto ptrstring = GetComponent<StringSprite>();
-		ptrstring->SetText(mase);
-	}
-
 
 	void EnemyEye::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		if (Other->FindTag(L"Player")) {
-			LookFlg::SetLook(true);
+			auto parentEnemy = dynamic_pointer_cast<Enemy>(GetComponent<Transform>()->GetParent());
+			if (parentEnemy) {
+				parentEnemy->SetLook(true);
+			}
 		}
 	}
 }

@@ -2,36 +2,10 @@
 #include "stdafx.h"
 
 namespace basecross {
-
-	enum class EnemyLook {
-		LookOf,
-		LookOn
-	};
-
-	class LookFlg {
-
-		bool m_lookflg;
-
-	public :
-
-		void SetLook(bool ptrlook) {
-			m_lookflg = ptrlook;
-		}
-
-		bool GetLook() {
-			return m_lookflg;
-		}
-
-		wstring ToString() {
-			if (m_lookflg) {
-				return L"true";
-			} else {
-				return L"false";
-			}
-		}
-	};
-
-	class Enemy : public GameObject, public LookFlg{
+	//--------------------------------------------------------------------------------------
+	//	敵本体
+	//--------------------------------------------------------------------------------------
+	class Enemy : public GameObject{
 		unique_ptr< StateMachine<Enemy> >  m_StateMachine;
 		Vec3 m_StrPos;
 		float m_StateChangeSize;
@@ -40,14 +14,14 @@ namespace basecross {
 		//速度
 		Vec3 m_Velocity;
 		Vec3 m_Status;
-		bool m_lookflg;
 		Vec3 m_TagePos;
 		void ApplyForce();
 		Vec3 m_ParentPtr;
 		int size;
-		EnemyLook m_state;
 		wstring tex;
 		wstring model;
+		bool m_lookflg;
+
 
 	public :
 		Enemy(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const Vec3& TagePos, const int&size,
@@ -79,13 +53,15 @@ namespace basecross {
 		void SetVelocity(const Vec3& v) {
 			m_Velocity = v;
 		}
+
 		bool GetLook() {
 			return m_lookflg;
 		}
+		void SetLook(bool ptrlookflg) {
+			m_lookflg = ptrlookflg;
+		}
 
 		shared_ptr<GameObject>  GetTarget()const;
-		//virtual void NearBehavior();
-		//virtual void FarBehavior();
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 	};
@@ -93,9 +69,8 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	 プレイヤーから遠いときの移動
 	//--------------------------------------------------------------------------------------
-	class LookOfState : public ObjState<Enemy>, public LookFlg
+	class LookOfState : public ObjState<Enemy>
 	{
-		bool m_lookflg;
 		LookOfState() {}
 	public:
 		static shared_ptr<LookOfState> Instance();
@@ -117,17 +92,21 @@ namespace basecross {
 		virtual void Exit(const shared_ptr<Enemy>& Obj)override;
 	};
 
-
-	class EnemyEye : public GameObject, public LookFlg{
+	//--------------------------------------------------------------------------------------
+	//	 敵の視界
+	//--------------------------------------------------------------------------------------
+	class EnemyEye : public GameObject{
 		Vec3 m_StartPos;
 		Vec3 m_Rot;
 		const shared_ptr<GameObject>& m_ParentPtr;
 	public:
+		//ParentPtr 親のクラス
 		EnemyEye(const shared_ptr<Stage>& StagePtr, const Vec3& StartPos, const shared_ptr<GameObject>& ParentPtr);
 		virtual ~EnemyEye();
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		void DebagMesse();
+
+
 	};
 }

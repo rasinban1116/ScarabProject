@@ -321,6 +321,8 @@ namespace basecross {
 	}
 
 	void GameOverStage::CreateStage() {
+		AddGameObject<Sprite>(L"GAMEOVER_SCARAB_TX", true,
+			Vec2(640.0f, 480.0f), Vec3(0.0f, 0.0f, 0.1f));
 		//AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
 	}
 	void GameOverStage::OnUpdate() {

@@ -169,6 +169,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"SKY_TX", strTexture);
 		strTexture = dataDir + L"Ball_poop_Tx.png";
 		App::GetApp()->RegisterTexture(L"POOP_TX", strTexture);
+		strTexture = dataDir + L"Game_over_enemy_Scarab.png";
+		App::GetApp()->RegisterTexture(L"GAMEOVER_SCARAB_TX", strTexture);
 
 		strTexture = dataDir + L"12098.mp3";
 		App::GetApp()->RegisterWav(L"GAMESTAGEBGM", strTexture);
@@ -183,7 +185,6 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
 			ResetActiveStage<GameStage>();
-
 		}
 		else if (event->m_MsgStr == L"ToSerectStage") {
 			XAPtr->Start(L"GAMESTAGEBGM", XAUDIO2_LOOP_INFINITE, 0.08);

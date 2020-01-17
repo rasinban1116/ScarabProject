@@ -166,16 +166,12 @@ namespace basecross {
 			{ Vec3(5.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
 			{ Vec3(-15.0f, 3.0f, -5.0f), Vec3(-23.0f,3.0f,-4.0f) },
 			{ Vec3(5.0, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) },
-
-
-			
 		};
 		//追いかけるオブジェクトの作成
 		for (auto v : vecSeek) {
 			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1], 1, L"ENEMY_TX", L"Enemy");
 			//AddGameObject<Enemy>(v[0], v[1], 1);
 			ptreneobj->AddTag(L"Enemy");
-			
 		}
 	}
 
