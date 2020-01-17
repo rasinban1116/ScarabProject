@@ -131,8 +131,8 @@ namespace basecross {
 	}
 
 	void SerectStage::CreateStage(){
-		//auto Grand = AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
-		//Grand->AddTag(L"Grand");
+		auto Grand = AddGameObject<TilingFixedBox>(Vec3(30.0f, 1.0f, 30.0f), Vec3(0), Vec3(0.0f, -0.5f, 0.0f), 1.0f, 1.0f, L"SERECT_TX");
+		Grand->AddTag(L"Grand");
 	}
 	void SerectStage::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<SerectStage>());

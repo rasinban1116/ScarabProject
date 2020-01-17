@@ -142,6 +142,9 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"UNKO_TX", strTexture);
 		strTexture = dataDir + L"UV_Scarab_Enemy.png";
 		App::GetApp()->RegisterTexture(L"ENEMY_TX", strTexture);
+		strTexture = dataDir + L"Stage_Select.png";
+		App::GetApp()->RegisterTexture(L"SERECT_TX", strTexture);
+
 	}
 
 
@@ -151,7 +154,7 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<GameStage>();
+			ResetActiveStage<SerectStage>();
 		}
 		else if (event->m_MsgStr == L"ToSerectStage") {
 			ResetActiveStage<SerectStage>();
@@ -161,6 +164,9 @@ namespace basecross{
 		}
 		else if (event->m_MsgStr == L"ToClearStage") {
 			ResetActiveStage<ClearStage>();
+		}
+		else if (event->m_MsgStr == L"ToGameOverStage") {
+			ResetActiveStage<GameOverStage>();
 		}
 
 	}

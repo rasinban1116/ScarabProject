@@ -31,7 +31,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
       <Filter>Soce</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)SceneStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SceneStage.cpp">
+      <Filter>Soce</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
