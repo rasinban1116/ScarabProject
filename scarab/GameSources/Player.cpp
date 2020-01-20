@@ -20,7 +20,7 @@ namespace basecross {
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(50.0f),
+		m_Speed(10.0f),
 		m_pos(Position)
 
 	{}
@@ -200,13 +200,13 @@ namespace basecross {
 		auto ptrTrans = GetComponent<Transform>();
 		//初期位置などの設定
 		auto ptr = AddComponent<Transform>();
-		ptr->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
+		ptr->SetScale(0.7f, 0.7f, 0.7f);	//直径25センチの球体
 		ptr->SetRotation(-45.0f, 0.0f, 0.0f);
 		ptr->SetPosition(m_pos);
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		//ptrColl->SetDrawActive(true);
+		ptrColl->SetDrawActive(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
@@ -377,8 +377,8 @@ namespace basecross {
 
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-
 		ptrColl->SetDrawActive(true);
+		
 
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
@@ -399,7 +399,7 @@ namespace basecross {
 		PsSphereParam param(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
 		//Rigidbodyをつける
 		auto  ptrRigid = AddComponent<RigidbodySphere>(param);
-		ptrRigid->SetAutoTransform(false);
+		//ptrRigid->SetAutoTransform(false);
 		ptrRigid->SetAutoGravity(true);
 
 		auto ptrCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
@@ -415,7 +415,7 @@ namespace basecross {
 	}
 	void UnkoBoll::OnUpdate() {
 		if (active == true) {
-			//Move();
+			Move();
 		}
 	}
 	void UnkoBoll::OnUpdate2() {
@@ -441,43 +441,36 @@ namespace basecross {
 		auto thisrot = thistrans->GetRotation();
 		
 		Vec3 Rot;
-		//var translation = this.rigidbody.velocity * Time.deltaTime; // 位置の変化量
-		//var distance = translation.magnitude; // 移動した距離
-		//var scaleXYZ = transform.lossyScale; // ワールド空間でのスケール推定値
-		//var scale = Mathf.Max(scaleXYZ.x, scaleXYZ.y, scaleXYZ.z); // 各軸のうち最大のスケール
-		//var angle = distance / (this.sphereCollider.radius * scale); // 球が回転するべき量
-		//var axis = Vector3.Cross(Vector3.up, translation).normalized; // 球が回転するべき軸
-		//var deltaRotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, axis); // 現在の回転に加えるべき回転
-
-		//// 現在の回転からさらにdeltaRotationだけ回転させる
-		//this.rigidbody.MoveRotation(deltaRotation * this.rigidbody.rotation);
-	/*	auto translation = PsUnko->GetAngularVelocity()*Time;
+		auto translation = PsUnko->GetAngularVelocity()*Time;
 		auto distance = translation.length();
 		auto scaleXYZ = thisScale;
-		auto angle = distance / (thiscol->GetMakedRadius * scaleXYZ);
-		auto axis = Vec3(0, 1, 0) * translation;
-		auto DeltaRotation = XMQuaternionRotationAxis(axis, angle);*/
+		auto angle = distance / (thiscol->GetMakedRadius() * scaleXYZ);
+		XMVECTOR axis = (Vec3(0, 1, 0) * translation);
+		XMVector3Normalize(axis);
+		float angleX = angle.getX();
+		float angleY = angle.getY();
+		float angleZ = angle.getZ();
+		auto DeltaRotation = XMQuaternionRotationAxis(axis, angleY);
 
 
 		Vec3 Pos;
-		//Pos = Vec3(DeltaRotation.)
-	//	PsUnko->SetAngularVelocity(DeltaRotation);
+		Pos = Vec3(DeltaRotation * thistrans->GetRotation());
+	
 		
 		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
 		float maxlenge = ptrTrans->GetPosition().y + 2;
-
-		//thistrans->SetRotation()
+		PsUnko->SetPosition(Pos);
 		if (Pos.y >= maxlenge) {
 			Pos.y = maxlenge;
 		}
 		return Pos;
 	}
 
-		void UnkoBoll::Move() {
-		auto Pos = holdon();
+	void UnkoBoll::Move() {
+		holdon();
 		auto PsUnko = this->GetComponent<RigidbodySphere>();
 		//PsUnko->SetAngularVelocity(Pos);
-		PsUnko->SetPosition(Pos);
+		//PsUnko->SetPosition(Pos);
 	}
 
 	float UnkoBoll::ScaleUp() {
@@ -502,9 +495,9 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnCollisionExcute(shared_ptr<GameObject>& Other){
-		 if (Other->FindTag(L"Slope")) {
+	/*	 if (Other->FindTag(L"Slope")) {
 			active = false;
-		}
+		}*/
 	}
 	void UnkoBoll::OnCollisionExit(shared_ptr<GameObject>& Other) {
 		active = true;
