@@ -155,7 +155,7 @@ namespace basecross {
 
 	//プレイヤーを継承した子オブジェクト（ふんころがしになる予定）を生成
 	void GameStage::CreatePlayerChild() {
-		auto Unko = AddGameObject<UnkoBoll>(Vec3(-85.0f, 21.0f, -33.0f),Vec3(1.0f),Vec3(0.0f), Vec3(0.0f, 6.0f, 5.0f));
+		auto Unko = AddGameObject<UnkoBoll>(Vec3(-85.0f, 18.5f, -33.0f),Vec3(1.0f),Vec3(0.0f), Vec3(0.0f, 6.0f, 5.0f));
 		SetSharedGameObject(L"UnkoBoll", Unko);
 		Unko->AddTag(L"UnkoBoll");
 	}
