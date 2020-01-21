@@ -39,6 +39,8 @@ namespace basecross {
 		//視界の初期化
 		m_lookflg = false;
 
+		AddTag(L"Enemy");
+
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(m_StrPos);
 		ptrTrans->SetScale(0.25f, 0.25f, 0.25f);
@@ -162,6 +164,14 @@ namespace basecross {
 		ptrDraw->UpdateAnimation(unko);
 	}
 
+	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		//if (Other->FindTag(L"Player")) {
+		//	auto ptrScene = App::GetApp()->GetScene<Scene>();
+		//	PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
+
+		//}
+	}
+
 
 	//--------------------------------------------------------------------------------------
 	//	プレイヤーを探しているとき
@@ -184,8 +194,10 @@ namespace basecross {
 		//}
 
 		//m_lookflgがtrueになった時ステートマシーンを切り替える
-		if (Obj->GetLook() == true) {
-			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
+		if (Obj->GetModelname() == L"Enemy") {
+			if (Obj->GetLook() == true) {
+				Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
+			}
 		}
 	}
 	void LookOfState::Exit(const shared_ptr<Enemy>& Obj) {

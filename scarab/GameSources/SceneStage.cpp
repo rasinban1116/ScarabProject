@@ -23,10 +23,11 @@ namespace basecross {
 		ptrMultiLight->SetDefaultLighting();
 	}
 	void TitleStage::CreateTitleSprite() {
-		auto titlecaharaLogo = AddGameObject<Sprite>(L"TITLECHARA_TX", true,
-			Vec2(400.0f, 200.0f), Vec3(0.0f, 200.0f, 0.0f));
-		auto titlebackLogo = AddGameObject<Sprite>(L"TITLEBACK_TX", true,
-			Vec2(640.0f, 480.0f), Vec3(0.0f, 0.0f, 0.1f));
+		float size = 0.4;
+		auto titlecaharaLogo = AddGameObject<Sprite>(L"TITLE_TX", true,
+			Vec2(795.0f * size, 338.0f * size), Vec3(50.0f, 200.0f, 0.0f));
+		//auto titlebackLogo = AddGameObject<Sprite>(L"TITLEBACK_TX", true,
+		//	Vec2(640.0f, 720.0f), Vec3(0.0f, 0.0f, 0.1f));
 		auto startLogo = AddGameObject<Sprite>(L"GAMESTART_TX", true,
 			Vec2(150.0f, 30.0f), Vec3(0.0f, -150.0f, 0.1f));
 		SetSharedGameObject(L"StartLogo", startLogo);
@@ -181,6 +182,8 @@ namespace basecross {
 		auto cursorPos = cursorComp->GetPosition();
 		cursorPos.y = m_strSprite + m_spriteif * m_cursornum;;
 		cursorComp->SetPosition(cursorPos);
+
+
 	}
 
 	void ClearStage::OnPushA() {
@@ -323,17 +326,77 @@ namespace basecross {
 	void GameOverStage::CreateStage() {
 		AddGameObject<Sprite>(L"GAMEOVER_SCARAB_TX", true,
 			Vec2(640.0f, 480.0f), Vec3(0.0f, 0.0f, 0.1f));
+		//位置と文字の間隔の設定
+		m_strSprite = m_sprite = -30.0f;
+		m_spriteif = -90.0f;
+		//次のステージ
+		auto nextStageLogo = AddGameObject<Sprite>(L"NEXTSTAGE_TX", true,
+			Vec2(150.0f, 30.0f), Vec3(0.0f, m_sprite, 0.1f));
+		SetSharedGameObject(L"NextStageLogo", nextStageLogo);
+		//リトライ
+		auto oneMoreLogo = AddGameObject<Sprite>(L"RETRY_TX", true,
+			Vec2(150.0f, 30.0f), Vec3(0.0f, m_sprite = m_sprite + m_spriteif, 0.1f));
+		SetSharedGameObject(L"OneMoreLogo", oneMoreLogo);
+		//ステージセレクト画面
+		auto stageSelectLogoa = AddGameObject<Sprite>(L"STAGESELECT_TX", true,
+			Vec2(150.0f, 30.0f), Vec3(0.0f, m_sprite = m_sprite + m_spriteif, 0.1f));
+		SetSharedGameObject(L"StageSelectLogoa", stageSelectLogoa);
+		//スタート画面
+		auto startLogo = AddGameObject<Sprite>(L"TITLE_TX", true,
+			Vec2(150.0f, 30.0f), Vec3(0.0f, m_sprite = m_sprite + m_spriteif, 0.1f));
+		SetSharedGameObject(L"StartLogo", startLogo);
+
+		//カーソルのアイコン
+		auto cursor = AddGameObject<Sprite>(L"ICON_TX", true,
+			Vec2(35.0f, 35.0f), Vec3(170.0f, 0.0f, 0.1f));
+		SetSharedGameObject(L"Cousor", cursor);
 		//AddGameObject<FixedPsBox>(Vec3(30.0f, 1.0f, 30.0f), Quat(), Vec3(0.0f, -0.5f, 0.0f));
 	}
 	void GameOverStage::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<GameOverStage>());
+		//アイコンの移動
+		auto cursor = GetSharedGameObject<Sprite>(L"Cousor");
+		auto cursorComp = cursor->GetComponent<Transform>();
+		auto cursorPos = cursorComp->GetPosition();
+		cursorPos.y = m_strSprite + m_spriteif * m_cursornum;;
+		cursorComp->SetPosition(cursorPos);
 	}
+
 	void GameOverStage::OnPushA() {
-		auto ptrScene = App::GetApp()->GetScene<Scene>();
-		PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToOverStage");
+		//auto ptrScene = App::GetApp()->GetScene<Scene>();
+		//PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToOverStage");
+		if (m_cursornum == 0) {
+			auto ptrScene = App::GetApp()->GetScene<Scene>();
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToTitleStage");
+		}
+		else if (m_cursornum == 1) {
+			auto ptrScene = App::GetApp()->GetScene<Scene>();
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToSerectStage");
+		}
+		else if (m_cursornum == 2) {
+			auto ptrScene = App::GetApp()->GetScene<Scene>();
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameStage");
+		}
+		else if (m_cursornum == 3) {
+			auto ptrScene = App::GetApp()->GetScene<Scene>();
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToTitleStage");
+		}
 	}
 	void GameOverStage::OnPushB() {
 
+	}
+	void GameOverStage::OnPushUP() {
+		m_cursornum -= 1;
+		if (m_cursornum == -1) {
+			m_cursornum = 3;
+		}
+	}
+
+	void GameOverStage::OnPushDOWN() {
+		m_cursornum += 1;
+		if (m_cursornum == 4) {
+			m_cursornum = 0;
+		}
 	}
 
 	void GameOverStage::OnCreate() {

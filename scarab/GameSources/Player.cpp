@@ -298,16 +298,19 @@ namespace basecross {
 
 	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
+		if (Other->FindTag(L"Enemy")) {
+			auto ptrScene = App::GetApp()->GetScene<Scene>();
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
+		}
 		isGrand = true;
-		auto trans = this->GetComponent<Transform>();
 	}
-
 
 	//コリジョンが何かから離れた時の処理
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
 		isGrand = false;
 	}
 
+	//コリジョンが何かに当たっている時の処理
 	void Player::OnCollisionExcute(shared_ptr<GameObject>&Other) {
 		isGrand = true;
 	}

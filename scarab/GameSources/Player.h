@@ -28,6 +28,9 @@ namespace basecross{
 		void RotToHead(const Vec3& Velocity, float LerpFact);		//回転の向きを進行方向にする
 		void Move();							//プレイヤーの動き
 		void ChangeTrans();                     //トランスフォームへの設定
+		bool GetActive() {
+			return active;
+		}
 	
 	public:
 		//構築と破棄

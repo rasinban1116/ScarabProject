@@ -91,7 +91,9 @@ namespace basecross {
 		void CreateStage();
 		InputHandler<GameOverStage> m_InputHandler;	//入力ハンドラー
 		int m_cursornum;
-
+		float m_strSprite;
+		float m_sprite;
+		float m_spriteif;
 	public:
 		//構築と破棄
 		GameOverStage() :Stage() {}
@@ -101,8 +103,8 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		void OnPushA();
 		void OnPushB();
-		void OnPushUP() {}
-		void OnPushDOWN() {}
+		void OnPushUP();
+		void OnPushDOWN();
 	};
 }
 //end basecross

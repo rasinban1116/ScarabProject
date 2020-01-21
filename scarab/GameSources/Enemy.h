@@ -60,10 +60,14 @@ namespace basecross {
 		void SetLook(bool ptrlookflg) {
 			m_lookflg = ptrlookflg;
 		}
+		wstring GetModelname() {
+			return model;
+		}
 
 		shared_ptr<GameObject>  GetTarget()const;
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+		void OnCollisionEnter(shared_ptr<GameObject>& Other);
 	};
 
 	//--------------------------------------------------------------------------------------
