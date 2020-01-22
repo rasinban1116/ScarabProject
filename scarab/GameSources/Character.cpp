@@ -7,6 +7,168 @@
 #include "Project.h"
 
 namespace basecross {
+	//--------------------------------------------------------------------------------------
+	///	シーソー
+	//--------------------------------------------------------------------------------------
+	Seesaw::Seesaw(const shared_ptr<Stage>& StagePtr, const Vec3& Position) :
+		GameObject(StagePtr),
+		m_Position(Position)
+	{
+	}
+
+	void Seesaw::OnCreate() {
+		auto ptrtrans = AddComponent<Transform>();
+		ptrtrans->SetPosition(m_Position);
+		ptrtrans->SetScale(1.0f, 0.3f, 2.5f);
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();;
+		//ptrColl->AddExcludeCollisionTag(L"Grand");
+		auto gira = AddComponent<Gravity>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap>();
+		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"SERECT_TX");
+
+		SetAlphaActive(true);
+
+		//軸になるオブジェクト
+		GetStage()->AddGameObject<SeesawAxis>(m_Position, m_Scale, GetThis<GameObject>());
+
+		//右の当たり判定
+		GetStage()->AddGameObject<SeesawBox>(Vec3(m_Position.x + m_Scale.x * 0.5f,
+			0.5f,
+			m_Position.z),
+			Vec3(0.2f, 0.5f, m_Scale.z), GetThis<GameObject>());
+
+		//左の当たり判定
+		GetStage()->AddGameObject<SeesawBox>(Vec3(m_Position.x - m_Scale.x * 0.5f,
+			0.5f,
+			m_Position.z),
+			Vec3(0.2f, 0.5f, m_Scale.z), GetThis<GameObject>());
+
+		//正面の当たり判定
+		GetStage()->AddGameObject<SeesawBox>(Vec3(m_Position.x,
+			0.5f,
+			m_Position.z + m_Scale.z * 0.5f),
+			Vec3(m_Scale.x, 0.5f, 0.2f), GetThis<GameObject>());
+	}
+
+	void Seesaw::OnUpdate() {
+	}
+
+	//--------------------------------------------------------------------------------------
+	///	シーソー
+	//--------------------------------------------------------------------------------------
+	SeesawAxis::SeesawAxis(const shared_ptr<Stage>& StagePtr, const Vec3& Position,
+		const Vec3& Scale, const shared_ptr<GameObject>& ParentPtr
+	) :
+		GameObject(StagePtr),
+		m_Position(Position),
+		m_Scale(Scale),
+		m_ParentPtr(ParentPtr)
+	{
+	}
+
+	void SeesawAxis::OnCreate() {
+		auto ptrtrans = AddComponent<Transform>();
+		ptrtrans->SetPosition(m_Position);
+		ptrtrans->SetScale(m_Scale);
+		ptrtrans->SetParent(m_ParentPtr);
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent <CollisionCapsule> ();;
+		//ptrColl->AddExcludeCollisionTag(L"Grand");
+		auto gira = AddComponent<Gravity>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap>();
+		ptrShadow->SetMeshResource(L"DEFAULT_CAPSULE");
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetMeshResource(L"DEFAULT_CAPSULE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"SERECT_TX");
+
+		SetAlphaActive(true);
+	}
+
+	void SeesawAxis::OnUpdate() {
+
+	}
+
+	//--------------------------------------------------------------------------------------
+	///	シーソーの当たり判定
+	//--------------------------------------------------------------------------------------
+	SeesawBox::SeesawBox(const shared_ptr<Stage>& StagePtr, const Vec3& Position,
+		const Vec3& Scale, const shared_ptr<GameObject>& ParentPtr
+	) :
+		GameObject(StagePtr),
+		m_Position(Position),
+		m_Scale(Scale),
+		m_ParentPtr(ParentPtr)
+	{
+	}
+
+	void SeesawBox::OnCreate(){
+		auto ptrtrans = AddComponent<Transform>();
+		ptrtrans->SetPosition(m_Position);
+		ptrtrans->SetScale(m_Scale);
+		ptrtrans->SetParent(m_ParentPtr);
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();;
+		//ptrColl->AddExcludeCollisionTag(L"Grand");
+		auto gira = AddComponent<Gravity>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//影をつける
+		auto ptrShadow = AddComponent<Shadowmap>();
+		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"SERECT_TX");
+
+		SetAlphaActive(true);
+	}
+
+	void SeesawBox::OnUpdate(){
+		auto parentSeesaw = dynamic_pointer_cast<Seesaw>(GetComponent<Transform>()->GetParent());
+		if (parentSeesaw) {
+			if (!parentSeesaw->GetFlg()) {
+				GetStage()->SetCollisionPerformanceActive(false);
+			}
+		}
+	}
+
+	void SeesawBox::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		if (Other->FindTag(L"Ground")) {
+			auto parentSeesaw = dynamic_pointer_cast<Seesaw>(GetComponent<Transform>()->GetParent());
+			if (parentSeesaw) {
+				parentSeesaw->SetFlg(false);
+			}
+		}
+	}
+
+
 	FixedBox::FixedBox(const shared_ptr<Stage>&StagePtr,
 		const Vec3 &Position,
 		const Vec3 &Scale
@@ -59,9 +221,6 @@ namespace basecross {
 
 		}
 	}
-	
-
-
 
 
 //--------------------------------------------------------------------------------------
