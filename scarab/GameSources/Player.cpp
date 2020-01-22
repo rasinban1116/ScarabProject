@@ -422,7 +422,7 @@ namespace basecross {
 
 	}
 	
-	Vec3 UnkoBoll::holdon() {
+	void UnkoBoll::holdon() {
 		auto Time = App::GetApp()->GetElapsedTime();
 		auto thistrans = GetComponent<Transform>();
 		auto thiscol = GetComponent<CollisionSphere>();
@@ -440,36 +440,34 @@ namespace basecross {
 		auto thisScale = thistrans->GetScale();
 		auto thisrot = thistrans->GetRotation();
 		
+
 		Vec3 Rot;
-		auto translation = PsUnko->GetAngularVelocity()*Time;
+		auto translation = PsUnko->GetLinearVelocity()*Time;
 		auto distance = translation.length();
 		auto scaleXYZ = thisScale;
-		auto angle = distance / (thiscol->GetMakedRadius() * scaleXYZ);
-		XMVECTOR axis = (Vec3(0, 1, 0) * translation);
-		XMVector3Normalize(axis);
-		float angleX = angle.getX();
-		float angleY = angle.getY();
-		float angleZ = angle.getZ();
-		auto DeltaRotation = XMQuaternionRotationAxis(axis, angleY);
+		auto Comparsion = DirectX::XMMax(scaleXYZ.x,scaleXYZ.y);
+		auto Max = DirectX::XMMax(Comparsion,scaleXYZ.z);
+		auto angle = distance / (thiscol->GetMakedRadius() * Max);
+		auto axis = XMVector3Cross(Vec3(0, 1, 0), translation);
+		axis = XMVector3Normalize(axis);
+		auto DeltaRotation = XMQuaternionRotationAxis(axis, angle);
+		Vec3 Pos = Vec3(DeltaRotation * PsUnko->GetLinearVelocity());
+		PsUnko->SetLinearVelocity(Pos);
 
-
-		Vec3 Pos;
-		Pos = Vec3(DeltaRotation * thistrans->GetRotation());
-	
-		
+		Pos = Vec3(0);
 		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
 		float maxlenge = ptrTrans->GetPosition().y + 2;
-		PsUnko->SetPosition(Pos);
+		PsUnko->MovePosition(Pos,0.01f);
 		if (Pos.y >= maxlenge) {
 			Pos.y = maxlenge;
 		}
-		return Pos;
+		
 	}
 
 	void UnkoBoll::Move() {
 		holdon();
 		auto PsUnko = this->GetComponent<RigidbodySphere>();
-		//PsUnko->SetAngularVelocity(Pos);
+		//PsUnko->MovePosition(Pos, 1.0f);
 		//PsUnko->SetPosition(Pos);
 	}
 
