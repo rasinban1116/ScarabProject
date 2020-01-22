@@ -24,7 +24,7 @@ namespace basecross {
 	}
 	void TitleStage::CreateTitleSprite() {
 		float size = 0.4;
-		auto titlecaharaLogo = AddGameObject<Sprite>(L"TITLE_TX", true,
+		auto titlecaharaLogo = AddGameObject<Sprite>(L"TITLELOGO_TX", true,
 			Vec2(795.0f * size, 338.0f * size), Vec3(50.0f, 200.0f, 0.0f));
 		//auto titlebackLogo = AddGameObject<Sprite>(L"TITLEBACK_TX", true,
 		//	Vec2(640.0f, 720.0f), Vec3(0.0f, 0.0f, 0.1f));

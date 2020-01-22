@@ -151,6 +151,7 @@ namespace basecross {
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
 		
+		AddGameObject<Seesaw>(Vec3(-86.0f, 19.0f, -35.0f));
 	}
 
 	//プレイヤーを継承した子オブジェクト（ふんころがしになる予定）を生成

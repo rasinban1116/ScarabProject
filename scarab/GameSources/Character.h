@@ -10,7 +10,59 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	///	シーソー
 	//--------------------------------------------------------------------------------------
+	class Seesaw : public GameObject {
+		Vec3 m_Position;
+		Vec3 m_Scale;
+		bool m_flg;
 
+	public :
+		Seesaw(const shared_ptr<Stage>&StagePtr,
+			const Vec3 &Posion);
+		void SetFlg(bool ptrflg) {
+			m_flg = ptrflg;
+		}
+		bool GetFlg() {
+			return m_flg;
+		}
+		virtual ~Seesaw() override{}
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+	};
+
+	//--------------------------------------------------------------------------------------
+	///	シーソーの軸
+	//--------------------------------------------------------------------------------------
+	class SeesawAxis : public GameObject {
+		Vec3 m_Position;
+		Vec3 m_Scale;
+		const shared_ptr<GameObject>& m_ParentPtr;
+	public:
+		SeesawAxis(const shared_ptr<Stage>&StagePtr,
+			const Vec3 &Posion,
+			const Vec3 &Scale,
+			const shared_ptr<GameObject>& ParentPtr);
+		virtual ~SeesawAxis() override{}
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+	};
+
+	//--------------------------------------------------------------------------------------
+	///	プレイヤーが進まないように吸うための当たり判定
+	//--------------------------------------------------------------------------------------
+	class SeesawBox : public GameObject {
+		Vec3 m_Position;
+		Vec3 m_Scale;
+		const shared_ptr<GameObject>& m_ParentPtr;
+	public :
+		SeesawBox(const shared_ptr<Stage>&StagePtr,
+			const Vec3 &Position,
+			const Vec3 &Scale,
+			const shared_ptr<GameObject>& ParentPtr);
+		virtual ~SeesawBox(){}
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
+	};
 
 
 	//--------------------------------------------------------------------------------------

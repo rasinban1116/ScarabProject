@@ -162,10 +162,10 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"STAGESELECT_TX", strTexture);
 		strTexture = dataDir + L"retry.png";
 		App::GetApp()->RegisterTexture(L"RETRY_TX", strTexture);
-		strTexture = dataDir + L"Title_01.png";
+		strTexture = dataDir + L"title.png";
 		App::GetApp()->RegisterTexture(L"TITLEBACK_TX", strTexture);
-		strTexture = dataDir + L"Title02.png";
-		App::GetApp()->RegisterTexture(L"TITLECHARA_TX", strTexture);
+		strTexture = dataDir + L"titlelogo.png";
+		App::GetApp()->RegisterTexture(L"TITLELOGO_TX", strTexture);
 		strTexture = dataDir + L"poop_cursor.png";
 		App::GetApp()->RegisterTexture(L"ICON_TX", strTexture);
 		strTexture = dataDir + L"Cloud_1.png";
