@@ -1,4 +1,4 @@
-:
+
 /*!
 @file Scene.cpp
 @brief シーン実体
@@ -80,7 +80,7 @@ namespace basecross{
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
 			{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
-			//{L"Scarab_Walking.bmf",L"scrab"}
+
 
 
 

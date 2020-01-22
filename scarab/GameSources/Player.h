@@ -112,7 +112,7 @@ namespace basecross{
 		virtual void OnUpdate2() override;
 		void Move();
 		static float  ScaleUp();
-		Vec3 holdon();
+		void holdon();
 		bool active;
 	
 	};
