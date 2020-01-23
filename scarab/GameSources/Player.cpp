@@ -236,7 +236,7 @@ namespace basecross {
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
 			Vec3(0.5f),
-			Vec3(0),
+			Vec3(0,0,0),
 			Vec3(0),
 			Vec3(0,-0.5f,0)
 		);
@@ -245,10 +245,6 @@ namespace basecross {
 		drawcomp->SetTextureResource(L"KUSA_TX");
 		drawcomp->AddAnimation(L"scrab", 0, 60, true, 30);
 		drawcomp->ChangeCurrentAnimation(L"scrab", 0);
-		
-
-
-
 		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		if (ptrMyCamera) {
 			//MyCameraである
@@ -268,33 +264,23 @@ namespace basecross {
 				return;
 			}
 		}
-
-		if (active) {
 			Move();
-		}
-
 	}
 
 	//後更新
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		DrawStrings();
+		//DrawStrings();
 	}
 
-	//Aボタンハンドラ
-	void  Player::OnPushA() {
-		active = false;	
+	void Player::OnPushA()
+	{
 	}
 
-
-	//Bボタンハンドラ
-	void  Player::OnPushB() {
-		active = true;	
+	void Player::OnPushB()
+	{
 	}
-
-	
-
 
 	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
@@ -380,7 +366,6 @@ namespace basecross {
 
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		ptrColl->SetDrawActive(true);
 		
 
 		//ptrColl->SetFixed(true);
@@ -417,9 +402,7 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-		if (active == true) {
-			Move();
-		}
+		holdon();
 	}
 	void UnkoBoll::OnUpdate2() {
 
@@ -468,10 +451,7 @@ namespace basecross {
 	}
 
 	void UnkoBoll::Move() {
-		holdon();
-		auto PsUnko = this->GetComponent<RigidbodySphere>();
-		//PsUnko->MovePosition(Pos, 1.0f);
-		//PsUnko->SetPosition(Pos);
+
 	}
 
 	float UnkoBoll::ScaleUp() {

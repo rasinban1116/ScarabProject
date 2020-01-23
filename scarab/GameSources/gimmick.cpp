@@ -151,8 +151,6 @@ namespace basecross {
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionObb>();;
 
-		//auto gira = AddComponent<Gravity>();
-
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
@@ -160,13 +158,14 @@ namespace basecross {
 
 		//影をつける
 		auto ptrShadow = AddComponent<Shadowmap>();
-		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetMeshResource(L"Goal");
 		ptrDraw->SetOwnShadowActive(true);
-		ptrDraw->SetTextureResource(L"Cl_TX");
-		ptrDraw->SetDrawActive(false);
+		ptrDraw->SetTextureResource(L"WALL_TX");
+		ptrDraw->SetDrawActive(true);
+		SetAlphaActive(true);
+
 		//物理計算ボックス
 		PsBoxParam param(ptrtrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
 		auto PsPtr = AddComponent<RigidbodyBox>(param);
@@ -221,17 +220,6 @@ namespace basecross {
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"Cl_TX");
-		//auto drawcomp = AddComponent<PNTStaticModelDraw>();
-		//Mat4x4 spanMat;
-		//spanMat.affineTransformation(
-		//	Vec3(0.5f),
-		//	Vec3(90,0,0),
-		//	Vec3(0),
-		//	Vec3(0, -0.5f, 0)
-		//);
-		//drawcomp->SetMeshToTransformMatrix(spanMat);
-		//drawcomp->SetMeshResource(L"Base");
-		//drawcomp->SetTextureResource(L"UNKO_TX");
 		SetAlphaActive(true);
 	
 

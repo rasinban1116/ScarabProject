@@ -199,7 +199,7 @@ namespace basecross {
 	}
 
 	void GameStage::CreateClearObj() {
-		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0), Vec3(1));
+		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0,0.5f,0), Vec3(0.5f));
 		SetSharedGameObject(L"Clear",ClearObj);
 	}
 
