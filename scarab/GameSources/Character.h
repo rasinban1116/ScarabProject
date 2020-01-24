@@ -24,6 +24,12 @@ namespace basecross{
 		bool GetFlg() {
 			return m_flg;
 		}
+		Vec3 GetPos() {
+			return m_Position;
+		}
+		Vec3 GetSca() {
+			return m_Scale;
+		}
 		virtual ~Seesaw() override{}
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
@@ -52,11 +58,13 @@ namespace basecross{
 	class SeesawBox : public GameObject {
 		Vec3 m_Position;
 		Vec3 m_Scale;
+		int boxnum;
 		const shared_ptr<GameObject>& m_ParentPtr;
 	public :
 		SeesawBox(const shared_ptr<Stage>&StagePtr,
 			const Vec3 &Position,
 			const Vec3 &Scale,
+			const int &num,
 			const shared_ptr<GameObject>& ParentPtr);
 		virtual ~SeesawBox(){}
 		virtual void OnCreate()override;

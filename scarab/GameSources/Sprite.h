@@ -33,13 +33,13 @@ namespace basecross {
 		Vec2 m_startScale;
 		Vec3 m_startPos;
 		wstring m_textureKey;
+		int m_score;
 
 		//桁数
 		UINT m_numberOfDigits;
 		//バックアップ頂点データ
 		vector<VertexPositionTexture> m_backupVertices;
 	public:
-		float m_score;
 
 
 		ScoreSprite(const shared_ptr<Stage>& StagePtr, UINT NumberOfDigits,
@@ -47,7 +47,7 @@ namespace basecross {
 			const Vec2& StartScale, const Vec3& StartPos);
 		virtual ~ScoreSprite() {}
 
-		void SetScore(float f) {
+		void SetScore(int f) {
 			m_score += f;
 		}
 		virtual void OnCreate() override;

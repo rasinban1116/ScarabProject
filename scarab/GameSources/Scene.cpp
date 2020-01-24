@@ -8,11 +8,19 @@
 #include "Project.h"
 
 namespace basecross{
+	GameManager* GameManager::GM = nullptr;
+	GameManager* GameManager::GetInstance() {
+		if (GM == nullptr) {
+			GM = new GameManager();
+		}
+		return GM;
+	}
 
 	//--------------------------------------------------------------------------------------
 	///	ゲームシーン
 	//--------------------------------------------------------------------------------------
 	void Scene::OnCreate(){
+		
 		try {
 			//クリアする色を設定
 			Col4 Col;
@@ -22,7 +30,7 @@ namespace basecross{
 			
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToClearStage");
 			
 			CreateResourses();
 			LoadStaticModelResources();
@@ -176,6 +184,10 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"GAMEOVER_SCARAB_TX", strTexture);
 		strTexture = dataDir + L"number.png";
 		App::GetApp()->RegisterTexture(L"NUMBER_TX", strTexture);
+		strTexture = dataDir + L"Poop_Icon.png";
+		App::GetApp()->RegisterTexture(L"UNKOIKON_TX", strTexture);
+
+		
 
 		//BGM用
 		strTexture = dataDir + L"12098.mp3";

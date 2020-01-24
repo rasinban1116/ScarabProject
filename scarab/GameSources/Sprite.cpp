@@ -53,7 +53,7 @@ namespace basecross {
 		m_trace(Trace),
 		m_startScale(StartScale),
 		m_startPos(StartPos),
-		m_score(0.0f)
+		m_score(0)
 	{}
 
 	void ScoreSprite::OnCreate() {

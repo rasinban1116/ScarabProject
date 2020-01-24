@@ -244,7 +244,7 @@ namespace basecross {
 
 	void EnemyEye::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetScale(0.7f, 0.5, 2.0f);
+		ptrTrans->SetScale(1.5f, 0.5, 3.0f);
 		ptrTrans->SetParent(m_ParentPtr);
 
 		AddTag(L"EnemyEye");
@@ -270,11 +270,6 @@ namespace basecross {
 	void EnemyEye::OnUpdate() {
 		auto eyecomp = this->GetComponent<Transform>();
 		eyecomp->SetPosition(0, 0, 0.7f);
-
-		auto a = AddComponent<StringSprite>();
-		a->SetText(L"");
-		a->SetFontColor(bsm::Col4(0, 0, 0, 10));
-		a->SetTextRect(Rect2D<float>(16., 16., 640., 480.));
 	}
 
 	void EnemyEye::OnCollisionEnter(shared_ptr<GameObject>& Other) {

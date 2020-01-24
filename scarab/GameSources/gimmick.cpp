@@ -122,6 +122,8 @@ namespace basecross {
 			SetDrawActive(false);
 			UI->SetScore(100.0f);
 			UnkoBoll::ScaleUp();
+			auto gm = GameManager::GetInstance();
+			gm->UnkoNumUp();
 		}	
 	}
 
