@@ -184,20 +184,20 @@ namespace basecross {
 	void GameStage::CreateGimmickObj() {
 		auto group = CreateSharedObjectGroup(L"CoinGrope");
 		
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(0.0f, 0.6f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(3.0f, 0.6f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-83.0f, 18.2f, -35.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-80.0f, 18.2f, -40.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-43.0f, 4.2f, -2.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-37.0f, 4.2f, -8.0f));	
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-43.0f, 13.0f, -46.0f));	
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-50.0f, 13.0f, -40.0f));		
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-77.0f, 9.2f, -4.2f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(0.0f, 0.4f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(3.0f, 0.4f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-83.0f, 0.4f, -35.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-80.0f, 0.4f, -40.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-43.0f, 0.4f, -2.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-37.0f, 0.4f, -8.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-43.0f, 0.4f, -46.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-50.0f, 0.4f, -40.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-77.0f, 0.4f, -4.2f));
 	
 	}
 
 	void GameStage::CreateClearObj() {
-		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0), Vec3(1));
+		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0,0.5f,0), Vec3(0.5f));
 		SetSharedGameObject(L"Clear",ClearObj);
 	}
 
@@ -240,7 +240,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			////CSVファイルそのBの読み込み
-			m_GameStageCsvB.SetFileName(DataDir + L"test2.csv");
+			m_GameStageCsvB.SetFileName(DataDir + L"Stage1.csv");
 			m_GameStageCsvB.ReadCsv();
 			//物理演算するボックスの作成
 			CreateFixedBox();

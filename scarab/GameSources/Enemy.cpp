@@ -119,6 +119,14 @@ namespace basecross {
 
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<PNTBoneModelDraw>();
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(1),
+			Vec3(0, 0, 0),
+			Vec3(0, 3.0f, 0),
+			Vec3(0, -0.5f, 0)
+		);
+
 		//描画するメッシュを設定
 		switch (size)
 		{
@@ -128,10 +136,12 @@ namespace basecross {
 			//ptrDraw->SetFogEnabled(true);
 			ptrDraw->AddAnimation(model,0,60,true,30);
 			ptrDraw->ChangeCurrentAnimation(model,0);
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
 			break;
 		case 2:
 			ptrDraw->SetMeshResource(L"liz");
 			//ptrDraw->SetFogEnabled(true);
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
 		}
 		auto a = ptrDraw->GetCurrentAnimation();
 
@@ -252,7 +262,6 @@ namespace basecross {
 		//コリジョンをつける
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
-		col->SetDrawActive(true);
 		col->AddExcludeCollisionTag(L"Ground");
 
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
@@ -261,8 +270,6 @@ namespace basecross {
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(false);
 		ptrDraw->SetDrawActive(false);
-		SetDrawActive(true);
-
 		SetAlphaActive(false);
 	}
 

@@ -58,12 +58,12 @@ namespace basecross{
 			{L"test.bmf",L"test"},
 			{L"stage.bmf",L"stage"},
 			{L"rock.bmf",L"rock"},
-			{L"tree.bmf",L"tree"},
 			{L"poop.bmf",L"unko"},
 			{L"Base.bmf",L"Base"},
 			{L"falltree.bmf",L"fallntree"},
-			{L"lizard.bmf",L"liz"}
-				
+			{L"lizard.bmf",L"liz"},
+			{L"Goal_point.bmf",L"Goal"},
+			{L"Stage_Tree.bmf",L"tree"}
 		
 
 		};
@@ -148,13 +148,14 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"Cl_TX", strTexture);
 		strTexture = dataDir + L"UV_Scarab.tga";
 		App::GetApp()->RegisterTexture(L"KUSA_TX", strTexture);
-		strTexture = dataDir + L"poop_UV.png";
+		strTexture = dataDir + L"Tx_Ball_poop.png";
 		App::GetApp()->RegisterTexture(L"UNKO_TX", strTexture);
 		strTexture = dataDir + L"UV_Scarab_Enemy.png";
 		App::GetApp()->RegisterTexture(L"SCARAB_TX", strTexture);
 		strTexture = dataDir + L"Stage_Select.png";
 		App::GetApp()->RegisterTexture(L"SERECT_TX", strTexture);
-
+		strTexture = dataDir + L"Tx_Stage_tree.png";
+		App::GetApp()->RegisterTexture(L"Tree_TX", strTexture);
 		//UIやスコア表示用のテクスチャ
 		strTexture = dataDir + L"clear.png";
 		App::GetApp()->RegisterTexture(L"CLEAR_TX", strTexture);
@@ -203,7 +204,7 @@ namespace basecross{
 		auto XAPtr = App::GetApp()->GetXAudio2Manager();
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<TitleStage>();
+			ResetActiveStage<SerectStage>();
 		}
 		else if (event->m_MsgStr == L"ToSerectStage") {
 			XAPtr->Start(L"GAMESTAGEBGM", XAUDIO2_LOOP_INFINITE, 0.08);

@@ -236,7 +236,7 @@ namespace basecross {
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
 			Vec3(0.5f),
-			Vec3(0),
+			Vec3(0,0,0),
 			Vec3(0),
 			Vec3(0,-0.5f,0)
 		);
@@ -245,10 +245,6 @@ namespace basecross {
 		drawcomp->SetTextureResource(L"KUSA_TX");
 		drawcomp->AddAnimation(L"scrab", 0, 60, true, 30);
 		drawcomp->ChangeCurrentAnimation(L"scrab", 0);
-		
-
-
-
 		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		if (ptrMyCamera) {
 			//MyCameraである
@@ -268,33 +264,23 @@ namespace basecross {
 				return;
 			}
 		}
-
-		if (active) {
 			Move();
-		}
-
 	}
 
 	//後更新
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		DrawStrings();
+		//DrawStrings();
 	}
 
-	//Aボタンハンドラ
-	void  Player::OnPushA() {
-		active = false;	
+	void Player::OnPushA()
+	{
 	}
 
-
-	//Bボタンハンドラ
-	void  Player::OnPushB() {
-		active = true;	
+	void Player::OnPushB()
+	{
 	}
-
-	
-
 
 	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
@@ -378,10 +364,10 @@ namespace basecross {
 		ptrTrans->SetRotation(UnkoRot);
 		ptrTrans->SetScale(UnkoScale);
 
+	
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
 		ptrColl->SetDrawActive(true);
-		
 
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
@@ -414,12 +400,11 @@ namespace basecross {
 			ptrCamera->SetTargetObject(Plyaer);
 			ptrCamera->SetTargetToAt(Vec3(0, 0.5f, 0));
 		}
+		AddTag(L"UnkoBoll");
 
 	}
 	void UnkoBoll::OnUpdate() {
-		if (active == true) {
-			Move();
-		}
+		holdon();
 	}
 	void UnkoBoll::OnUpdate2() {
 
@@ -461,17 +446,19 @@ namespace basecross {
 		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
 		float maxlenge = ptrTrans->GetPosition().y + 2;
 		PsUnko->MovePosition(Pos,0.01f);
-		if (Pos.y >= maxlenge) {
+		//PsUnko->SetPosition(Pos);
+		if(Pos.x >= maxlenge||Pos.y >= maxlenge|| Pos.z >= maxlenge) {
 			Pos.y = maxlenge;
+		}
+		Vec3 MaxScale = Vec3(3);
+		if (thisScale.x > MaxScale.x || thisScale.y > MaxScale.y || thisScale.z > MaxScale.z) {
+			thisScale = MaxScale;
 		}
 		
 	}
 
 	void UnkoBoll::Move() {
-		holdon();
-		auto PsUnko = this->GetComponent<RigidbodySphere>();
-		//PsUnko->MovePosition(Pos, 1.0f);
-		//PsUnko->SetPosition(Pos);
+
 	}
 
 	float UnkoBoll::ScaleUp() {
@@ -485,10 +472,6 @@ namespace basecross {
 		auto UnCoin = Other->GetStage()->GetSharedObjectGroup(L"CoinGrope");
 		auto thistrans = GetComponent<Transform>();
 		if (Other->FindTag(L"UnCoin")){ 
-			ScaleUp();
-			auto scale = thistrans->GetScale();
-			scale = scale + UnkoBoll::ScaleUp();
-			thistrans->SetScale(scale);
 		}
 		if (Other->FindTag(L"Player")) {
 

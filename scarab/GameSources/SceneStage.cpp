@@ -286,7 +286,7 @@ namespace basecross {
 
 
 	void SerectStage::CreateStage(){
-		auto Grand = AddGameObject<TilingFixedBox>(Vec3(30.0f, 1.0f, 30.0f), Vec3(0), Vec3(0.0f, -0.5f, 0.0f), 1.0f, 1.0f, L"SERECT_TX");
+		auto Grand = AddGameObject<FixedBox>(Vec3(0.0f, -0.5f, 0.0f), Vec3(30.0f, 1.0f, 30.0f));
 		Grand->AddTag(L"Grand");
 	}
 	void SerectStage::OnUpdate() {
@@ -301,12 +301,10 @@ namespace basecross {
 	}
 	void SerectStage::OnCreateSrectObj() {
 		CreateSharedObjectGroup(L"SerectObj");
-		AddGameObject<StageSrectObj>(Vec3(-10.0f, 3.0f, -10.0f), Vec3(2.5f, 1.5f, 2.5f));
-		AddGameObject<StageSrectObj>(Vec3(-10.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
-		AddGameObject<StageSrectObj>(Vec3(0.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
-		AddGameObject<StageSrectObj>(Vec3(5.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
-		AddGameObject<StageSrectObj>(Vec3(10.0f, 3.0f, 0.0f), Vec3(2.5f, 1.5f, 2.5f));
-		AddGameObject<StageSrectObj>(Vec3(10.0f, 3.0f, 10.0f), Vec3(2.5f, 1.5f, 2.5f));
+		AddGameObject<StageSrectObj>(Vec3(-9.0f, 3.0f, -9.0f), Vec3(1.5f, 1.5f, 1.5f));
+		AddGameObject<StageSrectObj>(Vec3(-1.0f, 3.0f, -1.0f), Vec3(1.5f, 1.5f, 1.5f));
+		AddGameObject<StageSrectObj>(Vec3(6.5f, 3.0f, 9.0f), Vec3(1.5f, 1.5f, 1.5f));
+
 	}
 
 

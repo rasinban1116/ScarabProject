@@ -210,9 +210,10 @@ namespace basecross {
 		}
 	}
 
-	//--------------------------------------------------------------------------------------
-	///	箱
-	//--------------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------------
+///	固定のオブジェクト
+//--------------------------------------------------------------------------------------
 	FixedBox::FixedBox(const shared_ptr<Stage>&StagePtr,
 		const Vec3 &Position,
 		const Vec3 &Scale
@@ -246,7 +247,9 @@ namespace basecross {
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"SERECT_TX");
-
+		//物理計算ボックス
+		PsBoxParam param(ptrtrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		auto PsPtr = AddComponent<RigidbodyBox>(param);
 		SetAlphaActive(true);
 
 
@@ -255,15 +258,9 @@ namespace basecross {
 
 	}
 	void FixedBox::OnCollisionEnter(shared_ptr<GameObject>&Other) {
-		auto play = Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
-		auto ptrScene = App::GetApp()->GetScene<Scene>();
+		
 
-		if (Other->FindTag(L"Player")) {
-			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameStage");
-		}
-		else {
-
-		}
+		
 	}
 
 
@@ -298,7 +295,6 @@ namespace basecross {
 		auto Coll = AddComponent<CollisionObb>();
 		Coll->SetSleepActive(true);
 		Coll->SetFixed(true);
-		Coll->SetDrawActive(true);
 
 		vector<VertexPositionNormalTexture> vertices;
 		vector<uint16_t> indices;
@@ -392,7 +388,6 @@ namespace basecross {
 		auto Coll = AddComponent<CollisionObb>();
 		Coll->SetSleepActive(true);
 		Coll->SetFixed(true);
-		Coll->SetDrawActive(true);
 
 		vector<VertexPositionNormalTexture> vertices;
 		vector<uint16_t> indices;
