@@ -1,0 +1,17 @@
+TilingFixedBox,1,1,1,0,0,0,0,0,0,WALL_TX
+TilingFixedBox,1,1,1,0,0,0,0,0,0,WALL_TX
+TilingFixedBox,20,0.25,20,0,0,0,0,0,0,WALL_TX
+TilingFixedBox,20,1,0.5,0,0,0,0,0.6,-10,WALL_TX
+TilingFixedBox,20,1,0.5,0,0,0,0,0.6,10,WALL_TX
+TilingFixedBox,20,1,0.5000007,0,90,0,10,0.6,0,WALL_TX
+TilingFixedBox,20,0.25,20,0,0,0,-30.1,0,0,WALL_TX
+TilingFixedBox,20,0.25,20,0,0,0,-69.1,0,0,WALL_TX
+TilingFixedBox,20,0.25,20,0,0,0,-69.1,0,-33.9,WALL_TX
+TilingFixedBox,20,0.25,20,0,0,0,-31.1,0,-33.9,WALL_TX
+TilingFixedBox,20,0.25,20,0,0,0,-118.8,0,-33.9,WALL_TX
+TilingFixedBox,10.4286,0.25,6.5538,0,0,0,-15,0,0,WALL_TX
+TilingFixedBox,22.12949,0.25,6.5538,0,0,0,-50.5,0,0,WALL_TX
+TilingFixedBox,22.12949,0.25,6.5538,0,0,0,-50.5,0,-34.3,WALL_TX
+TilingFixedBox,34.38259,0.25,6.5538,0,0,0,-93.7,0,-34.3,WALL_TX
+TilingFixedBox,15.78033,0.25,6.553804,0,90,0,-31,0,-17,WALL_TX
+TilingFixedBox,15.78033,0.25,6.553804,0,90,0,-68.7,0,-17,WALL_TX
