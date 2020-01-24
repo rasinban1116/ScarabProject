@@ -178,8 +178,8 @@ namespace basecross {
 	void StageClearObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
 		auto play = Other->GetStage()->GetSharedObject(L"Player", true);
 		auto ptrScene = App::GetApp()->GetScene<Scene>();
-		if (play) {
-			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGmaeStage");
+		if (Other->FindTag(L"Player")||Other->FindTag(L"UnkoBoll")) {
+			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToClearStage");
 		}
 	}
 

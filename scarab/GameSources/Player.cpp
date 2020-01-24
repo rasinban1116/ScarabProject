@@ -364,9 +364,10 @@ namespace basecross {
 		ptrTrans->SetRotation(UnkoRot);
 		ptrTrans->SetScale(UnkoScale);
 
+	
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		
+		ptrColl->SetDrawActive(true);
 
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
@@ -399,6 +400,7 @@ namespace basecross {
 			ptrCamera->SetTargetObject(Plyaer);
 			ptrCamera->SetTargetToAt(Vec3(0, 0.5f, 0));
 		}
+		AddTag(L"UnkoBoll");
 
 	}
 	void UnkoBoll::OnUpdate() {
@@ -444,8 +446,13 @@ namespace basecross {
 		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
 		float maxlenge = ptrTrans->GetPosition().y + 2;
 		PsUnko->MovePosition(Pos,0.01f);
-		if (Pos.y >= maxlenge) {
+		//PsUnko->SetPosition(Pos);
+		if(Pos.x >= maxlenge||Pos.y >= maxlenge|| Pos.z >= maxlenge) {
 			Pos.y = maxlenge;
+		}
+		Vec3 MaxScale = Vec3(3);
+		if (thisScale.x > MaxScale.x || thisScale.y > MaxScale.y || thisScale.z > MaxScale.z) {
+			thisScale = MaxScale;
 		}
 		
 	}
@@ -465,10 +472,6 @@ namespace basecross {
 		auto UnCoin = Other->GetStage()->GetSharedObjectGroup(L"CoinGrope");
 		auto thistrans = GetComponent<Transform>();
 		if (Other->FindTag(L"UnCoin")){ 
-			ScaleUp();
-			auto scale = thistrans->GetScale();
-			scale = scale + UnkoBoll::ScaleUp();
-			thistrans->SetScale(scale);
 		}
 		if (Other->FindTag(L"Player")) {
 
