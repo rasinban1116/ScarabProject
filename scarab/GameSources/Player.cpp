@@ -462,10 +462,10 @@ namespace basecross {
 	}
 
 	float UnkoBoll::ScaleUp() {
-		float upscale;
-		auto score = UIDraw::GetScore();
-		upscale = score / 1000.0f;
-		return upscale;
+		//float upscale;
+		//auto score = UIDraw::GetScore();
+		//upscale = score / 1000.0f;
+		//return upscale;
 	}
 
 	void UnkoBoll::OnCollisionEnter(shared_ptr<GameObject>& Other){

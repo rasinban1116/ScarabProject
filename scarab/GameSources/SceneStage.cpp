@@ -251,7 +251,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			//クリアオブジェクト
-			//GameSystemObj();
+			GameSystemObj();
 		}
 		catch (...) {
 			throw;
