@@ -146,7 +146,7 @@ namespace basecross {
 	//プレイヤ―の生成
 	void GameStage::CreatePlayer() {
 		//プレーヤーの作成
-		auto ptrPlayer = AddGameObject<Player>(Vec3(-89.0f, 19.0f, -35.0f));
+		auto ptrPlayer = AddGameObject<Player>(Vec3(-89.0f, 0.5f, -35.0f));
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");

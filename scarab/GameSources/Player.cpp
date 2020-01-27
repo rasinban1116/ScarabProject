@@ -206,7 +206,7 @@ namespace basecross {
 
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		ptrColl->SetDrawActive(true);
+		//ptrColl->SetDrawActive(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
@@ -271,7 +271,7 @@ namespace basecross {
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		//DrawStrings();
+		DrawStrings();
 	}
 
 	void Player::OnPushA()
@@ -367,7 +367,7 @@ namespace basecross {
 	
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		ptrColl->SetDrawActive(true);
+		//ptrColl->SetDrawActive(true);
 
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る

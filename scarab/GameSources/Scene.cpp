@@ -88,6 +88,7 @@ namespace basecross{
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
 			{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
+			{L"Lizard_Waik.bmf",L"Lizad"},
 
 
 
@@ -156,6 +157,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"SERECT_TX", strTexture);
 		strTexture = dataDir + L"Tx_Stage_tree.png";
 		App::GetApp()->RegisterTexture(L"Tree_TX", strTexture);
+		strTexture = dataDir + L"Tx_Lizard.png";
+		App::GetApp()->RegisterTexture(L"Lizad_TX", strTexture);
 		//UIやスコア表示用のテクスチャ
 		strTexture = dataDir + L"clear.png";
 		App::GetApp()->RegisterTexture(L"CLEAR_TX", strTexture);
