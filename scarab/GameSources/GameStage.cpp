@@ -176,7 +176,7 @@ namespace basecross {
 			{ Vec3(10.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
 		};
 		for (auto v : vecLiz) {
-			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1], 1, L"SCARAB_TX", L"liz");
+			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1], 1, L"Lizad_TX", L"Lizad");
 
 		}
 	}

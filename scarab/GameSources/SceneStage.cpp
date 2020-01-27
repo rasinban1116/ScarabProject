@@ -130,7 +130,7 @@ namespace basecross {
 
 		auto gm = GameManager::GetInstance();
 
-		for (int h = 0; h < 1000; h++) {
+		for (int h = 0; h < 1; h++) {
 			gm->UnkoNumUp();
 		}
 
@@ -251,7 +251,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			//クリアオブジェクト
-			GameSystemObj();
+			//GameSystemObj();
 		}
 		catch (...) {
 			throw;

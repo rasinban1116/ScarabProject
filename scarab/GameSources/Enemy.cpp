@@ -139,9 +139,12 @@ namespace basecross {
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
 			break;
 		case 2:
-			ptrDraw->SetMeshResource(L"liz");
-			//ptrDraw->SetFogEnabled(true);
-			ptrDraw->SetMeshToTransformMatrix(spanMat);
+
+			ptrDraw->SetMultiMeshResource(L"scrab");
+			ptrDraw->SetTextureResource(L"Lizad_TX");
+			ptrDraw->AddAnimation(L"Lizad", 0, 60, true, 30);
+			ptrDraw->ChangeCurrentAnimation(L"Lizad", 0);
+
 		}
 		auto a = ptrDraw->GetCurrentAnimation();
 

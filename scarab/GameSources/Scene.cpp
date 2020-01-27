@@ -88,7 +88,7 @@ namespace basecross{
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
 			{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
-
+			{L"Lizard_Waik.bmf",L"Lizad"},
 
 
 
@@ -112,6 +112,7 @@ namespace basecross{
 			//{L"ファイル名",L"呼び出し時のキー"}
 			//{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
 			{L"ScarabOnPoop_Walking.bmf",L"scrab"}
+
 
 
 
@@ -156,6 +157,11 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"SERECT_TX", strTexture);
 		strTexture = dataDir + L"Tx_Stage_tree.png";
 		App::GetApp()->RegisterTexture(L"Tree_TX", strTexture);
+		strTexture = dataDir + L"Tx_Lizard.png";
+		App::GetApp()->RegisterTexture(L"Lizad_TX", strTexture);
+
+
+
 		//UIやスコア表示用のテクスチャ
 		strTexture = dataDir + L"clear.png";
 		App::GetApp()->RegisterTexture(L"CLEAR_TX", strTexture);
@@ -202,9 +208,9 @@ namespace basecross{
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		auto XAPtr = App::GetApp()->GetXAudio2Manager();
-		if (event->m_MsgStr == L"ToTitleStage") {
+		if (event->m_MsgStr == L"ToSerectStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<SerectStage>();
+			ResetActiveStage<GameStage>();
 		}
 		else if (event->m_MsgStr == L"ToSerectStage") {
 			XAPtr->Start(L"GAMESTAGEBGM", XAUDIO2_LOOP_INFINITE, 0.08);
