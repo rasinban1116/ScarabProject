@@ -8,7 +8,6 @@ namespace basecross {
 		int m_getunkonum;
 
 		GameManager() {
-			m_getunkonum = 0;
 		}
 		~GameManager();
 	public:
@@ -18,6 +17,9 @@ namespace basecross {
 		}
 		int GetUnkoNum() {
 			return m_getunkonum;
+		}
+		void UnkoNumReSet() {
+			m_getunkonum = 0;
 		}
 	};
 }

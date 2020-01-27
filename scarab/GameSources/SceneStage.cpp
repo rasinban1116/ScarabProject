@@ -122,23 +122,29 @@ namespace basecross {
 	}
 
 	void ClearStage::CreateClearSprite() {
-		//auto titlebackLogo = AddGameObject<Sprite>(L"TITLEBACK_TX", true,
-		//	Vec2(640.0f, 480.0f), Vec3(0.0f, 0.0f, 0.1f));
+		auto clearbackLogo = AddGameObject<Sprite>(L"CLEARBACK_TX", true,
+			Vec2(640.0f, 480.0f), Vec3(0.0f, 0.0f, 0.1f));
 		//クリアの文字
 		auto clear = AddGameObject<Sprite>(L"CLEAR_TX", true,
 			Vec2(250.0f, 70.0f), Vec3(0.0f, 300.0f, 0.0f));
 
 		auto gm = GameManager::GetInstance();
 
-		for (int h = 0; h < 1000; h++) {
+		//ここ後で消す
+		gm->UnkoNumReSet();
+		for (int y = 0; y < 5; y++) {
 			gm->UnkoNumUp();
 		}
+		//ここまで消す
 
+		//ゲームマネージャーから取得したうんこの数をとってくる
 		int unkonum = gm->GetUnkoNum();
+		//最初にうんこのスコアを表示するところを決める
 		Vec3 pos = Vec3(-120.f, 140.f, 0.f);
-
+		//行を何個うんこが表示されたら変わるか
 		int num = 4;
 
+		//うんこスコアの表示
 		for (int i = 0; i < unkonum; i++) {
 			auto unkosp = AddGameObject<Sprite>(L"UNKOIKON_TX", true,
 				Vec2(50, 50), Vec3(pos));
@@ -149,21 +155,10 @@ namespace basecross {
 			 }
 		}
 
-
-
-
-
-		////スコア
-		//auto ptrScore = AddGameObject<ScoreSprite>(3,
-		//	L"NUMBER_TX",
-		//	true,
-		//	Vec2(400.0f, 120.0f), Vec3(0.0f, 200.0f, 0.1f));
-
-		//ptrScore->SetScore(GameManager::GetInstance()->GetUnkoNum());
-
 		//位置と文字の間隔の設定
 		m_strSprite = m_sprite = -30.0f;
 		m_spriteif = -90.0f;
+
 		//次のステージ
 		auto nextStageLogo = AddGameObject<Sprite>(L"NEXTSTAGE_TX", true,
 			Vec2(150.0f, 30.0f), Vec3(0.0f, m_sprite, 0.1f));

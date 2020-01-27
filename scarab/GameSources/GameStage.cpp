@@ -232,6 +232,8 @@ namespace basecross {
 
 
 	void GameStage::OnCreate() {
+		auto gm = GameManager::GetInstance();
+		gm->UnkoNumReSet();
 		try {
 			wstring DataDir;
 			App::GetApp()->GetDataDirectory(DataDir);

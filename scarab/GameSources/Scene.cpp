@@ -30,7 +30,7 @@ namespace basecross{
 			
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToClearStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 			
 			CreateResourses();
 			LoadStaticModelResources();
@@ -187,6 +187,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"NUMBER_TX", strTexture);
 		strTexture = dataDir + L"Poop_Icon.png";
 		App::GetApp()->RegisterTexture(L"UNKOIKON_TX", strTexture);
+		strTexture = dataDir + L"Game_Clear_Scarab.png";
+		App::GetApp()->RegisterTexture(L"CLEARBACK_TX", strTexture);
 
 		
 
@@ -204,7 +206,7 @@ namespace basecross{
 		auto XAPtr = App::GetApp()->GetXAudio2Manager();
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<SerectStage>();
+			ResetActiveStage<TitleStage>();
 		}
 		else if (event->m_MsgStr == L"ToSerectStage") {
 			XAPtr->Start(L"GAMESTAGEBGM", XAUDIO2_LOOP_INFINITE, 0.08);
