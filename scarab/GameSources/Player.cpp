@@ -484,7 +484,7 @@ namespace basecross {
 		}*/
 	}
 	void UnkoBoll::OnCollisionExit(shared_ptr<GameObject>& Other) {
-		active = true;
+		//active = true;
 	}
 
 
