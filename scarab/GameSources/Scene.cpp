@@ -55,15 +55,14 @@ namespace basecross{
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
 			{L"scarabtest.bmf",L"scarab"},
-			{L"test.bmf",L"test"},
 			{L"stage.bmf",L"stage"},
-			{L"rock.bmf",L"rock"},
 			{L"poop.bmf",L"unko"},
 			{L"Base.bmf",L"Base"},
 			{L"falltree.bmf",L"fallntree"},
 			{L"lizard.bmf",L"liz"},
 			{L"Goal_point.bmf",L"Goal"},
-			{L"Stage_Tree.bmf",L"tree"}
+			{L"Stage_Tree.bmf",L"tree"},
+
 		
 
 		};

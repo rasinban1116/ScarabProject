@@ -444,9 +444,7 @@ namespace basecross {
 
 		Pos = Vec3(0);
 		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
-		float maxlenge = ptrTrans->GetPosition().y + 2;
-		PsUnko->MovePosition(Pos,0.01f);
-		//PsUnko->SetPosition(Pos);
+		float maxlenge = ptrTrans->GetPosition().y + 2;;
 		if(Pos.x >= maxlenge||Pos.y >= maxlenge|| Pos.z >= maxlenge) {
 			Pos.y = maxlenge;
 		}

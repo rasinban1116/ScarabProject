@@ -154,7 +154,7 @@ namespace basecross {
 
 	//プレイヤーを継承した子オブジェクト（ふんころがしになる予定）を生成
 	void GameStage::CreatePlayerChild() {
-		auto Unko = AddGameObject<UnkoBoll>(Vec3(-85.0f, 18.5f, -33.0f),Vec3(1.0f),Vec3(0.0f), Vec3(0.0f, 6.0f, 5.0f));
+		auto Unko = AddGameObject<UnkoBoll>(Vec3(-85.0f, 0.5f, -33.0f),Vec3(1.0f),Vec3(0.0f), Vec3(0.0f, 6.0f, 5.0f));
 		SetSharedGameObject(L"UnkoBoll", Unko);
 		Unko->AddTag(L"UnkoBoll");
 	}
@@ -163,9 +163,15 @@ namespace basecross {
 		//フンコロガシの生成
 		auto group = CreateSharedObjectGroup(L"EnemyGroup");
 		vector< vector<Vec3> > vecSca = {
-			{ Vec3(5.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
+			{ Vec3(5.0f, 0.5f, 0.0f), Vec3(0.0f, 0.5f, 5.0f) },
 			{ Vec3(-15.0f, 3.0f, -5.0f), Vec3(-23.0f,3.0f,-4.0f) },
-			{ Vec3(5.0, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) },
+			{ Vec3(5.0f, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) },
+			{ Vec3(-73.0f, 0.5f, -40.0f), Vec3(-70.0f,0.5f, -35.0f) },
+			{ Vec3(-75.0f, 0.5f,-2.0f), Vec3(-70.0f,2.0f, 1.0f) },
+			{ Vec3(-30.0f, 0.5f,-34.0f), Vec3(30.0f,2.0f, -34.0f) },
+
+
+
 		};
 		for (auto v : vecSca) {
 			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1], 1, L"SCARAB_TX", L"Enemy");
@@ -173,7 +179,11 @@ namespace basecross {
 
 		//トカゲの生成
 		vector< vector<Vec3> > vecLiz = {
-			{ Vec3(10.0, 0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
+			{ Vec3(10.0f ,0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
+			{ Vec3(-70.0f, 0.5f,-40.0f), Vec3(69.0f,2.0f, -49.0f) },
+			{ Vec3(-68.0f, 0.5f,-0.0f), Vec3(-68.0f,2.0f, -34.0f) },
+			{ Vec3(-30.0f, 0.5f,-40.0f), Vec3(30.0f,2.0f, 34.0f) },
+
 		};
 		for (auto v : vecLiz) {
 			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1], 1, L"Lizad_TX", L"Lizad");
@@ -186,12 +196,12 @@ namespace basecross {
 		
 		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(0.0f, 0.4f, -3.0f));
 		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(3.0f, 0.4f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-83.0f, 0.4f, -35.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-80.0f, 0.4f, -40.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-43.0f, 0.4f, -2.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-37.0f, 0.4f, -8.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-43.0f, 0.4f, -46.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-50.0f, 0.4f, -40.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-78.0f, 0.4f, -35.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-71.0f, 0.4f, -30.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-35.0f, 0.4f, -4.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-27.0f, 0.4f, 1.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-29.0f, 0.4f, -32.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-32.0f, 0.4f, -38.0f));
 		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-77.0f, 0.4f, -4.2f));
 	
 	}
