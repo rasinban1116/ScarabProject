@@ -25,7 +25,7 @@ namespace basecross {
 		m_Velocity += m_Force * elapsedTime;
 		auto ptrTrans = GetComponent<Transform>();
 		auto pos = ptrTrans->GetPosition();
-		pos += (m_Velocity.normalize() * elapsedTime);
+		pos += (m_Velocity.normalize() * elapsedTime) * 3.f;
 		ptrTrans->SetPosition(pos);
 	}
 
@@ -44,7 +44,17 @@ namespace basecross {
 
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetPosition(m_StrPos);
-		ptrTrans->SetScale(0.25f, 0.25f, 0.25f);
+		Vec3 ptrSca;
+		float modelSize;
+		if (model == L"Enemy") {
+			ptrSca = Vec3(0.8f, 0.8f, 1.0f);
+			modelSize = 0.35f;
+		}
+		if (model == L"Lizad") {
+			ptrSca = Vec3(1.f, 1.f, 2.5f);
+			modelSize = 0.3f;
+		}
+		ptrTrans->SetScale(ptrSca);
 		ptrTrans->SetRotation(0.0f, 0.0f, 0.0f);
 
 
@@ -75,7 +85,9 @@ namespace basecross {
 
 
 		//CollisionSphere衝突判定を付ける
-		auto ptrColl = AddComponent<CollisionSphere>();
+		auto ptrColl = AddComponent<CollisionObb>();
+		
+		ptrColl->SetDrawActive(false);
 		//重力をつける
 		auto ptrGra = AddComponent<Gravity>();
 		//経路巡回を付ける
@@ -97,7 +109,7 @@ namespace basecross {
 		auto ptrDraw = AddComponent<PNTBoneModelDraw>();
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(1),
+			Vec3(Vec3(1.0f) / ptrSca  * modelSize),
 			Vec3(0, 0, 0),
 			Vec3(0, 3.0f, 0),
 			Vec3(0, -0.5f, 0)
@@ -109,7 +121,6 @@ namespace basecross {
 		case 1:
 			ptrDraw->SetMeshResource(model);
 			ptrDraw->SetTextureResource(tex);
-			//ptrDraw->SetFogEnabled(true);
 			ptrDraw->AddAnimation(model,0,60,true,30);
 			ptrDraw->ChangeCurrentAnimation(model,0);
 			ptrDraw->SetMeshToTransformMatrix(spanMat);
@@ -120,9 +131,8 @@ namespace basecross {
 			ptrDraw->SetTextureResource(L"Lizad_TX");
 			ptrDraw->AddAnimation(L"Lizad", 0, 60, true, 30);
 			ptrDraw->ChangeCurrentAnimation(L"Lizad", 0);
-
+			break;
 		}
-		auto a = ptrDraw->GetCurrentAnimation();
 
 		//◤◢◤◢◤◢◤プレイヤーの視界になるオブジェクトを作る◢◤◢◤◢◤ ◢
 		auto enemyeye = GetStage()->AddGameObject<EnemyEye>(m_StrPos, GetThis<GameObject>());
@@ -137,20 +147,22 @@ namespace basecross {
 		//ステートマシンのUpdateを行う
 		//この中でステートの切り替えが行われる
 		m_StateMachine->Update();
-		
-		//共通のステアリング2
-		auto ptrSep = GetBehavior<SeparationSteering>();
-		m_Force += ptrSep->Execute(m_Force);
-		auto ptrAvoidance = GetBehavior<ObstacleAvoidanceSteering>();
 
-		m_Force += ptrAvoidance->Execute(m_Force, GetVelocity());
-		ApplyForce();
-		auto ptrUtil = GetBehavior<UtilBehavior>();
-		ptrUtil->RotToHead(1.0f);
+		if (m_atkflg == false) {
+			//共通のステアリング2
+			auto ptrSep = GetBehavior<SeparationSteering>();
+			m_Force += ptrSep->Execute(m_Force);
+			auto ptrAvoidance = GetBehavior<ObstacleAvoidanceSteering>();
 
-		auto ptrDraw = GetComponent<PNTBoneModelDraw>();
-		auto unko = App::GetApp()->GetElapsedTime();
-		ptrDraw->UpdateAnimation(unko);
+			m_Force += ptrAvoidance->Execute(m_Force, GetVelocity());
+			ApplyForce();
+			auto ptrUtil = GetBehavior<UtilBehavior>();
+			ptrUtil->RotToHead(1.0f);
+
+			auto ptrDraw = GetComponent<PNTBoneModelDraw>();
+			auto unko = App::GetApp()->GetElapsedTime();
+			ptrDraw->UpdateAnimation(unko);
+		}
 	}
 
 	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& Other) {
@@ -178,10 +190,8 @@ namespace basecross {
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
 
 		//m_lookflgがtrueになった時ステートマシーンを切り替える
-		if (Obj->GetModelname() == L"Enemy") {
-			if (Obj->GetLook() == true) {
-				Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
-			}
+		if (Obj->GetLook() == true) {
+			Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
 		}
 	}
 	void LookOfState::Exit(const shared_ptr<Enemy>& Obj) {
@@ -206,7 +216,7 @@ namespace basecross {
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
 
 		//自分とプレイヤーの距離が一定以上になった時ステートマシーンを切り替える
-		if (f >= Obj->GetStateChangeSize()) {
+		if (f >= Obj->GetStateChangeSize() * 1.5f) {
 			Obj->GetStateMachine()->ChangeState(LookOfState::Instance());
 		}
 		if (Obj->GetAtkFkg() == true) {
@@ -227,19 +237,8 @@ namespace basecross {
 	}
 	void AtkAfterState::Enter(const shared_ptr<Enemy>& Obj) {
 		time = 0;
-		Obj->SetAtkFlg(false);
 	}
 	void AtkAfterState::Execute(const shared_ptr<Enemy>& Obj) {
-		//auto ptrArrive = Obj->GetBehavior<SeekSteering>();
-		//auto ptrSep = Obj->GetBehavior<SeparationSteering>();
-		//auto force = Obj->GetForce();
-		//auto ptrPlayerTrans = Obj->GetTarget()->GetComponent<Transform>();
-		//force += ptrArrive->Execute(force, Obj->GetVelocity(), ptrPlayerTrans->GetPosition());
-		//Obj->SetForce(force);
-
-		auto trans = Obj->GetComponent<Transform>();
-		auto pos = trans->GetPosition();
-		trans->SetPosition(pos);
 
 		auto etime = App::GetApp()->GetElapsedTime();
 		time += etime;
@@ -249,6 +248,7 @@ namespace basecross {
 	}
 	void AtkAfterState::Exit(const shared_ptr<Enemy>& Obj) {
 		time = 0;
+		Obj->SetAtkFlg(false);
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ namespace basecross {
 
 	void EnemyEye::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetScale(1.5f, 0.5, 3.0f);
+		ptrTrans->SetScale(1.5f, 0.5, 5.0f);
 		ptrTrans->SetParent(m_ParentPtr);
 
 		AddTag(L"EnemyEye");
@@ -272,6 +272,7 @@ namespace basecross {
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
 		col->AddExcludeCollisionTag(L"Ground");
+		col->SetDrawActive(false);
 
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
@@ -285,7 +286,7 @@ namespace basecross {
 
 	void EnemyEye::OnUpdate() {
 		auto eyecomp = this->GetComponent<Transform>();
-		eyecomp->SetPosition(0, 0, 0.7f);
+		eyecomp->SetPosition(0, 0, 2.5f);
 	}
 
 	void EnemyEye::OnCollisionEnter(shared_ptr<GameObject>& Other) {
