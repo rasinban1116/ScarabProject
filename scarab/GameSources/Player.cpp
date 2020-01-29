@@ -367,7 +367,7 @@ namespace basecross {
 	
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		//ptrColl->SetDrawActive(true);
+		ptrColl->SetDrawActive(true);
 
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
@@ -430,7 +430,6 @@ namespace basecross {
 		
 
 		
-		
 	}
 
 	void UnkoBoll::Move() {
@@ -439,18 +438,29 @@ namespace basecross {
 
 	float UnkoBoll::ScaleUp() {
 		float upscale;
+		float count = 0;
 		auto score = UIDraw::GetScore();
 		upscale = score / 1000.0f;
-		return upscale;
+		count++;
+		if (count == 3) {
+			return upscale;
+			count = 0;
+		}
+		
 	}
 
 	void UnkoBoll::OnCollisionEnter(shared_ptr<GameObject>& Other){
 		auto UnCoin = Other->GetStage()->GetSharedObjectGroup(L"CoinGrope");
+		auto Player = Other->GetStage()->GetSharedObject(L"Player");
 		auto thistrans = GetComponent<Transform>();
+		auto thisScale = thistrans->GetScale();
 		if (Other->FindTag(L"UnCoin")){ 
+			auto ScaleUpScore = ScaleUp();
+			thisScale += ScaleUpScore;
+			thistrans->SetScale(thisScale);
 		}
 		if (Other->FindTag(L"Player")) {
-			Other->OnDestroy();
+			//this->OnDestroy();
 		}
 
 	}
