@@ -252,7 +252,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			////CSVファイルそのBの読み込み
-			m_GameStageCsvB.SetFileName(DataDir + L"Stage1.csv");
+			m_GameStageCsvB.SetFileName(DataDir + L"Stage2.csv");
 			m_GameStageCsvB.ReadCsv();
 			//物理演算するボックスの作成
 			CreateFixedBox();

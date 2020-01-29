@@ -404,7 +404,7 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-		holdon();
+		//holdon();
 	}
 	void UnkoBoll::OnUpdate2() {
 
@@ -429,29 +429,7 @@ namespace basecross {
 		auto thisrot = thistrans->GetRotation();
 		
 
-		Vec3 Rot;
-		auto translation = PsUnko->GetLinearVelocity()*Time;
-		auto distance = translation.length();
-		auto scaleXYZ = thisScale;
-		auto Comparsion = DirectX::XMMax(scaleXYZ.x,scaleXYZ.y);
-		auto Max = DirectX::XMMax(Comparsion,scaleXYZ.z);
-		auto angle = distance / (thiscol->GetMakedRadius() * Max);
-		auto axis = XMVector3Cross(Vec3(0, 1, 0), translation);
-		axis = XMVector3Normalize(axis);
-		auto DeltaRotation = XMQuaternionRotationAxis(axis, angle);
-		Vec3 Pos = Vec3(DeltaRotation * PsUnko->GetLinearVelocity());
-		PsUnko->SetLinearVelocity(Pos);
-
-		Pos = Vec3(0);
-		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
-		float maxlenge = ptrTrans->GetPosition().y + 2;;
-		if(Pos.x >= maxlenge||Pos.y >= maxlenge|| Pos.z >= maxlenge) {
-			Pos.y = maxlenge;
-		}
-		Vec3 MaxScale = Vec3(3);
-		if (thisScale.x > MaxScale.x || thisScale.y > MaxScale.y || thisScale.z > MaxScale.z) {
-			thisScale = MaxScale;
-		}
+		
 		
 	}
 
@@ -472,7 +450,7 @@ namespace basecross {
 		if (Other->FindTag(L"UnCoin")){ 
 		}
 		if (Other->FindTag(L"Player")) {
-
+			Other->OnDestroy();
 		}
 
 	}
