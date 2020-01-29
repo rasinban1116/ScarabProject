@@ -194,17 +194,22 @@ namespace basecross {
 	void GameStage::CreateGimmickObj() {
 		auto group = CreateSharedObjectGroup(L"CoinGrope");
 		
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(0.0f, 0.4f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(3.0f, 0.4f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-78.0f, 0.4f, -35.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-71.0f, 0.4f, -30.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-35.0f, 0.4f, -4.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-27.0f, 0.4f, 1.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-29.0f, 0.4f, -32.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-32.0f, 0.4f, -38.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-77.0f, 0.4f, -4.2f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(0.0f, 0.f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(3.0f, 0.f, -3.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-78.0f, 0.f, -35.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-71.0f, 0.f, -30.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-35.0f, 0.f, -4.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-27.0f, 0.f, 1.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-29.0f, 0.f, -32.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-32.0f, 0.f, -38.0f));
+		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-77.0f, 0.f, -4.2f));
 	
 	}
+	void  GameStage::CreateWoods() {
+		auto woods = CreateSharedObjectGroup(L"WoodsGrope");
+
+	}
+	
 
 	void GameStage::CreateClearObj() {
 		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0,0.5f,0), Vec3(0.5f));
@@ -252,7 +257,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			////CSVファイルそのBの読み込み
-			m_GameStageCsvB.SetFileName(DataDir + L"Stage1.csv");
+			m_GameStageCsvB.SetFileName(DataDir + L"Stage2.csv");
 			m_GameStageCsvB.ReadCsv();
 			//物理演算するボックスの作成
 			CreateFixedBox();

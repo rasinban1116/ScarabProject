@@ -367,7 +367,7 @@ namespace basecross {
 	
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		//ptrColl->SetDrawActive(true);
+		ptrColl->SetDrawActive(true);
 
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
@@ -404,7 +404,7 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-		holdon();
+		//holdon();
 	}
 	void UnkoBoll::OnUpdate2() {
 
@@ -429,29 +429,6 @@ namespace basecross {
 		auto thisrot = thistrans->GetRotation();
 		
 
-		Vec3 Rot;
-		auto translation = PsUnko->GetLinearVelocity()*Time;
-		auto distance = translation.length();
-		auto scaleXYZ = thisScale;
-		auto Comparsion = DirectX::XMMax(scaleXYZ.x,scaleXYZ.y);
-		auto Max = DirectX::XMMax(Comparsion,scaleXYZ.z);
-		auto angle = distance / (thiscol->GetMakedRadius() * Max);
-		auto axis = XMVector3Cross(Vec3(0, 1, 0), translation);
-		axis = XMVector3Normalize(axis);
-		auto DeltaRotation = XMQuaternionRotationAxis(axis, angle);
-		Vec3 Pos = Vec3(DeltaRotation * PsUnko->GetLinearVelocity());
-		PsUnko->SetLinearVelocity(Pos);
-
-		Pos = Vec3(0);
-		Pos = Vec3(ptrfor.x + ptrPos.x, (ptrfor.y + ptrPos.y), ptrfor.z + ptrPos.z);
-		float maxlenge = ptrTrans->GetPosition().y + 2;;
-		if(Pos.x >= maxlenge||Pos.y >= maxlenge|| Pos.z >= maxlenge) {
-			Pos.y = maxlenge;
-		}
-		Vec3 MaxScale = Vec3(3);
-		if (thisScale.x > MaxScale.x || thisScale.y > MaxScale.y || thisScale.z > MaxScale.z) {
-			thisScale = MaxScale;
-		}
 		
 	}
 
@@ -461,18 +438,29 @@ namespace basecross {
 
 	float UnkoBoll::ScaleUp() {
 		float upscale;
+		float count = 0;
 		auto score = UIDraw::GetScore();
 		upscale = score / 1000.0f;
-		return upscale;
+		count++;
+		if (count == 3) {
+			return upscale;
+			count = 0;
+		}
+		
 	}
 
 	void UnkoBoll::OnCollisionEnter(shared_ptr<GameObject>& Other){
 		auto UnCoin = Other->GetStage()->GetSharedObjectGroup(L"CoinGrope");
+		auto Player = Other->GetStage()->GetSharedObject(L"Player");
 		auto thistrans = GetComponent<Transform>();
+		auto thisScale = thistrans->GetScale();
 		if (Other->FindTag(L"UnCoin")){ 
+			auto ScaleUpScore = ScaleUp();
+			thisScale += ScaleUpScore;
+			thistrans->SetScale(thisScale);
 		}
 		if (Other->FindTag(L"Player")) {
-
+			//this->OnDestroy();
 		}
 
 	}
