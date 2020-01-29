@@ -89,6 +89,8 @@ namespace basecross{
 			{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
 			{L"Lizard_Waik.bmf",L"Lizad"},
 
+			
+
 
 
 
@@ -110,9 +112,8 @@ namespace basecross{
 		};
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
-			//{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
-			{L"ScarabOnPoop_Walking.bmf",L"scrab"}
-
+			{L"ScarabOnPoop_Walking.bmf",L"scrab"},
+			{L"Scarab_Walking.bmf",L"PlayWalk"}
 
 
 		};

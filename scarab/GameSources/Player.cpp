@@ -20,7 +20,7 @@ namespace basecross {
 		active(true),
 		isGrand(true),
 		m_PlayVelo(0, 0, 0),
-		m_Speed(10.0f),
+		m_Speed(8.0f),
 		m_pos(Position)
 
 	{}
@@ -200,13 +200,13 @@ namespace basecross {
 		auto ptrTrans = GetComponent<Transform>();
 		//初期位置などの設定
 		auto ptr = AddComponent<Transform>();
-		ptr->SetScale(0.7f, 0.7f, 0.7f);	//直径25センチの球体
-		ptr->SetRotation(-45.0f, 0.0f, 0.0f);
+		ptr->SetScale(0.8f, 0.8f, 0.8f);	//直径25センチの球体
+		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(m_pos);
 
 		//CollisionSphere衝突判定を付ける
-		auto ptrColl = AddComponent<CollisionSphere>();
-		//ptrColl->SetDrawActive(true);
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetDrawActive(true);
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
@@ -235,16 +235,16 @@ namespace basecross {
 		auto drawcomp = AddComponent<PNTBoneModelDraw>();
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.5f),
+			Vec3(0.4f),
 			Vec3(0,0,0),
-			Vec3(0),
+			Vec3(0,3.0f,0),
 			Vec3(0,-0.5f,0)
 		);
 		drawcomp->SetMeshToTransformMatrix(spanMat);
-		drawcomp->SetMultiMeshResource(L"scrab");
+		drawcomp->SetMultiMeshResource(L"PlayWalk");
 		drawcomp->SetTextureResource(L"KUSA_TX");
-		drawcomp->AddAnimation(L"scrab", 0, 60, true, 30);
-		drawcomp->ChangeCurrentAnimation(L"scrab", 0);
+		drawcomp->AddAnimation(L"PlayWalk", 0, 60, true, 30);
+		drawcomp->ChangeCurrentAnimation(L"PlayWalk", 0);
 		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(OnGetDrawCamera());
 		if (ptrMyCamera) {
 			//MyCameraである
