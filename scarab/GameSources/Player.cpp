@@ -404,7 +404,7 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-		holdon();
+		//holdon();
 	}
 	void UnkoBoll::OnUpdate2() {
 
