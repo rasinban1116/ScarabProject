@@ -54,31 +54,6 @@ namespace basecross {
 		//分離行動をつける
 		auto ptrSep = GetBehavior<SeparationSteering>();
 		ptrSep->SetGameObjectGroup(group);
-		////壁回避行動を付ける
-		//auto ptrWall = GetBehavior<WallAvoidanceSteering>();
-		//vector<PLANE> planeVec = {
-		//	{
-		//		Vec3(20,0,0),
-		//		Vec3(20,1.0,0),
-		//		Vec3(20,0,-1.0),
-		//	},
-		//	{
-		//		Vec3(0,0,-20),
-		//		Vec3(0,1.0,-20),
-		//		Vec3(-1.0,0,-20),
-		//	},
-		//	{
-		//		Vec3(-20,0,0),
-		//		Vec3(-20,1.0,0),
-		//		Vec3(-20,0,1.0),
-		//	},
-		//	{
-		//		Vec3(0,0,20),
-		//		Vec3(0,1.0,20),
-		//		Vec3(1.0,0,20),
-		//	},
-		//};
-		//ptrWall->SetPlaneVec(planeVec);
 		//障害物回避行動を付ける
 		vector<shared_ptr<GameObject>> spObjVec;
 		GetStage()->GetUsedTagObjectVec(L"FixedSphere", spObjVec);
