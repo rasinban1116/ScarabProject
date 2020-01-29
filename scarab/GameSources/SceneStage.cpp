@@ -201,8 +201,6 @@ namespace basecross {
 		auto cursorPos = cursorComp->GetPosition();
 		cursorPos.y = m_strSprite + m_spriteif * m_cursornum;;
 		cursorComp->SetPosition(cursorPos);
-
-
 	}
 
 	void ClearStage::OnPushA() {

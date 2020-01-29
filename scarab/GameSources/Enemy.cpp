@@ -38,6 +38,7 @@ namespace basecross {
 	void Enemy::OnCreate() {
 		//視界の初期化
 		m_lookflg = false;
+		m_atkflg = false;
 
 		AddTag(L"Enemy");
 
@@ -178,11 +179,9 @@ namespace basecross {
 	}
 
 	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& Other) {
-		//if (Other->FindTag(L"Player")) {
-		//	auto ptrScene = App::GetApp()->GetScene<Scene>();
-		//	PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
-
-		//}
+		if (Other->FindTag(L"Player")) {
+			m_atkflg = true;
+		}
 	}
 
 
@@ -202,9 +201,6 @@ namespace basecross {
 		force += ptrFollowPath->Execute(force, Obj->GetVelocity());
 		Obj->SetForce(force);
 		float f = bsm::length(ptrPlayerTrans->GetPosition() - Obj->GetComponent<Transform>()->GetPosition());
-		//if (f < Obj->GetStateChangeSize()) {
-		//	Obj->GetStateMachine()->ChangeState(LookOnState::Instance());
-		//}
 
 		//m_lookflgがtrueになった時ステートマシーンを切り替える
 		if (Obj->GetModelname() == L"Enemy") {
@@ -238,12 +234,47 @@ namespace basecross {
 		if (f >= Obj->GetStateChangeSize()) {
 			Obj->GetStateMachine()->ChangeState(LookOfState::Instance());
 		}
+		if (Obj->GetAtkFkg() == true) {
+			Obj->GetStateMachine()->ChangeState(AtkAfterState::Instance());
+		}
 	}
 	void LookOnState::Exit(const shared_ptr<Enemy>& Obj) {
 		//切り替わるときにm_lookflgをfalseにしておく
 		Obj->SetLook(false);
 	}
 
+	//--------------------------------------------------------------------------------------
+	//	何もしないとき
+	//--------------------------------------------------------------------------------------
+	shared_ptr<AtkAfterState> AtkAfterState::Instance() {
+		static shared_ptr<AtkAfterState> instance(new AtkAfterState);
+		return instance;
+	}
+	void AtkAfterState::Enter(const shared_ptr<Enemy>& Obj) {
+		time = 0;
+		Obj->SetAtkFlg(false);
+	}
+	void AtkAfterState::Execute(const shared_ptr<Enemy>& Obj) {
+		//auto ptrArrive = Obj->GetBehavior<SeekSteering>();
+		//auto ptrSep = Obj->GetBehavior<SeparationSteering>();
+		//auto force = Obj->GetForce();
+		//auto ptrPlayerTrans = Obj->GetTarget()->GetComponent<Transform>();
+		//force += ptrArrive->Execute(force, Obj->GetVelocity(), ptrPlayerTrans->GetPosition());
+		//Obj->SetForce(force);
+
+		auto trans = Obj->GetComponent<Transform>();
+		auto pos = trans->GetPosition();
+		trans->SetPosition(pos);
+
+		auto etime = App::GetApp()->GetElapsedTime();
+		time += etime;
+		if (time > 5.0f) {
+			Obj->GetStateMachine()->ChangeState(LookOfState::Instance());
+		}
+	}
+	void AtkAfterState::Exit(const shared_ptr<Enemy>& Obj) {
+		time = 0;
+	}
 
 	//--------------------------------------------------------------------------------------
 	//	エネミーの視界

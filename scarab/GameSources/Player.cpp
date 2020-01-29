@@ -285,8 +285,8 @@ namespace basecross {
 	//ƒRƒŠƒWƒ‡ƒ“‚ª‰½‚©‚É“–‚½‚Á‚½‚Ìˆ—
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
 		if (Other->FindTag(L"Enemy")) {
-			auto ptrScene = App::GetApp()->GetScene<Scene>();
-			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
+			//auto ptrScene = App::GetApp()->GetScene<Scene>();
+			//PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
 		}
 		isGrand = true;
 	}

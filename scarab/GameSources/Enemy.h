@@ -21,6 +21,7 @@ namespace basecross {
 		wstring tex;
 		wstring model;
 		bool m_lookflg;
+		bool m_atkflg;
 
 
 	public :
@@ -63,6 +64,12 @@ namespace basecross {
 		wstring GetModelname() {
 			return model;
 		}
+		bool GetAtkFkg() {
+			return m_atkflg;
+		}
+		void SetAtkFlg(bool ptrflg) {
+			m_atkflg = ptrflg;
+		}
 
 		shared_ptr<GameObject>  GetTarget()const;
 		virtual void OnCreate() override;
@@ -91,6 +98,19 @@ namespace basecross {
 		LookOnState() {}
 	public:
 		static shared_ptr<LookOnState> Instance();
+		virtual void Enter(const shared_ptr<Enemy>& Obj)override;
+		virtual void Execute(const shared_ptr<Enemy>& Obj)override;
+		virtual void Exit(const shared_ptr<Enemy>& Obj)override;
+	};
+	//--------------------------------------------------------------------------------------
+	//	 ‰½‚à‚µ‚È‚¢‚Æ‚«
+	//--------------------------------------------------------------------------------------
+	class AtkAfterState : public ObjState<Enemy>
+	{
+		AtkAfterState() {}
+		float time;
+	public:
+		static shared_ptr<AtkAfterState> Instance();
 		virtual void Enter(const shared_ptr<Enemy>& Obj)override;
 		virtual void Execute(const shared_ptr<Enemy>& Obj)override;
 		virtual void Exit(const shared_ptr<Enemy>& Obj)override;
