@@ -169,6 +169,9 @@ namespace basecross {
 		if (Other->FindTag(L"Player")) {
 			m_atkflg = true;
 		}
+		if (Other->FindTag(L"UnkoBoll")) {
+			m_atkflg = true;
+		}
 	}
 
 

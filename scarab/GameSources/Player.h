@@ -111,10 +111,9 @@ namespace basecross{
 		//å„çXêV
 		virtual void OnUpdate2() override;
 		void Move();
-		static float  ScaleUp();
+		static float ScaleUp();
 		void holdon();
-		bool active;
-	
+		void SetScale(float ptrsca);
 	};
 	
 };

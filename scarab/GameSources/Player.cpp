@@ -351,8 +351,7 @@ namespace basecross {
 		UnkoPos(Position),
 		UnkoScale(Scale),
 		UnkoRot(Rot),
-		UnkoVelo(Velocity),
-		active(true)
+		UnkoVelo(Velocity)
 	{
 	}
 
@@ -404,7 +403,7 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-		//holdon();
+
 	}
 	void UnkoBoll::OnUpdate2() {
 
@@ -455,12 +454,13 @@ namespace basecross {
 		auto thistrans = GetComponent<Transform>();
 		auto thisScale = thistrans->GetScale();
 		if (Other->FindTag(L"UnCoin")){ 
-			auto ScaleUpScore = ScaleUp();
-			thisScale += ScaleUpScore;
-			thistrans->SetScale(thisScale);
+			SetScale(0.20f);
+		}
+		if (Other->FindTag(L"Enemy")) {
+			SetScale(-0.20f);
+
 		}
 		if (Other->FindTag(L"Player")) {
-			//this->OnDestroy();
 		}
 
 	}
@@ -473,6 +473,12 @@ namespace basecross {
 		//active = true;
 	}
 
+	void UnkoBoll::SetScale(float ptrsca) {
+		auto comp = GetComponent<Transform>();
+		auto sca = comp->GetScale();
+		sca += Vec3(ptrsca);
+		comp->SetScale(sca);
+	}
 
 
 }
