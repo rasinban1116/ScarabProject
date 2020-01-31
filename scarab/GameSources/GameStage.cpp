@@ -96,7 +96,7 @@ namespace basecross {
 	//プレイヤ―の生成
 	void GameStage::CreatePlayer() {
 		//プレーヤーの作成
-		auto ptrPlayer = AddGameObject<Player>(Vec3(-89.0f, 0.5f, -35.0f));
+		auto ptrPlayer = AddGameObject<Player>(Vec3(-89.0f, 0.0f, -35.0f));
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
@@ -156,9 +156,11 @@ namespace basecross {
 	}
 	void  GameStage::CreateWoods() {
 		auto woods = CreateSharedObjectGroup(L"WoodsGrope");
-		
-		AddGameObject<StageObj>(Vec3(1), Vec3(1), 0);
 
+		AddGameObject<StageObj>(Vec3(15, 0, 1), Vec3(1), 0);
+		AddGameObject<StageObj>(Vec3(30, 0, 2), Vec3(1), 0);
+		AddGameObject<StageObj>(Vec3(-120, 0, 10), Vec3(1), 0);
+		AddGameObject<StageObj>(Vec3(-150, 0, -100), Vec3(1), 0);
 	}
 	
 
