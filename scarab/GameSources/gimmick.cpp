@@ -122,16 +122,10 @@ namespace basecross {
 	}
 
 	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
-		//auto play = Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
-		//auto UI = Other->GetStage()->GetSharedGameObject<UIDraw>(L"UI", true);
-
-		//if (play&&UI) {
-
-		//	UI->SetScore(100.0f);
-		//	UnkoBoll::ScaleUp();
-		//	auto gm = GameManager::GetInstance();
-		//	gm->UnkoNumUp();
-		//}
+		if (Other->FindTag(L"UnkoBoll")) {
+			SetDrawActive(false);
+			SetUpdateActive(false);
+		}
 	}
 
 	void GimmickObj::OnCollisionExit(shared_ptr<GameObject>&Other) {

@@ -30,7 +30,7 @@ namespace basecross{
 			
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 			
 			CreateResourses();
 			LoadStaticModelResources();
@@ -89,12 +89,6 @@ namespace basecross{
 			//{L"ファイル名",L"呼び出し時のキー"}
 			{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
 			{L"Lizard_Waik.bmf",L"Lizad"},
-
-			
-
-
-
-
 		};
 		for (auto model : models) {
 			wstring srtmodel = dataDir;
@@ -178,8 +172,6 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"STAGESELECT_TX", strTexture);
 		strTexture = dataDir + L"retry.png";
 		App::GetApp()->RegisterTexture(L"RETRY_TX", strTexture);
-		strTexture = dataDir + L"title.png";
-		App::GetApp()->RegisterTexture(L"TITLEBACK_TX", strTexture);
 		strTexture = dataDir + L"titlelogo.png";
 		App::GetApp()->RegisterTexture(L"TITLELOGO_TX", strTexture);
 		strTexture = dataDir + L"poop_cursor.png";
@@ -196,6 +188,10 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"UNKOIKON_TX", strTexture);
 		strTexture = dataDir + L"Game_Clear_Scarab.png";
 		App::GetApp()->RegisterTexture(L"CLEARBACK_TX", strTexture);
+		strTexture = dataDir + L"Title_01.png";
+		App::GetApp()->RegisterTexture(L"TITLEBACK_TX", strTexture);
+		strTexture = dataDir + L"SeeneTrans.jpg";
+		App::GetApp()->RegisterTexture(L"SEENE_TX", strTexture);
 
 		
 

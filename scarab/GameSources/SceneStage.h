@@ -16,6 +16,8 @@ namespace basecross {
 		void GameSystemObj();
 		void System();
 		int m_cursornum;
+		bool m_CntrolLock;
+		bool m_txflg;
 		InputHandler<TitleStage> m_InputHandler;	//入力ハンドラー
 
 	public:
@@ -26,15 +28,15 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 		void CreateTitleSprite();
+		void ControlStick();
 		void OnPushA();
 		void OnPushB() {}
-		void OnPushUP();
-		void OnPushDOWN();
 	};
 	//--------------------------------------------------------------------------------------
 	///　ステージクリア用ステージ
 	//--------------------------------------------------------------------------------------
 	class ClearStage :public Stage {
+		bool m_CntrolLock;
 		//ビューの作成
 		void CreateViewLight();
 		void GameSystemObj();
@@ -43,6 +45,8 @@ namespace basecross {
 		float m_strSprite;
 		float m_sprite;
 		float m_spriteif;
+		float m_txpos;
+		bool m_txflg;
 		InputHandler<ClearStage> m_InputHandler;	//入力ハンドラー
 
 	public:
@@ -53,16 +57,16 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 		void CreateClearSprite();
+		void ControlStick();
 		void OnPushA();
 		void OnPushB() {}
-		void OnPushUP();
-		void OnPushDOWN();
 	};
 
 	//--------------------------------------------------------------------------------------
 	///　ステージセレクト用ステージ
 	//--------------------------------------------------------------------------------------
 	class SerectStage :public Stage {
+		bool m_CntrolLock;
 		//ビューの作成
 		void CreateViewLight();
 		void CreateStage();
@@ -75,10 +79,9 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 		void CreatePlayer();
+		void ControlStick();
 		void OnPushA();
 		void OnPushB();
-		void OnPushUP() {}
-		void OnPushDOWN() {}
 		void OnCreateSrectObj();
 	};
 
@@ -94,6 +97,7 @@ namespace basecross {
 		float m_strSprite;
 		float m_sprite;
 		float m_spriteif;
+		bool m_CntrolLock;
 	public:
 		//構築と破棄
 		GameOverStage() :Stage() {}
@@ -101,10 +105,9 @@ namespace basecross {
 		//初期化
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		void ControlStick();
 		void OnPushA();
 		void OnPushB();
-		void OnPushUP();
-		void OnPushDOWN();
 	};
 }
 //end basecross

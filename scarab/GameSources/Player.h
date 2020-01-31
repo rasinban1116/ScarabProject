@@ -112,7 +112,6 @@ namespace basecross{
 		virtual void OnUpdate2() override;
 		void Move();
 		static float ScaleUp();
-		void holdon();
 		void SetScale(float ptrsca);
 	};
 	

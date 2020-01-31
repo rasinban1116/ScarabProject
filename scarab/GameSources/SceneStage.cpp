@@ -22,12 +22,14 @@ namespace basecross {
 		//デフォルトのライティングを指定
 		ptrMultiLight->SetDefaultLighting();
 	}
+
 	void TitleStage::CreateTitleSprite() {
+		m_txflg = false;
 		float size = 0.4;
 		auto titlecaharaLogo = AddGameObject<Sprite>(L"TITLELOGO_TX", true,
 			Vec2(795.0f * size, 338.0f * size), Vec3(50.0f, 200.0f, 0.0f));
-		//auto titlebackLogo = AddGameObject<Sprite>(L"TITLEBACK_TX", true,
-		//	Vec2(640.0f, 720.0f), Vec3(0.0f, 0.0f, 0.1f));
+		auto titlebackLogo = AddGameObject<Sprite>(L"TITLEBACK_TX", true,
+			Vec2(680.0f, 400.0f), Vec3(0.0f, 0.0f, 0.1f));
 		auto startLogo = AddGameObject<Sprite>(L"GAMESTART_TX", true,
 			Vec2(150.0f, 30.0f), Vec3(0.0f, -150.0f, 0.1f));
 		SetSharedGameObject(L"StartLogo", startLogo);
@@ -35,10 +37,14 @@ namespace basecross {
 		auto endLogo = AddGameObject<Sprite>(L"GAMEEND_TX", true,
 			Vec2(150.0f, 30.0f), Vec3(0.0f, -280.0f, 0.1f));
 		SetSharedGameObject(L"EndLogo", endLogo);
-
+		//カーソル
 		auto cursor = AddGameObject<Sprite>(L"ICON_TX", true,
 			Vec2(27.0f, 27.0f), Vec3(150.0f, -150.0f, 0.1f));
 		SetSharedGameObject(L"Cousor", cursor);
+		//シーン移動に使う画像
+		auto seeneTX = AddGameObject<Sprite>(L"SEENE_TX", true,
+			Vec2(830.f, 400.0f), Vec3(-1640.0f, 0.f, 0.0f));
+		SetSharedGameObject(L"SeeneTX", seeneTX);
 	}
 	void TitleStage::GameSystemObj() {
 		auto Clear = AddGameObject<StageClearObj>(Vec3(0.0f, 3.0f, 0.0f), Vec3(1.0f));
@@ -49,7 +55,7 @@ namespace basecross {
 
 	}
 	void TitleStage::OnUpdate() {
-		;
+		ControlStick();
 		m_InputHandler.PushHandle(GetThis<TitleStage>());
 		auto cursor = GetSharedGameObject<Sprite>(L"Cousor");
 		auto cursorComp = cursor->GetComponent<Transform>();
@@ -62,6 +68,34 @@ namespace basecross {
 		}
 		cursorComp->SetPosition(cursorPos);
 	}
+
+	//コントローラーのスティック
+	void TitleStage::ControlStick() {
+		auto &app = App::GetApp();
+		auto device = app->GetInputDevice();
+		auto pad = device.GetControlerVec()[0];
+		auto XAPtr = App::GetApp()->GetXAudio2Manager();
+		if (!m_CntrolLock) {
+			if (pad.fThumbLY <= -0.7) {
+				m_cursornum += 1;
+				if (m_cursornum == 2)
+					m_cursornum = 0;
+				m_CntrolLock = true;
+			}
+			if (pad.fThumbLY >= 0.7f) {
+				m_cursornum -= 1;
+				if (m_cursornum == -1)
+					m_cursornum = 1;
+				m_CntrolLock = true;
+			}
+		}
+		else {
+			if (pad.fThumbLX == 0.0f) {
+				m_CntrolLock = false;
+			}
+		}
+	}
+
 	void TitleStage::OnPushA() {
 		if (m_cursornum == 0) {
 			auto ptrScene = App::GetApp()->GetScene<Scene>();
@@ -69,23 +103,6 @@ namespace basecross {
 		}
 		else if (m_cursornum == 1) {
 			DestroyWindow(App::GetApp()->GetHWnd());
-		}
-
-	}
-	void TitleStage::OnPushUP() {
-		if (m_cursornum == 0) {
-			m_cursornum = 1;
-		}
-		else if (m_cursornum == 1) {
-			m_cursornum = 0;
-		}
-	}
-	void TitleStage::OnPushDOWN() {
-		if (m_cursornum == 0) {
-			m_cursornum = 1;
-		}
-		else if (m_cursornum == 1) {
-			m_cursornum = 0;
 		}
 	}
 
@@ -129,13 +146,6 @@ namespace basecross {
 			Vec2(250.0f, 70.0f), Vec3(0.0f, 300.0f, 0.0f));
 
 		auto gm = GameManager::GetInstance();
-
-		//ここ後で消す
-		//gm->UnkoNumReSet();
-		//for (int y = 0; y < 5; y++) {
-		//	gm->UnkoNumUp();
-		//}
-		//ここまで消す
 
 		//ゲームマネージャーから取得したうんこの数をとってくる
 		int unkonum = gm->GetUnkoNum();
@@ -189,18 +199,45 @@ namespace basecross {
 
 	void ClearStage::System() {
 		auto Mauce = App::GetApp()->GetInputDevice().GetControlerVec();
-
 	}
 
 	void ClearStage::OnUpdate() {
 		//コントロ―ラーの取得
 		m_InputHandler.PushHandle(GetThis<ClearStage>());
+		ControlStick();
 		//アイコンの移動
 		auto cursor = GetSharedGameObject<Sprite>(L"Cousor");
 		auto cursorComp = cursor->GetComponent<Transform>();
 		auto cursorPos = cursorComp->GetPosition();
 		cursorPos.y = m_strSprite + m_spriteif * m_cursornum;;
 		cursorComp->SetPosition(cursorPos);
+	}
+
+	//コントローラーのスティック
+	void ClearStage::ControlStick() {
+		auto &app = App::GetApp();
+		auto device = app->GetInputDevice();
+		auto pad = device.GetControlerVec()[0];
+		auto XAPtr = App::GetApp()->GetXAudio2Manager();
+		if (!m_CntrolLock) {
+			if (pad.fThumbLY <= -0.7) {
+				m_cursornum += 1;
+				if (m_cursornum == 4)
+					m_cursornum = 0;
+				m_CntrolLock = true;
+			}
+			if (pad.fThumbLY >= 0.7f) {
+				m_cursornum -= 1;
+				if (m_cursornum == -1)
+					m_cursornum = 3;
+				m_CntrolLock = true;
+			}
+		}
+		else {
+			if (pad.fThumbLX == 0.0f) {
+				m_CntrolLock = false;
+			}
+		}
 	}
 
 	void ClearStage::OnPushA() {
@@ -219,20 +256,6 @@ namespace basecross {
 		else if (m_cursornum == 3) {
 			auto ptrScene = App::GetApp()->GetScene<Scene>();
 			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToTitleStage");
-		}
-	}
-
-	void ClearStage::OnPushUP() {
-		m_cursornum -= 1;
-		if (m_cursornum == -1) {
-			m_cursornum = 3;
-		}
-	}
-
-	void ClearStage::OnPushDOWN() {
-		m_cursornum += 1;
-		if (m_cursornum == 4) {
-			m_cursornum = 0;
 		}
 	}
 
@@ -297,7 +320,6 @@ namespace basecross {
 		AddGameObject<StageSrectObj>(Vec3(-9.0f, 3.0f, -9.0f), Vec3(1.5f, 1.5f, 1.5f));
 		AddGameObject<StageSrectObj>(Vec3(-1.0f, 3.0f, -1.0f), Vec3(1.5f, 1.5f, 1.5f));
 		AddGameObject<StageSrectObj>(Vec3(6.5f, 3.0f, 9.0f), Vec3(1.5f, 1.5f, 1.5f));
-
 	}
 
 
@@ -369,6 +391,7 @@ namespace basecross {
 	}
 	void GameOverStage::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<GameOverStage>());
+		ControlStick();
 		//アイコンの移動
 		auto cursor = GetSharedGameObject<Sprite>(L"Cousor");
 		auto cursorComp = cursor->GetComponent<Transform>();
@@ -376,7 +399,32 @@ namespace basecross {
 		cursorPos.y = m_strSprite + m_spriteif * m_cursornum;;
 		cursorComp->SetPosition(cursorPos);
 	}
-
+	//コントローラーのスティック
+	void GameOverStage::ControlStick() {
+		auto &app = App::GetApp();
+		auto device = app->GetInputDevice();
+		auto pad = device.GetControlerVec()[0];
+		auto XAPtr = App::GetApp()->GetXAudio2Manager();
+		if (!m_CntrolLock) {
+			if (pad.fThumbLY <= -0.7) {
+				m_cursornum += 1;
+				if (m_cursornum == 4)
+					m_cursornum = 0;
+				m_CntrolLock = true;
+			}
+			if (pad.fThumbLY >= 0.7f) {
+				m_cursornum -= 1;
+				if (m_cursornum == -1)
+					m_cursornum = 3;
+				m_CntrolLock = true;
+			}
+		}
+		else {
+			if (pad.fThumbLX == 0.0f) {
+				m_CntrolLock = false;
+			}
+		}
+	}
 	void GameOverStage::OnPushA() {
 		//auto ptrScene = App::GetApp()->GetScene<Scene>();
 		//PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToOverStage");
@@ -399,19 +447,6 @@ namespace basecross {
 	}
 	void GameOverStage::OnPushB() {
 
-	}
-	void GameOverStage::OnPushUP() {
-		m_cursornum -= 1;
-		if (m_cursornum == -1) {
-			m_cursornum = 3;
-		}
-	}
-
-	void GameOverStage::OnPushDOWN() {
-		m_cursornum += 1;
-		if (m_cursornum == 4) {
-			m_cursornum = 0;
-		}
 	}
 
 	void GameOverStage::OnCreate() {

@@ -174,8 +174,8 @@ namespace basecross {
 		//ÉtÉìÉRÉçÉKÉVÇÃê∂ê¨
 		auto group = CreateSharedObjectGroup(L"EnemyGroup");
 		vector< vector<Vec3> > vecSca = {
-			{ Vec3(-15.0f, 3.0f, -5.0f), Vec3(-23.0f,3.0f,-4.0f) },
-			{ Vec3(5.0f, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) },
+			{ Vec3(-89.0f, 2.0f, -32.0f), Vec3(-23.0f,3.0f,-4.0f) },
+			{ Vec3(-80.0f, 2.0f, -35.0f), Vec3(-1.0f,5.0f, 7.0f) },
 			{ Vec3(-73.0f, 0.5f, -40.0f), Vec3(-70.0f,0.5f, -35.0f) },
 			{ Vec3(-75.0f, 0.5f,-2.0f), Vec3(-70.0f,2.0f, 1.0f) },
 			{ Vec3(-30.0f, 0.5f,-34.0f), Vec3(30.0f,2.0f, -34.0f) },

@@ -285,20 +285,21 @@ namespace basecross {
 			unkoboll->SetUpdateActive(true);
 			unkotrans->SetScale(Vec3(1.0f));
 			unkoboll->SetDrawActive(true);
-			unkotrans->SetPosition(ptrpos);
+			unkotrans->SetPosition(ptrpos.x, ptrpos.y + 0.5f, ptrpos.z);
 		}
 	}
 
 	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
-
-		if (Other->FindTag(L"Enemy")) {
-			//auto ptrScene = App::GetApp()->GetScene<Scene>();
-			//PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
-		}
-
+		//ゲームマネージャーの取得
 		auto gm = GameManager::GetInstance();
+
+
 		if (gm->GetUnkoFlg() == false) {
+			if (Other->FindTag(L"Enemy")) {
+				auto ptrScene = App::GetApp()->GetScene<Scene>();
+				PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
+			}
 			if (Other->FindTag(L"UnCoin")) {
 				UnkoBollCreate(Other->GetComponent<Transform>()->GetPosition());
 				//GetStage()->AddGameObject<UnkoBoll>(Other->GetComponent<Transform>()->GetPosition(),
@@ -445,35 +446,6 @@ namespace basecross {
 	}
 
 	void UnkoBoll::OnUpdate2() {
-
-	}
-	
-	void UnkoBoll::holdon() {
-		auto Time = App::GetApp()->GetElapsedTime();
-		auto thistrans = GetComponent<Transform>();
-		auto drawcomp = GetComponent<BcPNTStaticDraw>();
-		auto colcomp = AddComponent<CollisionSphere>();
-		
-		auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
-		auto ptrTrans = Plyaer->GetComponent<Transform>();
-		auto PsUnko = this->GetComponent<RigidbodySphere>();
-		//player
-		auto ptrfor = ptrTrans->GetForword();
-		auto ptrPos = ptrTrans->GetPosition();
-		auto ptrScale = ptrTrans->GetScale();
-		auto ptrrot = ptrTrans->GetRotation();
-		//糞玉
-		auto thispos = thistrans->GetPosition();
-		auto thisScale = thistrans->GetScale();
-		auto thisrot = thistrans->GetRotation();
-		
-		Vec3 Pos;
-		Pos = Vec3(ptrPos.x + thispos.x, ptrPos.y + thispos.y, ptrPos.z + thispos.z);
-		thistrans->SetPosition(Pos);
-		if (GetUpdateActive() == false) {
-			SetDrawActive(true);
-			SetUpdateActive(true);
-		}
 
 	}
 
