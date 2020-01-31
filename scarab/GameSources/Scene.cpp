@@ -62,6 +62,7 @@ namespace basecross{
 			{L"lizard.bmf",L"liz"},
 			{L"Goal_point.bmf",L"Goal"},
 			{L"Stage_Tree.bmf",L"tree"},
+			{L"StsgeRock.bmf",L"Rock"},
 
 		
 
@@ -157,6 +158,9 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"SERECT_TX", strTexture);
 		strTexture = dataDir + L"Tx_Stage_tree.png";
 		App::GetApp()->RegisterTexture(L"Tree_TX", strTexture);
+		strTexture = dataDir + L"Tx_Stage_Rock.png";
+		App::GetApp()->RegisterTexture(L"Rock_TX", strTexture);
+
 		strTexture = dataDir + L"Tx_Lizard.png";
 		App::GetApp()->RegisterTexture(L"Lizad_TX", strTexture);
 		//UIやスコア表示用のテクスチャ

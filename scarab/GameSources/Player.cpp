@@ -370,7 +370,6 @@ namespace basecross {
 	
 		//OBB衝突j判定を付ける
 		auto ptrColl = AddComponent<CollisionSphere>();
-		ptrColl->SetDrawActive(true);
 
 		//ptrColl->SetFixed(true);
 		//各パフォーマンスを得る
@@ -416,7 +415,8 @@ namespace basecross {
 	void UnkoBoll::holdon() {
 		auto Time = App::GetApp()->GetElapsedTime();
 		auto thistrans = GetComponent<Transform>();
-		auto thiscol = GetComponent<CollisionSphere>();
+		auto drawcomp = GetComponent<BcPNTStaticDraw>();
+		auto colcomp = AddComponent<CollisionSphere>();
 		
 		auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
 		auto ptrTrans = Plyaer->GetComponent<Transform>();
@@ -427,11 +427,15 @@ namespace basecross {
 		auto ptrScale = ptrTrans->GetScale();
 		auto ptrrot = ptrTrans->GetRotation();
 
-		auto thispos = thistrans->GetPosition().y;
+		auto thispos = thistrans->GetPosition();
 		auto thisScale = thistrans->GetScale();
 		auto thisrot = thistrans->GetRotation();
 		
-
+		Vec3 Pos;
+		Pos = Vec3(ptrPos.x + thispos.x, ptrPos.y + thispos.y, ptrPos.z + thispos.z);
+		thistrans->SetPosition(Pos);
+		drawcomp->SetDrawActive(true);
+		
 		
 	}
 
@@ -462,6 +466,7 @@ namespace basecross {
 		}
 		if (Other->FindTag(L"Enemy")) {
 			SetScale(-0.20f);
+			holdon();
 
 		}
 		if (Other->FindTag(L"Player")) {

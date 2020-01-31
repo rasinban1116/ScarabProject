@@ -312,9 +312,22 @@ namespace basecross {
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
 
-		ptrDraw->SetMeshResource(L"tree");
-		ptrDraw->SetOwnShadowActive(true);
-		ptrDraw->SetTextureResource(L"Tree_TX");
+		switch (size)
+		{
+		case 0:
+			ptrDraw->SetMeshResource(L"tree");
+			ptrDraw->SetOwnShadowActive(true);
+			ptrDraw->SetTextureResource(L"Tree_TX");
+			break;
+		case 1:
+			ptrDraw->SetMeshResource(L"Rock");
+			ptrDraw->SetOwnShadowActive(true);
+			ptrDraw->SetTextureResource(L"Rock_TX");
+
+		default:
+			break;
+		}
+
 	}
 	
 	
