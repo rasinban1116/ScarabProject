@@ -143,6 +143,48 @@ namespace basecross {
 			);
 			AddGameObject<GimmickObj>(Scale,Quat(),Pos);
 		}
+
+		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
+		m_GameStageCsvB.GetSelect(LineVec, 0, L"ScrabBox");
+		for (auto& v : LineVec) {
+			//トークン（カラム）の配列
+			vector<wstring> Tokens;
+			//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+			Util::WStrToTokenVector(Tokens, v, L',');
+			//各トークン（カラム）をスケール、回転、位置に読み込む
+			Vec3 Scale(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+			//回転は「XM_PIDIV2」の文字列になっている場合がある
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+			Quat rot;
+			float x, y, z;
+			x = (float)_wtof(Tokens[4].c_str());
+			y = (float)_wtof(Tokens[5].c_str());
+			z = (float)_wtof(Tokens[6].c_str());
+			rot.setX(x);
+			rot.setY(y);
+			rot.setZ(z);
+			//Rot = rot;
+			Vec3 Pos(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+			if (Tokens[10] == L"Lizad_TX") {
+				AddGameObject<Enemy>(Pos, Vec3(Pos.x + 5, Pos.y, Pos.z + 5), 1, L"Lizad_TX", L"Lizad");
+			}
+			else
+			{
+				AddGameObject<Enemy>(Pos, Vec3(Pos.x + 5, Pos.y, Pos.z + 5), 1, L"SCARAB_TX", L"Enemy");
+
+			}
+		}
 	}
 	//
 

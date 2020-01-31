@@ -207,6 +207,7 @@ namespace basecross {
 		//CollisionSphere衝突判定を付ける
 		auto ptrColl = AddComponent<CollisionObb>();
 		ptrColl->SetDrawActive(true);
+		
 		//各パフォーマンスを得る
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
