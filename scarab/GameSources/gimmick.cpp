@@ -7,18 +7,18 @@
 #include "Project.h"
 
 namespace basecross {
-//--------------------------------------------------------------------------------------
-///	UI	
-//--------------------------------------------------------------------------------------
-	
+	//--------------------------------------------------------------------------------------
+	///	UI	
+	//--------------------------------------------------------------------------------------
+
 	float UIDraw::Score;
 	UIDraw::UIDraw(const shared_ptr<Stage>&Stageptr) :
-		GameObject(Stageptr)	
+		GameObject(Stageptr)
 	{
 	}
 
-	UIDraw::~UIDraw(){}
-	void UIDraw::OnCreate(){
+	UIDraw::~UIDraw() {}
+	void UIDraw::OnCreate() {
 		Score = 0;
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
@@ -29,7 +29,7 @@ namespace basecross {
 	void UIDraw::OnUpdate() {
 		//ScoreDraw();
 	}
-	
+
 	void UIDraw::OnUpdate2() {
 
 	}
@@ -57,10 +57,10 @@ namespace basecross {
 
 
 
-//--------------------------------------------------------------------------------------
-///	うんコイン	
-//--------------------------------------------------------------------------------------
-	//構築と破棄
+	//--------------------------------------------------------------------------------------
+	///	うんコイン	
+	//--------------------------------------------------------------------------------------
+		//構築と破棄
 	GimmickObj::GimmickObj(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Scale,
 		const Quat& Qt,
@@ -103,7 +103,7 @@ namespace basecross {
 
 		//アクションの登録
 		auto PtrAction = AddComponent<Action>();
-		PtrAction->AddRotateBy(1.0f, Vec3(0,5,0));
+		PtrAction->AddRotateBy(1.0f, Vec3(0, 5, 0));
 		//ループする
 		PtrAction->SetLooped(true);
 		//アクション開始
@@ -113,8 +113,8 @@ namespace basecross {
 	void GimmickObj::OnUpdate() {
 	}
 
-	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {	
-		auto play =Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
+	void GimmickObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
+		auto play = Other->GetStage()->GetSharedGameObject<Player>(L"Player", true);
 		auto UI = Other->GetStage()->GetSharedGameObject<UIDraw>(L"UI", true);
 
 		if (play&&UI) {
@@ -124,16 +124,16 @@ namespace basecross {
 			UnkoBoll::ScaleUp();
 			auto gm = GameManager::GetInstance();
 			gm->UnkoNumUp();
-		}	
+		}
 	}
 
 	void GimmickObj::OnCollisionExit(shared_ptr<GameObject>&Other) {
 	}
 
-//--------------------------------------------------------------------------------------
-///	ゲームをクリア地点を設定するオブジェクト（判定はあるが透明にする予定）
-///※確認のためオブジェクトを可視化している
-//--------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------
+	///	ゲームをクリア地点を設定するオブジェクト（判定はあるが透明にする予定）
+	///※確認のためオブジェクトを可視化している
+	//--------------------------------------------------------------------------------------
 
 	StageClearObj::StageClearObj(const shared_ptr<Stage>&StagePtr,
 		const Vec3 &Position,
@@ -180,14 +180,14 @@ namespace basecross {
 	void StageClearObj::OnCollisionEnter(shared_ptr<GameObject>&Other) {
 		auto play = Other->GetStage()->GetSharedObject(L"Player", true);
 		auto ptrScene = App::GetApp()->GetScene<Scene>();
-		if (Other->FindTag(L"Player")||Other->FindTag(L"UnkoBoll")) {
+		if (Other->FindTag(L"Player") || Other->FindTag(L"UnkoBoll")) {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToClearStage");
 		}
 	}
 
-//--------------------------------------------------------------------------------------
-///	ステージセレクト用オブジェクト
-//--------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------
+	///	ステージセレクト用オブジェクト
+	//--------------------------------------------------------------------------------------
 
 	StageSrectObj::StageSrectObj(const shared_ptr<Stage>&StagePtr,
 		const Vec3 &Position,
@@ -223,7 +223,7 @@ namespace basecross {
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"Cl_TX");
 		SetAlphaActive(true);
-	
+
 
 	}
 	void StageSrectObj::OnUpdate() {
@@ -237,10 +237,15 @@ namespace basecross {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameStage");
 		}
 		else {
-			
+
 		}
 
 	}
+
+//--------------------------------------------------------------------------------------
+///	ステージオブジェクト
+//--------------------------------------------------------------------------------------
+
 
 	SkyObj::SkyObj(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Scale,
@@ -269,12 +274,15 @@ namespace basecross {
 		GetStage()->SetDrawPerformanceActive(true);
 
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
-		//ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetFogEnabled(true);
 
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"SKY_TX");
 	}
+
+
+
 }
 //end basecross
 

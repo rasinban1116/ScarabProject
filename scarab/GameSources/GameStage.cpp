@@ -15,28 +15,16 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
-		//OpeningCameraView用のビュー
-		m_OpeningCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
-		auto ptrOpeningCamera = ObjectFactory::Create<OpeningCamera>();
-		m_OpeningCameraView->SetCamera(ptrOpeningCamera);
-		//ObjCamera用のビュー
-		m_ObjCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
-		auto ptrObjCamera = ObjectFactory::Create<ObjCamera>();
-		m_ObjCameraView->SetCamera(ptrObjCamera);
-		//MyCamera用のビュー
-		m_MyCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
+		auto ptrView = CreateView<SingleView>();
+		//ビューのカメラの設定
 		auto ptrMyCamera = ObjectFactory::Create<MyCamera>();
-		ptrMyCamera->SetEye(Vec3(0.0f, 10.0f, -5.0f));
+		ptrView->SetCamera(ptrMyCamera);
+		ptrMyCamera->SetEye(Vec3(0.0f, 5.0f, -5.0f));
 		ptrMyCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
-		m_MyCameraView->SetCamera(ptrMyCamera);
-		//初期状態ではm_OpeningCameraViewを使う
-		SetView(m_OpeningCameraView);
-		m_CameraSelect = CameraSelect::openingCamera;
 		//マルチライトの作成
-		auto PtrMultiLight = CreateLight<MultiLight>();
+		auto ptrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
-		PtrMultiLight->SetDefaultLighting();
-
+		ptrMultiLight->SetDefaultLighting();
 	}
 
 	void GameStage::CreateBox(){
@@ -163,7 +151,6 @@ namespace basecross {
 		//フンコロガシの生成
 		auto group = CreateSharedObjectGroup(L"EnemyGroup");
 		vector< vector<Vec3> > vecSca = {
-			{ Vec3(5.0f, 0.5f, 0.0f), Vec3(0.0f, 0.5f, 5.0f) },
 			{ Vec3(-15.0f, 3.0f, -5.0f), Vec3(-23.0f,3.0f,-4.0f) },
 			{ Vec3(5.0f, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) },
 			{ Vec3(-73.0f, 0.5f, -40.0f), Vec3(-70.0f,0.5f, -35.0f) },
@@ -207,6 +194,8 @@ namespace basecross {
 	}
 	void  GameStage::CreateWoods() {
 		auto woods = CreateSharedObjectGroup(L"WoodsGrope");
+		
+		AddGameObject<StageObj>(Vec3(1), Vec3(1), 0);
 
 	}
 	
@@ -225,24 +214,6 @@ namespace basecross {
 
 	}
 
-	//カメラマンの作成
-	void GameStage::CreateCameraman() {
-		//auto ptrCameraman = AddGameObject<Cameraman>(2.0f);
-		////シェア配列にCameramanを追加
-		//SetSharedGameObject(L"Cameraman", ptrCameraman);
-		
-		auto ptrOpeningCameraman = AddGameObject<OpeningCameraman>();
-		//シェア配列にOpeningCameramanを追加
-		SetSharedGameObject(L"OpeningCameraman", ptrOpeningCameraman);
-
-		auto ptrOpeningCamera = dynamic_pointer_cast<OpeningCamera>(m_OpeningCameraView->GetCamera());
-		if (ptrOpeningCamera) {
-			ptrOpeningCamera->SetCameraObject(ptrOpeningCameraman);
-			SetView(m_OpeningCameraView);
-			m_CameraSelect = CameraSelect::openingCamera;
-		}
-
-	}
 
 
 
@@ -274,37 +245,13 @@ namespace basecross {
 			CreateClearObj();
 			//UIの表示
 			CreateUI();
-			//カメラマンの作成
-			CreateCameraman();
 			//壁の生成
 			CreateBox();
+			//木々の生成
+			CreateWoods();
 		}
 		catch (...) {
 			throw;
-		}
-	}
-	void GameStage::ToMyCamera() {
-		auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
-		//MyCameraに変更
-		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(m_MyCameraView->GetCamera());
-		if (ptrMyCamera) {
-			ptrMyCamera->SetTargetObject(ptrPlayer);
-			//m_MyCameraViewを使う
-			SetView(m_MyCameraView);
-			m_CameraSelect = CameraSelect::myCamera;
-		}
-	}
-	void GameStage::ToObjCamera() {
-		auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
-		//ObjCameraに変更
-		auto ptrCameraman = GetSharedGameObject<Cameraman>(L"Cameraman");
-		auto ptrObjCamera = dynamic_pointer_cast<ObjCamera>(m_ObjCameraView->GetCamera());
-		if (ptrObjCamera) {
-			ptrObjCamera->SetCameraObject(ptrCameraman);
-			ptrObjCamera->SetTargetObject(ptrPlayer);
-			//m_ObjCameraViewを使う
-			SetView(m_ObjCameraView);
-			m_CameraSelect = CameraSelect::objCamera;
 		}
 	}
 

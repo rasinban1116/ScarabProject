@@ -258,12 +258,7 @@ namespace basecross {
 	//更新
 	void Player::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<Player>());
-		auto ptrGameStage = dynamic_pointer_cast<GameStage>(GetStage());
-		if (this->GetStage() == ptrGameStage) {
-			if (ptrGameStage->GetCameraSelect() == CameraSelect::openingCamera) {
-				return;
-			}
-		}
+
 			Move();
 	}
 
@@ -271,7 +266,7 @@ namespace basecross {
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//文字列の表示
-		DrawStrings();
+		//DrawStrings();
 	}
 
 	void Player::OnPushA()
@@ -288,17 +283,26 @@ namespace basecross {
 			//auto ptrScene = App::GetApp()->GetScene<Scene>();
 			//PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
 		}
-		isGrand = true;
 	}
 
 	//コリジョンが何かから離れた時の処理
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
-		isGrand = false;
 	}
 
 	//コリジョンが何かに当たっている時の処理
 	void Player::OnCollisionExcute(shared_ptr<GameObject>&Other) {
-		isGrand = true;
+		auto drawcomp = AddComponent<PNTBoneModelDraw>();
+		Mat4x4 spanMat;
+		if (Other->FindTag(L"UnkoBoll")) {
+		spanMat.affineTransformation(
+			Vec3(0.4f),
+			Vec3(0,0,0),
+			Vec3(0,3.0f,0),
+			Vec3(0,-0.5f,0)
+		);
+		drawcomp->AddAnimation(L"scarab", 0, 60, true, 30);
+		drawcomp->ChangeCurrentAnimation(L"scarab", 0);
+	}
 	}
 	
 
