@@ -32,6 +32,7 @@ namespace basecross {
 	//ボックスの作成
 	void GameStage::CreateFixedBox() {
 		CreateSharedObjectGroup(L"TilingBox");
+		CreateSharedObjectGroup(L"EnemyGroup");
 		Vec3 Rot;
 		//CSVの行単位の配列
 		vector<wstring> LineVec;
@@ -70,6 +71,7 @@ namespace basecross {
 
 			//各値がそろったのでオブジェクト作成
 			auto Tiling = AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
+			
 
 		}
 		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
@@ -104,8 +106,10 @@ namespace basecross {
 				(float)_wtof(Tokens[8].c_str()),
 				(float)_wtof(Tokens[9].c_str())
 			);
-			auto Tiling = AddGameObject<StageObj>(Pos, Scale, 0);
+			AddGameObject<StageObj>(Pos, Scale,0);
 		}
+
+
 		m_GameStageCsvB.GetSelect(LineVec, 0, L"UnkoBox");
 		for (auto& v : LineVec) {
 			//トークン（カラム）の配列
@@ -138,7 +142,6 @@ namespace basecross {
 				(float)_wtof(Tokens[9].c_str())
 			);
 			AddGameObject<GimmickObj>(Scale,Quat(),Pos);
-			//AddGameObject<UnkoBoll>(Pos, Scale, Vec3(0.0f), Rot);
 		}
 	}
 	//
@@ -201,27 +204,8 @@ namespace basecross {
 		}
 	}
 
-	void GameStage::CreateGimmickObj() {
-		auto group = CreateSharedObjectGroup(L"CoinGrope");
-		
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(0.0f, 0.f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(3.0f, 0.f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-78.0f, 0.f, -35.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-71.0f, 0.f, -30.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-35.0f, 0.f, -4.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-27.0f, 0.f, 1.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-29.0f, 0.f, -32.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-32.0f, 0.f, -38.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-77.0f, 0.f, -4.2f));
-	
-	}
-	void  GameStage::CreateWoods() {
-		auto woods = CreateSharedObjectGroup(L"WoodsGrope");
-		Vec3 Rot;
-		//CSVの行単位の配列
-		vector<wstring> LineVec;
 		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
-		m_GameStageCsvB.GetSelect(LineVec, 0, L"TreeBox");
+		m_GameStageCsvB.GetSelect(LineVec, 0, L"ScrabBox");
 		for (auto& v : LineVec) {
 			//トークン（カラム）の配列
 			vector<wstring> Tokens;
@@ -252,15 +236,49 @@ namespace basecross {
 				(float)_wtof(Tokens[8].c_str()),
 				(float)_wtof(Tokens[9].c_str())
 			);
+			if (Tokens[10] == L"Lizad_TX") {
+				AddGameObject<Enemy>(Pos, Vec3(Pos.x + 5, Pos.y, Pos.z + 5), 1, L"Lizad_TX", L"Lizad");
+			}
+			else
+			{
+				AddGameObject<Enemy>(Pos, Vec3(Pos.x + 5, Pos.y, Pos.z + 5), 1, L"SCARAB_TX", L"Enemy");
 
-			//各値がそろったのでオブジェクト作成
-			auto Tiling = AddGameObject<StageObj>(Pos,Scale, 0);
+			}
 		}
-		}
+	}
+	//
+
 	
 
+	void GameStage::CreateUI() {
+		auto UI = AddGameObject<UIDraw>();
+		SetSharedGameObject(L"UI", UI);
+	}
+	void GameStage::GameSystemObj() {
+		auto Clear = AddGameObject<StageClearObj>(Vec3(0.0f,3.0f,0.0f),Vec3(0.5f));
+	}
+
+
+	//プレイヤ―の生成
+	void GameStage::CreatePlayer() {
+		//プレーヤーの作成
+		auto ptrPlayer = AddGameObject<Player>(Vec3(-89.0f, 0.5f, -35.0f));
+		//シェア配列にプレイヤーを追加
+		SetSharedGameObject(L"Player", ptrPlayer);
+		ptrPlayer->AddTag(L"Player");
+	}
+
+	//プレイヤーを継承した子オブジェクト（ふんころがしになる予定）を生成
+	void GameStage::CreatePlayerChild() {
+		auto Unko = AddGameObject<UnkoBoll>(Vec3(-85.0f, 0.5f, -33.0f),Vec3(1.0f),Vec3(0.0f), Vec3(0.0f, 6.0f, 5.0f));
+		SetSharedGameObject(L"UnkoBoll", Unko);
+		Unko->AddTag(L"UnkoBoll");
+	}
+
+
+
 	void GameStage::CreateClearObj() {
-		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0,0.f,0), Vec3(0.5f));
+		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0,2.f,0), Vec3(0.5f));
 		SetSharedGameObject(L"Clear",ClearObj);
 	}
 
@@ -295,19 +313,14 @@ namespace basecross {
 			CreatePlayer();
 			//プレイヤーを継承した子オブジェクトの作成
 			CreatePlayerChild();
-			//敵の追加
-			CreateLowEnemy();
 			//空の追加
 			CreateSky();
 			//ギミックの生成
-			CreateGimmickObj();
+			//CreateGimmickObj();
 			CreateClearObj();
 			//UIの表示
 			CreateUI();
-			//壁の生成
-			CreateBox();
-			//木々の生成
-			//CreateWoods();
+
 		}
 		catch (...) {
 			throw;

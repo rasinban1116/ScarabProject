@@ -88,7 +88,7 @@ namespace basecross{
 		InitializedParam models[] = {
 			//{L"ファイル名",L"呼び出し時のキー"}
 			{L"Scarab_Enemy_Walking.bmf",L"Enemy"},
-			{L"Lizard_Waik.bmf",L"Lizad"},
+			{L"Lizard_Waik.bmf",L"Lizad"}
 		};
 		for (auto model : models) {
 			wstring srtmodel = dataDir;
