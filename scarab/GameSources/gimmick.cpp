@@ -246,7 +246,7 @@ namespace basecross {
 ///	ステージオブジェクト
 //--------------------------------------------------------------------------------------
 
-
+	
 	SkyObj::SkyObj(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Scale,
 		const Quat& Qt,
@@ -281,7 +281,43 @@ namespace basecross {
 		ptrDraw->SetTextureResource(L"SKY_TX");
 	}
 
+//--------------------------------------------------------------------------------------
+///	ステージオブジェクト
+//--------------------------------------------------------------------------------------
 
+
+
+	StageObj::StageObj(const shared_ptr<Stage>& StagePtr,
+		const Vec3 & Posion,
+		const Vec3 & Scale,
+		const int & size):
+		GameObject(StagePtr),
+		m_Position(Posion),
+		m_Scele(Scale),
+		size(size)
+	{}
+	StageObj::~StageObj(){}
+
+	void StageObj::OnCreate() {
+		auto ptrTrans = GetComponent<Transform>();
+		//AddTag(L"Slope");
+
+		ptrTrans->SetScale(m_Scele);
+		ptrTrans->SetPosition(m_Position);
+
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetFogEnabled(true);
+
+		ptrDraw->SetMeshResource(L"tree");
+		ptrDraw->SetOwnShadowActive(true);
+		ptrDraw->SetTextureResource(L"Tree_TX");
+	}
+	
+	
 
 }
 //end basecross
