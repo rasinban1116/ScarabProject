@@ -310,6 +310,7 @@ namespace basecross {
 		//AddTag(L"Slope");
 
 		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(true);
 		ptrTrans->SetScale(m_Scele);
 		ptrTrans->SetPosition(m_Position);
 

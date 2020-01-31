@@ -32,6 +32,7 @@ namespace basecross {
 	//ボックスの作成
 	void GameStage::CreateFixedBox() {
 		CreateSharedObjectGroup(L"TilingBox");
+		CreateSharedObjectGroup(L"EnemyGroup");
 		Vec3 Rot;
 		//CSVの行単位の配列
 		vector<wstring> LineVec;
@@ -70,6 +71,7 @@ namespace basecross {
 
 			//各値がそろったのでオブジェクト作成
 			auto Tiling = AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
+			
 
 		}
 		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
@@ -104,8 +106,10 @@ namespace basecross {
 				(float)_wtof(Tokens[8].c_str()),
 				(float)_wtof(Tokens[9].c_str())
 			);
-			auto Tiling = AddGameObject<StageObj>(Pos, Scale, 0);
+			AddGameObject<StageObj>(Pos, Scale,0);
 		}
+
+
 		m_GameStageCsvB.GetSelect(LineVec, 0, L"UnkoBox");
 		for (auto& v : LineVec) {
 			//トークン（カラム）の配列
@@ -138,7 +142,48 @@ namespace basecross {
 				(float)_wtof(Tokens[9].c_str())
 			);
 			AddGameObject<GimmickObj>(Scale,Quat(),Pos);
-			//AddGameObject<UnkoBoll>(Pos, Scale, Vec3(0.0f), Rot);
+		}
+
+		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
+		m_GameStageCsvB.GetSelect(LineVec, 0, L"ScrabBox");
+		for (auto& v : LineVec) {
+			//トークン（カラム）の配列
+			vector<wstring> Tokens;
+			//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+			Util::WStrToTokenVector(Tokens, v, L',');
+			//各トークン（カラム）をスケール、回転、位置に読み込む
+			Vec3 Scale(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+			//回転は「XM_PIDIV2」の文字列になっている場合がある
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+			Quat rot;
+			float x, y, z;
+			x = (float)_wtof(Tokens[4].c_str());
+			y = (float)_wtof(Tokens[5].c_str());
+			z = (float)_wtof(Tokens[6].c_str());
+			rot.setX(x);
+			rot.setY(y);
+			rot.setZ(z);
+			//Rot = rot;
+			Vec3 Pos(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+			if (Tokens[10] == L"Lizad_TX") {
+				AddGameObject<Enemy>(Pos, Vec3(Pos.x + 5, Pos.y, Pos.z + 5), 1, L"Lizad_TX", L"Lizad");
+			}
+			else
+			{
+				AddGameObject<Enemy>(Pos, Vec3(Pos.x + 5, Pos.y, Pos.z + 5), 1, L"SCARAB_TX", L"Enemy");
+
+			}
 		}
 	}
 	//
@@ -170,97 +215,10 @@ namespace basecross {
 		Unko->AddTag(L"UnkoBoll");
 	}
 
-	void GameStage::CreateLowEnemy() {
-		//フンコロガシの生成
-		auto group = CreateSharedObjectGroup(L"EnemyGroup");
-		vector< vector<Vec3> > vecSca = {
-			{ Vec3(-15.0f, 3.0f, -5.0f), Vec3(-23.0f,3.0f,-4.0f) },
-			{ Vec3(5.0f, 0.5f, 1.0f), Vec3(-1.0f,5.0f, 7.0f) },
-			{ Vec3(-73.0f, 0.5f, -40.0f), Vec3(-70.0f,0.5f, -35.0f) },
-			{ Vec3(-75.0f, 0.5f,-2.0f), Vec3(-70.0f,2.0f, 1.0f) },
-			{ Vec3(-30.0f, 0.5f,-34.0f), Vec3(30.0f,2.0f, -34.0f) },
 
-
-
-		};
-		for (auto v : vecSca) {
-			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1], 1, L"SCARAB_TX", L"Enemy");
-		}
-
-		//トカゲの生成
-		vector< vector<Vec3> > vecLiz = {
-			{ Vec3(10.0f ,0.5f, 0.0f), Vec3(0.0f, 0.0f, 5.0f) },
-			{ Vec3(-70.0f, 0.5f,-40.0f), Vec3(69.0f,2.0f, -49.0f) },
-			{ Vec3(-68.0f, 0.5f,-0.0f), Vec3(-68.0f,2.0f, -34.0f) },
-			{ Vec3(-30.0f, 0.5f,-40.0f), Vec3(30.0f,2.0f, 34.0f) },
-
-		};
-		for (auto v : vecLiz) {
-			auto ptreneobj = AddGameObject<Enemy>(v[0], v[1], 1, L"Lizad_TX", L"Lizad");
-
-		}
-	}
-
-	void GameStage::CreateGimmickObj() {
-		auto group = CreateSharedObjectGroup(L"CoinGrope");
-		
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(0.0f, 0.f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f),  Quat(), Vec3(3.0f, 0.f, -3.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-78.0f, 0.f, -35.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-71.0f, 0.f, -30.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-35.0f, 0.f, -4.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-27.0f, 0.f, 1.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-29.0f, 0.f, -32.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-32.0f, 0.f, -38.0f));
-		AddGameObject<GimmickObj>(Vec3(0.25f, 0.25f, 0.25f), Quat(), Vec3(-77.0f, 0.f, -4.2f));
-	
-	}
-	void  GameStage::CreateWoods() {
-		auto woods = CreateSharedObjectGroup(L"WoodsGrope");
-		Vec3 Rot;
-		//CSVの行単位の配列
-		vector<wstring> LineVec;
-		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
-		m_GameStageCsvB.GetSelect(LineVec, 0, L"TreeBox");
-		for (auto& v : LineVec) {
-			//トークン（カラム）の配列
-			vector<wstring> Tokens;
-			//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
-			Util::WStrToTokenVector(Tokens, v, L',');
-			//各トークン（カラム）をスケール、回転、位置に読み込む
-			Vec3 Scale(
-				(float)_wtof(Tokens[1].c_str()),
-				(float)_wtof(Tokens[2].c_str()),
-				(float)_wtof(Tokens[3].c_str())
-			);
-
-			//回転は「XM_PIDIV2」の文字列になっている場合がある
-			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
-			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
-			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
-			Quat rot;
-			float x, y, z;
-			x = (float)_wtof(Tokens[4].c_str());
-			y = (float)_wtof(Tokens[5].c_str());
-			z = (float)_wtof(Tokens[6].c_str());
-			rot.setX(x);
-			rot.setY(y);
-			rot.setZ(z);
-			//Rot = rot;
-			Vec3 Pos(
-				(float)_wtof(Tokens[7].c_str()),
-				(float)_wtof(Tokens[8].c_str()),
-				(float)_wtof(Tokens[9].c_str())
-			);
-
-			//各値がそろったのでオブジェクト作成
-			auto Tiling = AddGameObject<StageObj>(Pos,Scale, 0);
-		}
-		}
-	
 
 	void GameStage::CreateClearObj() {
-		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0,0.f,0), Vec3(0.5f));
+		auto ClearObj = AddGameObject<StageClearObj>(Vec3(0,2.f,0), Vec3(0.5f));
 		SetSharedGameObject(L"Clear",ClearObj);
 	}
 
@@ -295,19 +253,14 @@ namespace basecross {
 			CreatePlayer();
 			//プレイヤーを継承した子オブジェクトの作成
 			CreatePlayerChild();
-			//敵の追加
-			CreateLowEnemy();
 			//空の追加
 			CreateSky();
 			//ギミックの生成
-			CreateGimmickObj();
+			//CreateGimmickObj();
 			CreateClearObj();
 			//UIの表示
 			CreateUI();
-			//壁の生成
-			CreateBox();
-			//木々の生成
-			//CreateWoods();
+
 		}
 		catch (...) {
 			throw;

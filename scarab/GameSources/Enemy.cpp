@@ -127,10 +127,10 @@ namespace basecross {
 			break;
 		case 2:
 
-			ptrDraw->SetMultiMeshResource(L"scrab");
-			ptrDraw->SetTextureResource(L"Lizad_TX");
-			ptrDraw->AddAnimation(L"Lizad", 0, 60, true, 30);
-			ptrDraw->ChangeCurrentAnimation(L"Lizad", 0);
+			ptrDraw->SetMultiMeshResource(model);
+			ptrDraw->SetTextureResource(tex);
+			ptrDraw->AddAnimation(model, 0, 60, true, 30);
+			ptrDraw->ChangeCurrentAnimation(model, 0);
 			break;
 		}
 

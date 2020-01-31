@@ -30,10 +30,6 @@ namespace basecross {
 		void CreateLowEnemy();;
 		//プレイヤーを継承した子オブジェクトの継承
 		void CreatePlayerChild();
-		//マップ用の木々たち
-		void CreateWoods();
-		//ギミック用のオブジェクト生成
-		void CreateGimmickObj();
 		//ゲームクリア用のオブジェクト作成
 		void CreateClearObj();
 		//空の作成
