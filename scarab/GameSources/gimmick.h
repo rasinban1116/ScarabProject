@@ -108,6 +108,42 @@ namespace basecross {
 
 		virtual void OnCreate();
 	};
+//--------------------------------------------------------------------------------------
+///	ステージオブジェクト
+//--------------------------------------------------------------------------------------
+	class StageObj : public GameObject {
+		Vec3 m_Position;
+		Vec3 m_Scele;
+		int size;
+
+	public:
+		StageObj(const shared_ptr<Stage>&StagePtr,
+			const Vec3 &Posion,
+			const Vec3 &Scale,
+			const int &size
+		);
+		virtual ~StageObj();
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+
+	};
+
+	class SkyObj : public GameObject {
+		Vec3 m_Scale;
+		Quat m_Qt;
+		Vec3 m_Position;
+	public:
+		//構築と破棄
+		SkyObj(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Quat& Qt,
+			const Vec3& Position
+		);
+		virtual ~SkyObj();
+
+		virtual void OnCreate();
+	};
+
 
 }
 //end basecross
