@@ -6,6 +6,7 @@ namespace basecross {
 		static GameManager* GM;
 
 		int m_getunkonum;
+		bool m_unkobollflg;
 
 		GameManager() {
 		}
@@ -21,5 +22,12 @@ namespace basecross {
 		void UnkoNumReSet() {
 			m_getunkonum = 0;
 		}
+		bool GetUnkoFlg() {
+			return m_unkobollflg;
+		}
+		void SetUnkoFlg(bool ptrflg) {
+			m_unkobollflg = ptrflg;
+		}
+
 	};
 }

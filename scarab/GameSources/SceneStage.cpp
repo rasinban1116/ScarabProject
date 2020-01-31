@@ -131,10 +131,10 @@ namespace basecross {
 		auto gm = GameManager::GetInstance();
 
 		//ここ後で消す
-		gm->UnkoNumReSet();
-		for (int y = 0; y < 5; y++) {
-			gm->UnkoNumUp();
-		}
+		//gm->UnkoNumReSet();
+		//for (int y = 0; y < 5; y++) {
+		//	gm->UnkoNumUp();
+		//}
 		//ここまで消す
 
 		//ゲームマネージャーから取得したうんこの数をとってくる

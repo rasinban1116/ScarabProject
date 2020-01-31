@@ -407,7 +407,16 @@ namespace basecross {
 
 	}
 	void UnkoBoll::OnUpdate() {
-
+		auto ptrcomp = GetComponent<Transform>();
+		auto ptrsca = ptrcomp->GetScale();
+		if (ptrsca.y < 0.7f) {
+			auto gm = GameManager::GetInstance();
+			gm->SetUnkoFlg(false);
+			auto PtrDraw = GetComponent<BcPNTStaticDraw>();
+			PtrDraw->SetDrawActive(false);
+			auto ptrColl = GetComponent<CollisionSphere>();
+			ptrColl->SetUpdateActive(false);
+		}
 	}
 	void UnkoBoll::OnUpdate2() {
 
@@ -449,7 +458,6 @@ namespace basecross {
 			return upscale;
 			count = 0;
 		}
-		
 	}
 
 	void UnkoBoll::OnCollisionEnter(shared_ptr<GameObject>& Other){
@@ -459,10 +467,13 @@ namespace basecross {
 		auto thisScale = thistrans->GetScale();
 		if (Other->FindTag(L"UnCoin")){ 
 			SetScale(0.20f);
+			Other->SetUpdateActive(false);
+			Other->SetDrawActive(false);
+			auto gm = GameManager::GetInstance();
+			gm->UnkoNumUp();
 		}
 		if (Other->FindTag(L"Enemy")) {
 			SetScale(-0.20f);
-
 		}
 		if (Other->FindTag(L"Player")) {
 		}
