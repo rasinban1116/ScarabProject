@@ -65,7 +65,7 @@ namespace basecross{
 		void OnPushB();
 		void OnPushDOWN(){}
 		void OnPushUP(){}
-
+		void UnkoBollCreate(Vec3 ptrpos);
 
 
 	};

@@ -259,7 +259,8 @@ namespace basecross {
 	void Player::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<Player>());
 
-			Move();
+		Move();
+
 	}
 
 	//後更新
@@ -277,11 +278,35 @@ namespace basecross {
 	{
 	}
 
+	void Player::UnkoBollCreate(Vec3 ptrpos) {
+		auto unkoboll = GetStage()->GetSharedGameObject<UnkoBoll>(L"UnkoBoll");
+		auto unkotrans = unkoboll->GetComponent<Transform>();
+		if (unkoboll) {
+			unkoboll->SetUpdateActive(true);
+			unkotrans->SetScale(Vec3(1.0f));
+			unkoboll->SetDrawActive(true);
+			unkotrans->SetPosition(ptrpos);
+		}
+	}
+
 	//コリジョンが何かに当たった時の処理
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {	
+
 		if (Other->FindTag(L"Enemy")) {
 			//auto ptrScene = App::GetApp()->GetScene<Scene>();
 			//PostEvent(0.0f, GetThis<ObjectInterface>(), ptrScene, L"ToGameOverStage");
+		}
+
+		auto gm = GameManager::GetInstance();
+		if (gm->GetUnkoFlg() == false) {
+			if (Other->FindTag(L"UnCoin")) {
+				UnkoBollCreate(Other->GetComponent<Transform>()->GetPosition());
+				//GetStage()->AddGameObject<UnkoBoll>(Other->GetComponent<Transform>()->GetPosition(),
+				//	Vec3(1.0f), Vec3(0.0f), Vec3(0.0f, 6.0f, 5.0f));
+				Other->SetUpdateActive(false);
+				Other->SetDrawActive(false);
+				gm->SetUnkoFlg(true);
+			}
 		}
 	}
 
@@ -302,7 +327,7 @@ namespace basecross {
 		);
 		drawcomp->AddAnimation(L"scarab", 0, 60, true, 30);
 		drawcomp->ChangeCurrentAnimation(L"scarab", 0);
-	}
+		}
 	}
 	
 
@@ -361,6 +386,8 @@ namespace basecross {
 
 
 	void UnkoBoll::OnCreate() {
+		auto gm = GameManager::GetInstance();
+		gm->SetUnkoFlg(true);
 		auto ptrTrans = AddComponent<Transform>();
 
 		ptrTrans->SetPosition(UnkoPos);
@@ -405,18 +432,18 @@ namespace basecross {
 		AddTag(L"UnkoBoll");
 
 	}
+
 	void UnkoBoll::OnUpdate() {
+		auto gm = GameManager::GetInstance();
 		auto ptrcomp = GetComponent<Transform>();
 		auto ptrsca = ptrcomp->GetScale();
-		if (ptrsca.y < 0.7f) {
-			auto gm = GameManager::GetInstance();
+		if (ptrsca.y < 0.6f) {
+			SetDrawActive(false);
+			SetUpdateActive(false);
 			gm->SetUnkoFlg(false);
-			auto PtrDraw = GetComponent<BcPNTStaticDraw>();
-			PtrDraw->SetDrawActive(false);
-			auto ptrColl = GetComponent<CollisionSphere>();
-			ptrColl->SetUpdateActive(false);
 		}
 	}
+
 	void UnkoBoll::OnUpdate2() {
 
 	}
@@ -430,12 +457,12 @@ namespace basecross {
 		auto Plyaer = GetStage()->GetSharedGameObject<Player>(L"Player", false);
 		auto ptrTrans = Plyaer->GetComponent<Transform>();
 		auto PsUnko = this->GetComponent<RigidbodySphere>();
-
+		//player
 		auto ptrfor = ptrTrans->GetForword();
 		auto ptrPos = ptrTrans->GetPosition();
 		auto ptrScale = ptrTrans->GetScale();
 		auto ptrrot = ptrTrans->GetRotation();
-
+		//糞玉
 		auto thispos = thistrans->GetPosition();
 		auto thisScale = thistrans->GetScale();
 		auto thisrot = thistrans->GetRotation();
@@ -443,9 +470,11 @@ namespace basecross {
 		Vec3 Pos;
 		Pos = Vec3(ptrPos.x + thispos.x, ptrPos.y + thispos.y, ptrPos.z + thispos.z);
 		thistrans->SetPosition(Pos);
-		drawcomp->SetDrawActive(true);
-		
-		
+		if (GetUpdateActive() == false) {
+			SetDrawActive(true);
+			SetUpdateActive(true);
+		}
+
 	}
 
 	void UnkoBoll::Move() {
@@ -465,20 +494,15 @@ namespace basecross {
 	}
 
 	void UnkoBoll::OnCollisionEnter(shared_ptr<GameObject>& Other){
-		auto UnCoin = Other->GetStage()->GetSharedObjectGroup(L"CoinGrope");
-		auto Player = Other->GetStage()->GetSharedObject(L"Player");
-		auto thistrans = GetComponent<Transform>();
-		auto thisScale = thistrans->GetScale();
+		auto gm = GameManager::GetInstance();
 		if (Other->FindTag(L"UnCoin")){ 
 			SetScale(0.20f);
-			Other->SetUpdateActive(false);
-			Other->SetDrawActive(false);
-			auto gm = GameManager::GetInstance();
 			gm->UnkoNumUp();
 		}
+		if(gm->GetUnkoFlg() == true){
 		if (Other->FindTag(L"Enemy")) {
 			SetScale(-0.20f);
-			holdon();
+		}
 		}
 		if (Other->FindTag(L"Player")) {
 		}
