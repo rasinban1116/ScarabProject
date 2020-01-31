@@ -28,12 +28,6 @@ namespace basecross {
 	}
 
 	void GameStage::CreateBox(){
-		auto treeGrope = CreateSharedObjectGroup(L"Tree");
-		//AddGameObject<WallPsBox>(Vec3(1), Quat(0),Vec3(-60.0f, 8.5f, -25.0f),int(1));
-		//AddGameObject<WallPsBox>(Vec3(1), Quat(0), Vec3(-50.0f, 10.5f, -20.0f), int(1));
-		//AddGameObject<WallPsBox>(Vec3(1), Quat(0), Vec3(-30.0f, 10.5f, -35.0f), int(3));
-
-
 	}
 	//ボックスの作成
 	void GameStage::CreateFixedBox() {
@@ -54,8 +48,6 @@ namespace basecross {
 				(float)_wtof(Tokens[2].c_str()),
 				(float)_wtof(Tokens[3].c_str())
 			);
-
-
 
 			//回転は「XM_PIDIV2」の文字列になっている場合がある
 			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
@@ -78,9 +70,78 @@ namespace basecross {
 
 			//各値がそろったのでオブジェクト作成
 			auto Tiling = AddGameObject<TilingFixedBox>(Scale, Rot, Pos, 1.0f, 1.0f, Tokens[10]);
-		}
 
+		}
+		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
+		m_GameStageCsvB.GetSelect(LineVec, 0, L"TreeBox");
+		for (auto& v : LineVec) {
+			//トークン（カラム）の配列
+			vector<wstring> Tokens;
+			//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+			Util::WStrToTokenVector(Tokens, v, L',');
+			//各トークン（カラム）をスケール、回転、位置に読み込む
+			Vec3 Scale(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+			//回転は「XM_PIDIV2」の文字列になっている場合がある
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+			Quat rot;
+			float x, y, z;
+			x = (float)_wtof(Tokens[4].c_str());
+			y = (float)_wtof(Tokens[5].c_str());
+			z = (float)_wtof(Tokens[6].c_str());
+			rot.setX(x);
+			rot.setY(y);
+			rot.setZ(z);
+			//Rot = rot;
+			Vec3 Pos(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+			auto Tiling = AddGameObject<StageObj>(Pos, Scale, 0);
+		}
+		m_GameStageCsvB.GetSelect(LineVec, 0, L"UnkoBox");
+		for (auto& v : LineVec) {
+			//トークン（カラム）の配列
+			vector<wstring> Tokens;
+			//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+			Util::WStrToTokenVector(Tokens, v, L',');
+			//各トークン（カラム）をスケール、回転、位置に読み込む
+			Vec3 Scale(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
+
+			//回転は「XM_PIDIV2」の文字列になっている場合がある
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+			Quat rot;
+			float x, y, z;
+			x = (float)_wtof(Tokens[4].c_str());
+			y = (float)_wtof(Tokens[5].c_str());
+			z = (float)_wtof(Tokens[6].c_str());
+			rot.setX(x);
+			rot.setY(y);
+			rot.setZ(z);
+			//Rot = rot;
+			Vec3 Pos(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+			AddGameObject<GimmickObj>(Scale,Quat(),Pos);
+			//AddGameObject<UnkoBoll>(Pos, Scale, Vec3(0.0f), Rot);
+		}
 	}
+	//
 
 	
 
@@ -96,7 +157,7 @@ namespace basecross {
 	//プレイヤ―の生成
 	void GameStage::CreatePlayer() {
 		//プレーヤーの作成
-		auto ptrPlayer = AddGameObject<Player>(Vec3(-89.0f, 0.0f, -35.0f));
+		auto ptrPlayer = AddGameObject<Player>(Vec3(-89.0f, 0.5f, -35.0f));
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
@@ -156,12 +217,46 @@ namespace basecross {
 	}
 	void  GameStage::CreateWoods() {
 		auto woods = CreateSharedObjectGroup(L"WoodsGrope");
+		Vec3 Rot;
+		//CSVの行単位の配列
+		vector<wstring> LineVec;
+		//0番目のカラムがL"TilingFixedBox"である行を抜き出す
+		m_GameStageCsvB.GetSelect(LineVec, 0, L"TreeBox");
+		for (auto& v : LineVec) {
+			//トークン（カラム）の配列
+			vector<wstring> Tokens;
+			//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+			Util::WStrToTokenVector(Tokens, v, L',');
+			//各トークン（カラム）をスケール、回転、位置に読み込む
+			Vec3 Scale(
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str()),
+				(float)_wtof(Tokens[3].c_str())
+			);
 
-		AddGameObject<StageObj>(Vec3(15, 0, 1), Vec3(1), 0);
-		AddGameObject<StageObj>(Vec3(30, 0, 2), Vec3(1), 0);
-		AddGameObject<StageObj>(Vec3(-120, 0, 10), Vec3(1), 0);
-		AddGameObject<StageObj>(Vec3(-150, 0, -100), Vec3(1), 0);
-	}
+			//回転は「XM_PIDIV2」の文字列になっている場合がある
+			Rot.x = (Tokens[4] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[4].c_str());
+			Rot.y = (Tokens[5] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[5].c_str());
+			Rot.z = (Tokens[6] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[6].c_str());
+			Quat rot;
+			float x, y, z;
+			x = (float)_wtof(Tokens[4].c_str());
+			y = (float)_wtof(Tokens[5].c_str());
+			z = (float)_wtof(Tokens[6].c_str());
+			rot.setX(x);
+			rot.setY(y);
+			rot.setZ(z);
+			//Rot = rot;
+			Vec3 Pos(
+				(float)_wtof(Tokens[7].c_str()),
+				(float)_wtof(Tokens[8].c_str()),
+				(float)_wtof(Tokens[9].c_str())
+			);
+
+			//各値がそろったのでオブジェクト作成
+			auto Tiling = AddGameObject<StageObj>(Pos,Scale, 0);
+		}
+		}
 	
 
 	void GameStage::CreateClearObj() {
@@ -192,7 +287,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			////CSVファイルそのBの読み込み
-			m_GameStageCsvB.SetFileName(DataDir + L"Stage2.csv");
+			m_GameStageCsvB.SetFileName(DataDir + L"Stage.csv");
 			m_GameStageCsvB.ReadCsv();
 			//物理演算するボックスの作成
 			CreateFixedBox();
@@ -212,7 +307,7 @@ namespace basecross {
 			//壁の生成
 			CreateBox();
 			//木々の生成
-			CreateWoods();
+			//CreateWoods();
 		}
 		catch (...) {
 			throw;
