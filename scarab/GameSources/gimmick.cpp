@@ -73,7 +73,7 @@ namespace basecross {
 	{}
 
 	GimmickObj::~GimmickObj() {
-		OnDestroy();
+		//OnDestroy();
 	}
 	//初期化
 	void GimmickObj::OnCreate() {
@@ -97,9 +97,17 @@ namespace basecross {
 		ptrShadow->SetMeshResource(L"DEFAULT_CUBE");
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(Vec3(0.3f)),
+			Vec3(0, 0, 0),
+			Vec3(0, 0, 0),
+			Vec3(0, -0.5, 0)
+		);
 		ptrDraw->SetMeshResource(L"unko");
 		ptrDraw->SetOwnShadowActive(true);
 		ptrDraw->SetTextureResource(L"UNKO_TX");
+		ptrDraw->SetMeshToTransformMatrix(spanMat);
 
 		//アクションの登録
 		auto PtrAction = AddComponent<Action>();
@@ -301,6 +309,7 @@ namespace basecross {
 		auto ptrTrans = GetComponent<Transform>();
 		//AddTag(L"Slope");
 
+		auto ptrColl = AddComponent<CollisionObb>();
 		ptrTrans->SetScale(m_Scele);
 		ptrTrans->SetPosition(m_Position);
 
@@ -308,20 +317,35 @@ namespace basecross {
 		GetStage()->SetUpdatePerformanceActive(true);
 		GetStage()->SetDrawPerformanceActive(true);
 
+
+		//物理計算ボックス
+		PsBoxParam param(ptrTrans->GetWorldMatrix(), 0.0f, true, PsMotionType::MotionTypeFixed);
+		auto PsPtr = AddComponent<RigidbodyBox>(param);
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetFogEnabled(true);
+		//ptrDraw->SetDrawActive(false);
 
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(Vec3(0.4f)),
+			Vec3(0, 0, 0),
+			Vec3(0, 0, 0),
+			Vec3(0, 0, -0.5f)
+		);
 		switch (size)
 		{
 		case 0:
 			ptrDraw->SetMeshResource(L"tree");
 			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetTextureResource(L"Tree_TX");
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
+
 			break;
 		case 1:
 			ptrDraw->SetMeshResource(L"Rock");
 			ptrDraw->SetOwnShadowActive(true);
 			ptrDraw->SetTextureResource(L"Rock_TX");
+			ptrDraw->SetMeshToTransformMatrix(spanMat);
 
 		default:
 			break;

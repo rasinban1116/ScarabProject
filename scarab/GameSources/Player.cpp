@@ -267,7 +267,7 @@ namespace basecross {
 	void Player::OnUpdate2() {
 		ChangeTrans();
 		//•¶Žš—ñ‚Ì•\Ž¦
-		//DrawStrings();
+		DrawStrings();
 	}
 
 	void Player::OnPushA()
