@@ -303,7 +303,7 @@ namespace basecross {
 
 	void SerectStage::CreateStage(){
 		auto Grand = AddGameObject<FixedBox>(Vec3(0.0f, -0.5f, 0.0f), Vec3(30.0f, 1.0f, 30.0f));
-		Grand->AddTag(L"Grand");
+		//Grand->AddTag(L"Grand");
 	}
 	void SerectStage::OnUpdate() {
 		m_InputHandler.PushHandle(GetThis<SerectStage>());
